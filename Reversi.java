@@ -21,7 +21,6 @@ class Reversi {
 }
 
 // model
-// model
 //document------
 // 0 in board_array means blank
 // 1 in board_array means black storn
@@ -206,11 +205,13 @@ class ReversiModel extends Observable{
   //置けるかどうかの判定結果を格納して配列を返す関数。
   public int[][] getJudgeBoardArray(int player){
     int[][] judge_array= new int[board_size][board_size];//boardの用意
+    //board_arrayの内容をコピー
     for(int i=0;i<board_size;i++){
       for(int j=0;j<board_size;j++){
         judge_array[i][j]=board_array[i][j];
       }
     }
+    //置ける位置を判定
     for(int i=0;i<board_size;i++){
       for(int j=0;j<board_size;j++){
         if(board_array[i][j]==0&&pre_search(i,j,player)==true){
@@ -237,17 +238,13 @@ class ReversiModel extends Observable{
     for(int i=0;i<board_size;i++){
       for(int j=0;j<board_size;j++){
         if(judge_array[i][j]==3){
-          setCanPut_x(i);
-          setCanPut_y(j);
+          setPikaPika_x(i);
+          setPikaPika_y(j);
           return true;//playerは置ける
         }
       }
     }
     return false;
-  }
-  //置ける位置を含む配列を返す。
-  public int[][] getCanPut(){
-    return judge_array;
   }
  
   public void initBoard(){
@@ -264,8 +261,8 @@ class ReversiModel extends Observable{
     board_array[3][3]=2;board_array[4][4]=2;
     //black
     board_array[3][4]=1;board_array[4][3]=1;
-    setCanPut_x(2);
-    setCanPut_y(3);
+    setPikaPika_x(2);
+    setPikaPika_y(3);
     judge_array = getJudgeBoardArray(player);
     setChanged();
     notifyObservers();
@@ -282,16 +279,16 @@ class ReversiModel extends Observable{
     return count;
   }
   //光る座標
-  public int getCanPut_x(){ //ココから阪上↓
+  public int getPikaPika_x(){ //ココから阪上↓
     return pikapika_x;
   }
-  public int getCanPut_y(){
+  public int getPikaPika_y(){
     return pikapika_y;
   }
-  public void setCanPut_x(int x){
+  public void setPikaPika_x(int x){
     pikapika_x = x;
   }
-  public void setCanPut_y(int y){
+  public void setPikaPika_y(int y){
     pikapika_y = y;
   }
 
@@ -304,21 +301,20 @@ class ReversiModel extends Observable{
     int[] array={0,8,0,8};
     switch(direction){
       case 0:
-      array[direction]=getCanPut_x()+1;
+      array[direction]=getPikaPika_x()+1;
       break;
       case 1:
-      array[direction]=getCanPut_x();
+      array[direction]=getPikaPika_x();
       break;
       case 2:
-      array[direction]=getCanPut_y()+1;
+      array[direction]=getPikaPika_y()+1;
       break;
       case 3:
-      array[direction]=getCanPut_y();
+      array[direction]=getPikaPika_y();
       break;
     }
     int next_x = 30, next_y = 30;//十分に離れているとする。
-    int[][] arr = new int[board_size][board_size];
-    arr = getCanPut();
+    int[][] arr = getJudgeBoardArray(player);
     for(int i=array[0]; i<array[1]; i++){
       for(int j=array[2]; j<array[3]; j++){
         if(arr[i][j] == 3){
@@ -328,15 +324,12 @@ class ReversiModel extends Observable{
     }
     if(next_x == 30 || next_y == 30){next_x = x; next_y = y;}
     System.out.println(next_x+"    "+next_y);
-    setCanPut_x(next_x); setCanPut_y(next_y);
+    setPikaPika_x(next_x); setPikaPika_y(next_y);
     setChanged();
     notifyObservers();
   }
   public void xySetStone(int x,int y){//配列値でsetStoneを呼び出す。
-    setStone(toGraphics(x), toGraphics(y));
-  }
-  public int toGraphics(int num){//配列の値を描画の座標に変換
-    return 20+70*num;
+    setStone(20+70*x, 20+70*y);
   }
 }
 ////////////////////////////////////////////////////
@@ -647,23 +640,23 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     switch(k){
       case KeyEvent.VK_RIGHT:
         //下四つは盤面の移動を矢印キーでやる場合に使う
-        model.next_position(model.getCanPut_x(),model.getCanPut_y(),0);//0:右,1:左,2:下,3:上
+        model.next_position(model.getPikaPika_x(),model.getPikaPika_y(),0);//0:右,1:左,2:下,3:上
         break;
       case KeyEvent.VK_LEFT:
-        model.next_position(model.getCanPut_x(),model.getCanPut_y(),1);
+        model.next_position(model.getPikaPika_x(),model.getPikaPika_y(),1);
         break;
       case KeyEvent.VK_UP:
-        model.next_position(model.getCanPut_x(),model.getCanPut_y(),3);
+        model.next_position(model.getPikaPika_x(),model.getPikaPika_y(),3);
 
         break;
       case KeyEvent.VK_DOWN:
-        model.next_position(model.getCanPut_x(),model.getCanPut_y(),2);
+        model.next_position(model.getPikaPika_x(),model.getPikaPika_y(),2);
         break;
       default:
         break;
     }
-    stoneX = 70*(model.getCanPut_x())+40;
-    stoneY = 70*(model.getCanPut_y())+40;
+    stoneX = 70*(model.getPikaPika_x())+40;
+    stoneY = 70*(model.getPikaPika_y())+40;
   }
   public void keyReleased(KeyEvent e){}
 }
