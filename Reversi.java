@@ -84,6 +84,15 @@ class Reversi {
 // public int countStorn(int colornum)
 //     colornumの石の個数を数え、intで返す。
 //     引数: colornum: 黒を1,白を2とする。
+//
+//public void xySetStone(int x,int y){
+//      配列値でsetStoneを呼び出す。
+//      引数: x:配列の行の値
+//      　　  y:配列の列の値
+//public int toGraphics(int num){
+//      配列の値を描画の座標に変換して返す
+//      引数: num: 配列の添え字
+//
 //--------------
 
 @SuppressWarnings("deprecation")
@@ -228,6 +237,8 @@ class ReversiModel extends Observable{
     for(int i=0;i<board_size;i++){
       for(int j=0;j<board_size;j++){
         if(judge_array[i][j]==3){
+          setCanPut_x(i);
+          setCanPut_y(j);
           return true;//playerは置ける
         }
       }
@@ -237,18 +248,6 @@ class ReversiModel extends Observable{
   //置ける位置を含む配列を返す。
   public int[][] getCanPut(){
     return judge_array;
-  }
-  //多分いらない。
-  public int[] lightPanel(int mouse_x,int mouse_y){
-    int x = transformMousePoint(mouse_x);//mouseの座標の変換
-    int y = transformMousePoint(mouse_y);//mouseの座標の変換
-    int[] result = {x,y};
-    if(judge_array[x][y]==3){
-      return result;
-    }
-    result[0]=-1;
-    result[1]=-1;
-    return result;
   }
  
   public void initBoard(){
@@ -265,6 +264,9 @@ class ReversiModel extends Observable{
     board_array[3][3]=2;board_array[4][4]=2;
     //black
     board_array[3][4]=1;board_array[4][3]=1;
+    setCanPut_x(2);
+    setCanPut_y(3);
+    judge_array = getJudgeBoardArray(player);
     setChanged();
     notifyObservers();
   }
@@ -298,12 +300,27 @@ class ReversiModel extends Observable{
     return d;
   }
 
-  public void next_right(int x, int y){
-    int next_x = 30, next_y = 30;
+  public void next_position(int x, int y,int direction){//0:右,1:左,2:下,3:上
+    int[] array={0,8,0,8};
+    switch(direction){
+      case 0:
+      array[direction]=getCanPut_x()+1;
+      break;
+      case 1:
+      array[direction]=getCanPut_x();
+      break;
+      case 2:
+      array[direction]=getCanPut_y()+1;
+      break;
+      case 3:
+      array[direction]=getCanPut_y();
+      break;
+    }
+    int next_x = 30, next_y = 30;//十分に離れているとする。
     int[][] arr = new int[board_size][board_size];
     arr = getCanPut();
-    for(int i=1+getCanPut_x(); i<8; i++){
-      for(int j=0; j<8; j++){
+    for(int i=array[0]; i<array[1]; i++){
+      for(int j=array[2]; j<array[3]; j++){
         if(arr[i][j] == 3){
           if(distance(x,y,next_x,next_y)>distance(x,y,i,j)){next_x = i; next_y = j;}
         }
@@ -315,65 +332,13 @@ class ReversiModel extends Observable{
     setChanged();
     notifyObservers();
   }
-
-  public void next_left(int x, int y){
-    int next_x = 30, next_y = 30;
-    int[][] arr = new int[board_size][board_size];
-    arr = getCanPut();
-    for(int i=0; i<getCanPut_x(); i++){
-      for(int j=0; j<8; j++){
-        if(arr[i][j] == 3){
-          if(distance(x,y,next_x,next_y)>distance(x,y,i,j)){next_x = i; next_y = j;}
-        }
-      }
-    }
-    if(next_x == 30 || next_y == 30){next_x = x; next_y = y;}
-    System.out.println(next_x+"    "+next_y);
-    setCanPut_x(next_x); setCanPut_y(next_y);
-    setChanged();
-    notifyObservers();
+  public void xySetStone(int x,int y){//配列値でsetStoneを呼び出す。
+    setStone(toGraphics(x), toGraphics(y));
   }
-
-  public void next_up(int x, int y){
-    int next_x = 30, next_y = 30;
-    int[][] arr = new int[board_size][board_size];
-    arr = getCanPut();
-    for(int i=0; i<8; i++){
-      for(int j=0; j<getCanPut_y(); j++){
-        if(arr[i][j] == 3){
-          if(distance(x,y,next_x,next_y)>distance(x,y,i,j)){next_x = i; next_y = j;}
-        }
-      }
-    }
-    if(next_x == 30 || next_y == 30){next_x = x; next_y = y;}
-    System.out.println(next_x+"    "+next_y);
-    setCanPut_x(next_x); setCanPut_y(next_y);
-    setChanged();
-    notifyObservers();
-  }
-
-  public void next_down(int x, int y){
-    int next_x = 30, next_y = 30;
-    int[][] arr = new int[board_size][board_size];
-    arr = getCanPut();
-    for(int i=0; i<8; i++){
-      for(int j=1+getCanPut_y(); j<8; j++){
-        if(arr[i][j] == 3){
-          if(distance(x,y,next_x,next_y)>distance(x,y,i,j)){next_x = i; next_y = j;}
-        }
-      }
-    }
-    if(next_x == 30 || next_y == 30){next_x = x; next_y = y;}
-    System.out.println(next_x+"    "+next_y);
-    setCanPut_x(next_x); setCanPut_y(next_y);
-    setChanged();
-    notifyObservers();
+  public int toGraphics(int num){//配列の値を描画の座標に変換
+    return 20+70*num;
   }
 }
-//以下は気にしないで
-
-
-
 ////////////////////////////////////////////////////
 // View (V)
 @SuppressWarnings("deprecation")
@@ -682,22 +647,17 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     switch(k){
       case KeyEvent.VK_RIGHT:
         //下四つは盤面の移動を矢印キーでやる場合に使う
-        //System.out.println("aaa");
-        model.next_right(model.getCanPut_x(), model.getCanPut_y());
-        //model.next_position(model.getCanPut_x(),model.getCanPut_y(),1);
-        //System.out.println("bbb");
+        model.next_position(model.getCanPut_x(),model.getCanPut_y(),0);//0:右,1:左,2:下,3:上
         break;
       case KeyEvent.VK_LEFT:
-        model.next_left(model.getCanPut_x(), model.getCanPut_y());
-        //model.next_position(model.getCanPut_x(),model.getCanPut_y(),3);
+        model.next_position(model.getCanPut_x(),model.getCanPut_y(),1);
         break;
       case KeyEvent.VK_UP:
-        model.next_up(model.getCanPut_x(), model.getCanPut_y());
-        //model.next_position(model.getCanPut_x(),model.getCanPut_y(),0);
+        model.next_position(model.getCanPut_x(),model.getCanPut_y(),3);
+
         break;
       case KeyEvent.VK_DOWN:
-        model.next_down(model.getCanPut_x(), model.getCanPut_y());
-        //model.next_position(model.getCanPut_x(),model.getCanPut_y(),2);
+        model.next_position(model.getCanPut_x(),model.getCanPut_y(),2);
         break;
       default:
         break;
