@@ -483,7 +483,7 @@ class ReversiView extends JFrame implements Observer {
       g.setColor(new Color(255,255,0,100));
 
       //下の一行は実際に動かすときに使う関数
-      g.fillRect(20+70*model.getCanPut_x(), 20+70*model.getCanPut_y(), 70, 70);
+      g.fillRect(20+70*model.getPikaPika_x(), 20+70*model.getPikaPika_y(), 70, 70);
 
       //下の一行は確認のために一マス特定の場所を光らせたもの。
       //g.fillRect(20+70*3,20+70*2,70,70);
@@ -588,7 +588,6 @@ class ReversiView extends JFrame implements Observer {
     // }
   }
 }
-
 /////////////////////////////////////////////////////
 // Controller (C)
 
