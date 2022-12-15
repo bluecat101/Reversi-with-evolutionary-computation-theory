@@ -86,6 +86,7 @@ class Reversi {
 //     引数: colornum: 黒を1,白を2とする。
 //--------------
 
+@SuppressWarnings("deprecation")
 class ReversiModel extends Observable{
   final int board_size=8;
   final int sizeOfOne=70;
@@ -101,7 +102,6 @@ class ReversiModel extends Observable{
   }
 
   //コントローラーから呼び出される。playerは1,2で渡してほしい。
-  @SuppressWarnings("deprecation")
   public void setStone(int mouse_x, int mouse_y){
     // int x=mouse_x;int y=mouse_y;
     int x = transformMousePoint(mouse_x);//mouseの座標の変換
