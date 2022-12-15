@@ -10,7 +10,7 @@ import java.util.*;
 class Reversi {
   public static void main(String argv[]) {
     // モデルの生成．
-    ReversiModel m = new ReversiModel();
+    Model m = new Model();
 
     // 一つ目のビュー
     ReversiView v1 = new ReversiView(m,"View 1");
@@ -95,6 +95,13 @@ class Reversi {
 //--------------
 
 @SuppressWarnings("deprecation")
+
+class Model {
+  
+  private ReversiModel reversiModel=new ReversiModel();
+  public ReversiModel getReversiModel(){
+    return reversiModel;
+  }
 class ReversiModel extends Observable{
   final int board_size=8;
   final int sizeOfOne=70;
@@ -332,21 +339,25 @@ class ReversiModel extends Observable{
     setStone(20+70*x, 20+70*y);
   }
 }
+
+}
 ////////////////////////////////////////////////////
 // View (V)
 @SuppressWarnings("deprecation")
 class ReversiView extends JFrame implements Observer {
-  protected ReversiModel model;
+  protected Model model;
+  protected Model.ReversiModel reversiModel;
   protected ReversiPanel panel;
   protected ChatPanel chatpanel;
   protected JLabel state;
   protected JButton finish,reset;
   protected JTextField chatbox;
  
-  public ReversiView(ReversiModel m,String st) {
+  public ReversiView(Model m,String st) {
     super(st);
     model = m;
-    model.addObserver(this);
+    reversiModel = model.getReversiModel();
+    reversiModel.addObserver(this);
     JPanel  p1=new JPanel();
     JPanel  p2=new JPanel();
 
@@ -451,8 +462,8 @@ class ReversiView extends JFrame implements Observer {
   class ReversiPanel extends JPanel {
     public void paintComponent(Graphics g) {
       super.paintComponent(g);
-      int[][] board_array = model.getBoardArray();
-      int[][] canput = model.getJudgeBoardArray(model.getPlayer());//modelのおけるか配列
+      int[][] board_array = reversiModel.getBoardArray();
+      int[][] canput = reversiModel.getJudgeBoardArray(reversiModel.getPlayer());//modelのおけるか配列
       g.setColor(new Color(0,180,0));
       g.fillRect(20,20,560,560);
       g.setColor(Color.BLACK);
@@ -471,7 +482,7 @@ class ReversiView extends JFrame implements Observer {
             drawwhite(g, i, j);
           }
           if(canput[i][j]==3){
-            if(model.getPlayer()==1){
+            if(reversiModel.getPlayer()==1){
               g.setColor(new Color(0,0,0,70));
             }else{
               g.setColor(new Color(255,255,255,150));
@@ -483,7 +494,7 @@ class ReversiView extends JFrame implements Observer {
       g.setColor(new Color(255,255,0,100));
 
       //下の一行は実際に動かすときに使う関数
-      g.fillRect(20+70*model.getPikaPika_x(), 20+70*model.getPikaPika_y(), 70, 70);
+      g.fillRect(20+70*reversiModel.getPikaPika_x(), 20+70*reversiModel.getPikaPika_y(), 70, 70);
 
       //下の一行は確認のために一マス特定の場所を光らせたもの。
       //g.fillRect(20+70*3,20+70*2,70,70);
@@ -515,12 +526,12 @@ class ReversiView extends JFrame implements Observer {
       count =new JLabel("2",JLabel.CENTER);
       stone.setPreferredSize(new Dimension(100, 40));//ラベルのサイズを設定
       count.setFont(font);
-      model.addObserver(this);
+      reversiModel.addObserver(this);
       this.add(stone);
       this.add(count);
     }
     public void update(Observable o,Object arg){
-      String s = Integer.toString(model.countStorn(player));
+      String s = Integer.toString(reversiModel.countStorn(player));
       count.setText(s);
     }
   }
@@ -565,7 +576,7 @@ class ReversiView extends JFrame implements Observer {
 
   public void update(Observable o, Object arg) {
     panel.repaint();state.setText("パス");
-    if(model.getPassFlag()==1){
+    if(reversiModel.getPassFlag()==1){
      
       System.out.println("pass");
       panel.repaint();
@@ -574,13 +585,13 @@ class ReversiView extends JFrame implements Observer {
       } catch (InterruptedException e) {
       }
     }
-    if(model.getPlayer()==1){
+    if(reversiModel.getPlayer()==1){
       state.setText("黒の手番です");
     }else{
       state.setText("白の手番です");
     }
-    // if(model.getFinishFlag()==1){
-    //   if(model.stoneCount(1)>model.stoneCount(2)){
+    // if(reversiModel.getFinishFlag()==1){
+    //   if(reversiModel.stoneCount(1)>reversiModel.stoneCount(2)){
     //     state.setText("黒の勝利");
     //   }else{
     //     state.setText("白の勝利");
@@ -593,12 +604,13 @@ class ReversiView extends JFrame implements Observer {
 
 // KeyListener が，キー操作のリスナーインタフェース．
 class ReversiController implements KeyListener, MouseListener, MouseMotionListener, ActionListener{
-  protected ReversiModel model;
+  protected Model model;
+  protected Model.ReversiModel reversiModel;
   protected ReversiView view;
   protected int stoneX=0, stoneY=0;
-  private int count_p=0;
-  public ReversiController(ReversiModel m, ReversiView v){
+  public ReversiController(Model m, ReversiView v){
     model = m;
+    reversiModel = model.getReversiModel();
     view = v;
     view.getPanel().addMouseListener(this);
     view.getPanel().addKeyListener(this);
@@ -609,7 +621,7 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
   }
   public void actionPerformed(ActionEvent e){
     if(e.getSource() == view.getResetButton()){
-      model.initBoard();
+      reversiModel.initBoard();
     }else if(e.getSource() == view.getFinishButton()){
       System.exit(0);
     }
@@ -618,19 +630,17 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
   public void mouseMoved(MouseEvent e){}
   public void mouseClicked(MouseEvent e){}
   public void mouseEntered(MouseEvent e){
-    //System.out.println(stoneX+" "+stoneY);
   }
   public void mouseExited(MouseEvent e){}
   public void mousePressed(MouseEvent e){
     stoneX = e.getX(); stoneY = e.getY();
-    //model.setStone(stoneX,stoneY);
   }
   public void mouseReleased(MouseEvent e){}
   public void keyTyped(KeyEvent e){
     char c = e.getKeyChar();
     switch(c){
       case 'z':
-      model.setStone(stoneX,stoneY);
+      reversiModel.setStone(stoneX,stoneY);
       break;
     }
   }
@@ -639,23 +649,23 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     switch(k){
       case KeyEvent.VK_RIGHT:
         //下四つは盤面の移動を矢印キーでやる場合に使う
-        model.next_position(model.getPikaPika_x(),model.getPikaPika_y(),0);//0:右,1:左,2:下,3:上
+        reversiModel.next_position(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y(),0);//0:右,1:左,2:下,3:上
         break;
       case KeyEvent.VK_LEFT:
-        model.next_position(model.getPikaPika_x(),model.getPikaPika_y(),1);
+        reversiModel.next_position(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y(),1);
         break;
       case KeyEvent.VK_UP:
-        model.next_position(model.getPikaPika_x(),model.getPikaPika_y(),3);
+        reversiModel.next_position(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y(),3);
 
         break;
       case KeyEvent.VK_DOWN:
-        model.next_position(model.getPikaPika_x(),model.getPikaPika_y(),2);
+        reversiModel.next_position(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y(),2);
         break;
       default:
         break;
     }
-    stoneX = 70*(model.getPikaPika_x())+40;
-    stoneY = 70*(model.getPikaPika_y())+40;
+    stoneX = 70*(reversiModel.getPikaPika_x())+40;
+    stoneY = 70*(reversiModel.getPikaPika_y())+40;
   }
   public void keyReleased(KeyEvent e){}
 }
