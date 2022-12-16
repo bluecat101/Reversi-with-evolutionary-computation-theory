@@ -385,14 +385,13 @@ class ReversiView extends JFrame implements Observer {
     finish = new JButton("Finish");
     reset = new JButton("reset");
 
-    //chatbox = new JTextField();
- 
+    
     //Panelによる塊の作成
     this.setTitle("Reversi Panel");
     GridBagLayout layout = new GridBagLayout();
     p1.setLayout(layout);
     GridBagConstraints gbc = new GridBagConstraints();
-
+    
     gbc.fill = GridBagConstraints.BOTH;
     gbc.gridx=0;
     gbc.gridy=0;
@@ -406,15 +405,18 @@ class ReversiView extends JFrame implements Observer {
     gbc.weightx = 1.0;
     gbc.weighty = 1.0;
     layout.setConstraints(chatpanel, gbc);
+    
+    p1.add(blackpanel);p1.add(chatpanel);
 
+    //以下を開放してテキストボックスを追加
+
+    // chatbox = new JTextField();
     // gbc.gridy=2;
     // gbc.insets = new Insets(20, 20, 20, 0);
     // gbc.weightx = 1.0;
     // gbc.weighty = 0.02;
     // layout.setConstraints(chatbox, gbc);
-
-    p1.add(blackpanel);p1.add(chatpanel);
-    //p1.add(chatbox);
+    // p1.add(chatbox);
 
     GridBagLayout layout2 = new GridBagLayout();
     p2.setLayout(layout2);
