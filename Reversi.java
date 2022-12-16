@@ -240,7 +240,14 @@ class ReversiModel extends Observable{
       pass_flag=0;//初期化
       return 1;//元の値
     }
-   
+  }
+  public int getFinishFlag(){
+    if(finish_flag==0){//終わりでない。
+      return finish_flag;
+    }else{
+      // finish_flag=0;//初期化
+      return 1;//元の値
+    }
   }
   //置けるかどうかを判定する関数
   public boolean canPut(){
