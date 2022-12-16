@@ -229,6 +229,10 @@ class ReversiView extends JFrame implements Observer {
     return panel;
   }
 
+  public ChatPanel getChatPanel(){
+    return chatpanel;
+  }
+
   public JButton getResetButton(){
     return reset;
   }
