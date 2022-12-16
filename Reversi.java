@@ -110,7 +110,7 @@ class ReversiModel extends Observable{
   private int pikapika_x=2;//阪上
   private int pikapika_y=3;//阪上
   private int player;
-  private int pass_flag;
+  private int pass_flag,finish_flag;
   public ReversiModel(){
     initBoard();
 
@@ -137,6 +137,8 @@ class ReversiModel extends Observable{
         judge_array = getJudgeBoardArray(player);//自分プレイヤーの置ける位置を格納。
         if(canPut()==true){
           pass_flag=1;
+        }else{
+          finish_flag=1;
         }
       }
       setChanged();
@@ -256,6 +258,7 @@ class ReversiModel extends Observable{
  
   public void initBoard(){
     pass_flag=0;
+    finish_flag=0;
     player=1;
     pikapika_x=2;
     pikapika_y=3;
