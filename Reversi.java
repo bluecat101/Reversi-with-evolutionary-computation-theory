@@ -18,6 +18,7 @@ class Reversi {
     new ReversiController(m,v1);
     //v1.setBounds(100,100,450,400);
   }
+<<<<<<< HEAD
 }
 
 // model
@@ -673,4 +674,6 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     stoneY = 70*(reversiModel.getPikaPika_y())+40;
   }
   public void keyReleased(KeyEvent e){}
+=======
+>>>>>>> 35e7a34d3e65a7e85ca82888400cdff0e51265ca
 }
