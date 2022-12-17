@@ -410,13 +410,13 @@ class ReversiView extends JFrame implements Observer {
 
     //以下を開放してテキストボックスを追加
 
-    // chatbox = new JTextField();
-    // gbc.gridy=2;
-    // gbc.insets = new Insets(20, 20, 20, 0);
-    // gbc.weightx = 1.0;
-    // gbc.weighty = 0.02;
-    // layout.setConstraints(chatbox, gbc);
-    // p1.add(chatbox);
+     chatbox = new JTextField();
+     gbc.gridy=2;
+     gbc.insets = new Insets(20, 20, 20, 0);
+     gbc.weightx = 1.0;
+     gbc.weighty = 0.02;
+     layout.setConstraints(chatbox, gbc);
+     p1.add(chatbox);
 
     GridBagLayout layout2 = new GridBagLayout();
     p2.setLayout(layout2);
