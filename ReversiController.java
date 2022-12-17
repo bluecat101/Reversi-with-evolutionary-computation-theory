@@ -1,8 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.border.LineBorder;
-import java.util.*;
 // Controller (C)
 
 // KeyListener が，キー操作のリスナーインタフェース．
@@ -10,12 +5,12 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
   protected Model model;
   protected Model.ReversiModel reversiModel;
   protected ReversiView view;
-  protected int stoneX=0, stoneY=0;
   public ReversiController(Model m, ReversiView v){
     model = m;
     reversiModel = model.getReversiModel();
     view = v;
     view.getPanel().addMouseListener(this);
+    view.getPanel().addMouseMotionListener(this);
     view.getPanel().addKeyListener(this);
     view.getPanel().setFocusable(true);
     view.getResetButton().addActionListener(this);
@@ -30,20 +25,22 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     }
   }
   public void mouseDragged(MouseEvent e){}
-  public void mouseMoved(MouseEvent e){}
+  public void mouseMoved(MouseEvent e){
+    reversiModel.next_position_mouse(e.getX(), e.getY());
+  }
   public void mouseClicked(MouseEvent e){}
   public void mouseEntered(MouseEvent e){
   }
   public void mouseExited(MouseEvent e){}
   public void mousePressed(MouseEvent e){
-    stoneX = e.getX(); stoneY = e.getY();
+    reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
   }
   public void mouseReleased(MouseEvent e){}
   public void keyTyped(KeyEvent e){
     char c = e.getKeyChar();
     switch(c){
       case 'z':
-      reversiModel.setStone(stoneX,stoneY);
+      reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
       break;
     }
   }
@@ -67,8 +64,6 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
       default:
         break;
     }
-    stoneX = 70*(reversiModel.getPikaPika_x())+40;
-    stoneY = 70*(reversiModel.getPikaPika_y())+40;
   }
   public void keyReleased(KeyEvent e){}
 }
