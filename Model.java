@@ -259,6 +259,19 @@ class ReversiModel extends Observable{
   public void xySetStone(int x,int y){//配列値でsetStoneを呼び出す。
     setStone(20+70*x, 20+70*y);
   }
+  public void next_position_mouse(int x, int y){
+    x = transformMousePoint(x); y = transformMousePoint(y);
+    int arr[][] = getJudgeBoardArray(player);
+    for(int i=0; i<8; i++){
+      for(int j=0; j<8; j++){
+        if(arr[i][j] == 3 && i == x && j == y){
+          setPikaPika_x(x); setPikaPika_y(y);
+          setChanged();
+          notifyObservers();
+        }
+      }
+    } 
+  }
 }
 
 }
