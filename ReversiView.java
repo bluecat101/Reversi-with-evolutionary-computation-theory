@@ -41,7 +41,7 @@ class ReversiView extends JFrame implements Observer {
     state.setFont(font);
 
     finish = new JButton("Finish");
-    reset = new JButton("reset");
+    reset = new JButton("Reset");
 
     
     //Panelによる塊の作成
@@ -109,10 +109,14 @@ class ReversiView extends JFrame implements Observer {
 
     p2.add(whitepanel);p2.add(state);p2.add(reset);p2.add(finish);
 
-    getContentPane().add(p1,BorderLayout.WEST);
-    getContentPane().add(p2,BorderLayout.EAST);
+    JPanel GamePanel = new JPanel();
+    GamePanel.setLayout(new BorderLayout());
 
-    this.add(panel,BorderLayout.CENTER);
+    GamePanel.add(p1,BorderLayout.WEST);
+    GamePanel.add(p2,BorderLayout.EAST);
+
+    GamePanel.add(panel,BorderLayout.CENTER);
+    this.add(GamePanel);
  
     // pack は JFrameのサイズを自動設定するメソッド．
     // this.setSize(300,200); などの代わり
@@ -257,12 +261,12 @@ class ReversiView extends JFrame implements Observer {
     }else{
       state.setText("白の手番です");
     }
-    // if(reversiModel.getFinishFlag()==1){
-    //   if(reversiModel.stoneCount(1)>reversiModel.stoneCount(2)){
-    //     state.setText("黒の勝利");
-    //   }else{
-    //     state.setText("白の勝利");
-    //   }
-    // }
+    if(reversiModel.getFinishFlag()==1){
+      if(reversiModel.countStorn(1)>reversiModel.countStorn(2)){
+        state.setText("黒の勝利");
+      }else{
+        state.setText("白の勝利");
+      }
+    }
   }
 }
