@@ -152,6 +152,14 @@ class ReversiModel extends Observable{
     }
    
   }
+  public int getFinishFlag(){
+    if(finish_flag==0){//finishでない。
+      return finish_flag;
+    }else{
+      return 1;//元の値
+    }
+   
+  }
   //置けるかどうかを判定する関数
   public boolean canPut(){
     for(int i=0;i<board_size;i++){
