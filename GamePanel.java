@@ -1,6 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+// import java.awt.event.*;
 import javax.swing.border.LineBorder;
 import java.util.*;
 
@@ -39,7 +39,7 @@ class GamePanel extends JPanel implements Observer {
     Font font = new Font(Font.SANS_SERIF,Font.BOLD,32);
     state.setFont(font);
 
-    finish = new JButton("Finish");
+    finish = new JButton("Return Title");
     reset = new JButton("Reset");
 
     
