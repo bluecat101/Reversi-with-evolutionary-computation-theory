@@ -1,3 +1,10 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.border.LineBorder;
+import java.util.*;
+
+
 // Controller (C)
 
 // KeyListener が，キー操作のリスナーインタフェース．
@@ -14,15 +21,15 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     view.getPanel().addKeyListener(this);
     view.getPanel().setFocusable(true);
     view.getResetButton().addActionListener(this);
-    view.getFinishButton().addActionListener(this);
+    //view.getFinishButton().addActionListener(this);
     view.getResetButton().addKeyListener(this);
   }
   public void actionPerformed(ActionEvent e){
     if(e.getSource() == view.getResetButton()){
       reversiModel.initBoard();
-    }else if(e.getSource() == view.getFinishButton()){
+    }/*else if(e.getSource() == view.getFinishButton()){
       System.exit(0);
-    }
+    }*/
   }
   public void mouseDragged(MouseEvent e){}
   public void mouseMoved(MouseEvent e){
@@ -33,7 +40,13 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
   }
   public void mouseExited(MouseEvent e){}
   public void mousePressed(MouseEvent e){
-    reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
+    if(e.getSource() == view.getPanel()){
+      view.getPanel().setFocusable(true);
+      reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
+    }else if(e.getSource() == view.getChatPanel()){
+      view.getChatPanel().setFocusable(true);
+      System.out.println("unti");
+    }
   }
   public void mouseReleased(MouseEvent e){}
   public void keyTyped(KeyEvent e){
