@@ -16,25 +16,25 @@ class ReversiView extends JFrame implements ActionListener{
     this.setTitle("Reversi Panel");
     
     /* タイトルパネル */
-    titlepanel = new TitlePanel();
-    titlepanel.start.addActionListener(this);
-    titlepanel.setting.addActionListener(this);
-    titlepanel.finish.addActionListener(this);
+    // titlepanel = new TitlePanel();
+    // titlepanel.start.addActionListener(this);
+    // titlepanel.setting.addActionListener(this);
+    // titlepanel.finish.addActionListener(this);
 
     /* パネル2 */
     gamepanel = new GamePanel(m);
-    gamepanel.finish.addActionListener(this);
+    // gamepanel.finish.addActionListener(this);
 
     /*パネル3 */
-    settingpanel = new SettingPanel();
-    settingpanel.returnButton.addActionListener(this);
+    // settingpanel = new SettingPanel();
+    // settingpanel.returnButton.addActionListener(this);
 
     cardPanel = new JPanel();
     layout = new CardLayout();
     cardPanel.setLayout(layout);
 
-    cardPanel.add(titlepanel, "title");
-    cardPanel.add(settingpanel, "setting");
+    // cardPanel.add(titlepanel, "title");
+    // cardPanel.add(settingpanel, "setting");
     cardPanel.add(gamepanel, "game");
 
     getContentPane().add(cardPanel, BorderLayout.CENTER);
@@ -61,17 +61,27 @@ class ReversiView extends JFrame implements ActionListener{
   public JButton getFinishButton(){
     return gamepanel.finish;
   }
-  public void actionPerformed(ActionEvent e){
-    if(e.getSource()==titlepanel.start){
-      layout.show(cardPanel,"game");
-    }else if(e.getSource()==titlepanel.setting){
-      layout.show(cardPanel,"setting");
-    }else if(e.getSource()==titlepanel.finish){
-      System.exit(0);
-    }else if(e.getSource()==settingpanel.returnButton){
-      layout.show(cardPanel,"title");
-    }else if(e.getSource()==gamepanel.finish){
-      layout.show(cardPanel,"title");
-    }
+
+  public JButton getButton(){
+    return settingpanel.returnButton;
   }
+
+  public void actionPerformed(ActionEvent e){
+    // if(e.getSource()==titlepanel.start){
+    //   layout.show(cardPanel,"game");
+    // }else if(e.getSource()==titlepanel.setting){
+    //   layout.show(cardPanel,"setting");
+    // }else if(e.getSource()==titlepanel.finish){
+    //   System.exit(0);
+    // }else 
+    if(e.getSource()==settingpanel.returnButton){
+      layout.show(cardPanel,"game");
+    }
+    // else if(e.getSource()==gamepanel.finish){
+    //   layout.show(cardPanel,"title");
+    // }
+  }
+  // public void keyTyped(KeyEvent e){}
+  // public void keyPressed(KeyEvent e){}
+  // public void keyReleased(KeyEvent e){}
 }
