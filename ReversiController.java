@@ -36,16 +36,16 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     reversiModel.next_position_mouse(e.getX(), e.getY());
   }
   public void mouseClicked(MouseEvent e){}
-  public void mouseEntered(MouseEvent e){
-  }
+  public void mouseEntered(MouseEvent e){}
   public void mouseExited(MouseEvent e){}
   public void mousePressed(MouseEvent e){
     if(e.getSource() == view.getPanel()){
       view.getPanel().setFocusable(true);
       reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
+      //System.out.println("aaaa");
     }else if(e.getSource() == view.getChatPanel()){
       view.getChatPanel().setFocusable(true);
-      System.out.println("unti");
+      //System.out.println("bbbb");
     }
   }
   public void mouseReleased(MouseEvent e){}
@@ -54,6 +54,9 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     switch(c){
       case 'z':
       reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
+      break;
+      case 'r':
+      reversiModel.initBoard();
       break;
     }
   }
