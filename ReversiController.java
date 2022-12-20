@@ -12,6 +12,7 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
   protected Model model;
   protected Model.ReversiModel reversiModel;
   protected ReversiView view;
+  private int num=0;
   public ReversiController(Model m, ReversiView v){
     model = m;
     reversiModel = model.getReversiModel();
@@ -21,15 +22,23 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     view.getPanel().addKeyListener(this);
     view.getPanel().setFocusable(true);
     view.getResetButton().addActionListener(this);
-    //view.getFinishButton().addActionListener(this);
+    view.getChatButton().addActionListener(this);
     view.getResetButton().addKeyListener(this);
+    view.getChatButton().addKeyListener(this);
   }
   public void actionPerformed(ActionEvent e){
     if(e.getSource() == view.getResetButton()){
       reversiModel.initBoard();
-    }/*else if(e.getSource() == view.getFinishButton()){
-      System.exit(0);
-    }*/
+    }else if(e.getSource() == view.getChatButton()){
+      if(num%2==0){
+        view.getChatBox().setEnabled(false);
+      }else{
+        view.getChatBox().setEnabled(true);
+        view.getChatPanel().setFocusable(true);
+        view.getChatBox().setCaretPosition(view.getChatBox().getText().length());
+      }
+      num++;
+    }
   }
   public void mouseDragged(MouseEvent e){}
   public void mouseMoved(MouseEvent e){
@@ -40,13 +49,12 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
   public void mouseExited(MouseEvent e){}
   public void mousePressed(MouseEvent e){
     if(e.getSource() == view.getPanel()){
-      view.getPanel().setFocusable(true);
       reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
       //System.out.println("aaaa");
-    }else if(e.getSource() == view.getChatPanel()){
+    }/*else if(e.getSource() == view.getChatPanel()){
       view.getChatPanel().setFocusable(true);
       //System.out.println("bbbb");
-    }
+    }*/
   }
   public void mouseReleased(MouseEvent e){}
   public void keyTyped(KeyEvent e){
