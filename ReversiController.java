@@ -78,7 +78,6 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
         break;
       case KeyEvent.VK_UP:
         reversiModel.next_position(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y(),3);
-
         break;
       case KeyEvent.VK_DOWN:
         reversiModel.next_position(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y(),2);
