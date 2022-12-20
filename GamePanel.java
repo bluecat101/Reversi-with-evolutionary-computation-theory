@@ -13,6 +13,8 @@ class GamePanel extends JPanel implements Observer {
   protected JLabel state;
   protected JButton finish,reset;
   protected JTextField chatbox;
+  protected JButton chat;
+
  
   public GamePanel(Model m) {
     model = m;
@@ -41,6 +43,7 @@ class GamePanel extends JPanel implements Observer {
 
     finish = new JButton("Return Title");
     reset = new JButton("Reset");
+    chat = new JButton("Chat");
 
     
     //Panelによる塊の作成
@@ -61,18 +64,24 @@ class GamePanel extends JPanel implements Observer {
     gbc.weightx = 1.0;
     gbc.weighty = 1.0;
     layout.setConstraints(chatpanel, gbc);
+
+    gbc.gridy=3;
+    gbc.insets = new Insets(0, 20, 20, 0);
+    gbc.weightx = 1.0;
+    gbc.weighty = 0.01;
+    layout.setConstraints(chat, gbc);
     
-    p1.add(blackpanel);p1.add(chatpanel);
+    p1.add(blackpanel);p1.add(chatpanel);p1.add(chat);
 
     //以下を開放してテキストボックスを追加
 
-    // chatbox = new JTextField();
-    // gbc.gridy=2;
-    // gbc.insets = new Insets(20, 20, 20, 0);
-    // gbc.weightx = 1.0;
-    // gbc.weighty = 0.02;
-    // layout.setConstraints(chatbox, gbc);
-    // p1.add(chatbox);
+    chatbox = new JTextField();
+    gbc.gridy=2;
+    gbc.insets = new Insets(20, 20, 20, 0);
+    gbc.weightx = 1.0;
+    gbc.weighty = 0.02;
+    layout.setConstraints(chatbox, gbc);
+    p1.add(chatbox);
 
     GridBagLayout layout2 = new GridBagLayout();
     p2.setLayout(layout2);
