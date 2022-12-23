@@ -21,6 +21,8 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     view.getPanel().addMouseMotionListener(this);
     view.getPanel().addKeyListener(this);
     view.getPanel().setFocusable(true);
+    view.cardPanel.setFocusable(true);//add saitou
+    view.cardPanel.addKeyListener(this);//add saitou
     view.getResetButton().addActionListener(this);
     view.getChatButton().addActionListener(this);
     view.getResetButton().addKeyListener(this);
