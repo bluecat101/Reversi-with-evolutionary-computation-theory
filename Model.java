@@ -9,8 +9,12 @@ import java.util.*;
 class Model {
   
   private ReversiModel reversiModel=new ReversiModel();
+  private ChatModel chatModel=new ChatModel();
   public ReversiModel getReversiModel(){
     return reversiModel;
+  }
+  public ChatModel getChatModel(){
+    return chatModel;
   }
 class ReversiModel extends Observable{
   final int board_size=8;
