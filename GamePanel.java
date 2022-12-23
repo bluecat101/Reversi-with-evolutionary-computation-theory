@@ -76,6 +76,7 @@ class GamePanel extends JPanel implements Observer {
     //以下を開放してテキストボックスを追加
 
     chatbox = new JTextField();
+    chatbox.setEnabled(false);
     gbc.gridy=2;
     gbc.insets = new Insets(20, 20, 20, 0);
     gbc.weightx = 1.0;
