@@ -273,5 +273,17 @@ class ReversiModel extends Observable{
     } 
   }
 }
-
+class ChatModel{
+  private ArrayList<String> message;
+  public ChatModel(){
+    message= new ArrayList<>();
+  }
+  public void setChat(String message,int player){//打った人,messageで入っている。
+    this.message.add(""+player);
+    this.message.add(message);
+  }
+  public ArrayList<String> getChat(){
+    return message;
+  }
+}
 }
