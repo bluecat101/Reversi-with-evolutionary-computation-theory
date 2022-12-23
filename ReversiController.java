@@ -11,11 +11,15 @@ import java.util.*;
 class ReversiController implements KeyListener, MouseListener, MouseMotionListener, ActionListener{
   protected Model model;
   protected Model.ReversiModel reversiModel;
+  protected Model.ChatModel chatModel;
   protected ReversiView view;
   private int num=0;
+  private int test_player = 1;
+  private Model.Ai ai;
   public ReversiController(Model m, ReversiView v){
     model = m;
     reversiModel = model.getReversiModel();
+    chatModel = model.getChatModel();
     view = v;
     view.getPanel().addMouseListener(this);
     view.getPanel().addMouseMotionListener(this);
@@ -25,8 +29,10 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     view.cardPanel.addKeyListener(this);//add saitou
     view.getResetButton().addActionListener(this);
     view.getChatButton().addActionListener(this);
+    view.getChatBox().addActionListener(this);
     view.getResetButton().addKeyListener(this);
     view.getChatButton().addKeyListener(this);
+    ai = new Model.Ai(3);
   }
   public void actionPerformed(ActionEvent e){
     if(e.getSource() == view.getResetButton()){
@@ -38,6 +44,12 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
         view.getChatBox().setEnabled(true);
         view.getChatBox().grabFocus(); num++;
       }
+    }else if(e.getSource() == view.getChatBox()){
+      String chat_sentence = view.getChatBox().getText();
+      chatModel.setChat(chat_sentence, test_player);
+      if(test_player == 1){test_player++;}
+      else{test_player--;}
+      view.getChatBox().setText("");
     }
   }
   public void mouseDragged(MouseEvent e){}
@@ -65,6 +77,10 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
       break;
       case 'r':
       reversiModel.initBoard();
+      break;
+      case 'p':
+      reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
+      ai.exeAi();
       break;
     }
   }
