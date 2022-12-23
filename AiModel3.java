@@ -26,7 +26,8 @@ class Ai_3 extends Model{
 
     //ここに盤面から選んだ値をresultに格納する。
     //
-    //
+    result[0]=can_put_position.get(0)[0];
+    result[1]=can_put_position.get(0)[1];
     //例:can_put_positionの中の値を一つ一つback_board_arrayに代入して、
     //ひっくり返った数を数えて一番多い位置をresultに入れる。
     //
