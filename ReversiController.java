@@ -15,7 +15,7 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
   protected ReversiView view;
   private int num=0;
   private int test_player = 1;
-  private Model.Ai ai;
+  //private Model.Ai ai;
   public ReversiController(Model m, ReversiView v){
     model = m;
     reversiModel = model.getReversiModel();
@@ -25,6 +25,7 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     view.getPanel().addMouseMotionListener(this);
     view.getPanel().addKeyListener(this);
     view.getPanel().setFocusable(true);
+    view.getChatPanel().addMouseListener(this);
     view.cardPanel.setFocusable(true);//add saitou
     view.cardPanel.addKeyListener(this);//add saitou
     view.getResetButton().addActionListener(this);
@@ -32,7 +33,7 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     view.getChatBox().addActionListener(this);
     view.getResetButton().addKeyListener(this);
     view.getChatButton().addKeyListener(this);
-    ai = new Model.Ai(3);
+    //ai = new Model.Ai(3);
   }
   public void actionPerformed(ActionEvent e){
     if(e.getSource() == view.getResetButton()){
@@ -46,10 +47,14 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
       }
     }else if(e.getSource() == view.getChatBox()){
       String chat_sentence = view.getChatBox().getText();
-      chatModel.setChat(chat_sentence, test_player);
-      if(test_player == 1){test_player++;}
-      else{test_player--;}
-      view.getChatBox().setText("");
+      if(chat_sentence.equals("")){
+        view.getChatBox().setEnabled(false); num--;
+      }else{
+        chatModel.setChat(chat_sentence, test_player);
+        if(test_player == 1){test_player++;}
+        else{test_player--;}
+        view.getChatBox().setText("");
+      }
     }
   }
   public void mouseDragged(MouseEvent e){}
@@ -60,12 +65,17 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
   public void mouseEntered(MouseEvent e){}
   public void mouseExited(MouseEvent e){}
   public void mousePressed(MouseEvent e){
+    System.out.println(e.getSource());
     if(e.getSource() == view.getPanel()){
       reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
-      //System.out.println("aaaa");
     }/*else if(e.getSource() == view.getChatPanel()){
-      view.getChatPanel().setFocusable(true);
-      //System.out.println("bbbb");
+      System.out.println("chat");
+      if(num%2==1){
+        view.getChatBox().setEnabled(false); num--;
+      }else{
+        view.getChatBox().setEnabled(true);
+        view.getChatBox().grabFocus(); num++;
+      }
     }*/
   }
   public void mouseReleased(MouseEvent e){}
@@ -80,7 +90,7 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
       break;
       case 'p':
       reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
-      ai.exeAi();
+      //ai.exeAi();
       break;
     }
   }
@@ -99,6 +109,10 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
         break;
       case KeyEvent.VK_DOWN:
         reversiModel.next_position(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y(),2);
+        break;
+      case KeyEvent.VK_ENTER:
+        view.getChatBox().setEnabled(true);
+        view.getChatBox().grabFocus(); num++;
         break;
       default:
         break;
