@@ -33,7 +33,7 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     view.getChatBox().addActionListener(this);
     view.getResetButton().addKeyListener(this);
     view.getChatButton().addKeyListener(this);
-    //ai = new Model.Ai(3);
+    //ai = new reversiModel.make_Ai(3);
   }
   public void actionPerformed(ActionEvent e){
     if(e.getSource() == view.getResetButton()){
@@ -51,6 +51,7 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
         view.getChatBox().setEnabled(false); num--;
       }else{
         chatModel.setChat(chat_sentence, test_player);
+        System.out.println(chat_sentence);
         if(test_player == 1){test_player++;}
         else{test_player--;}
         view.getChatBox().setText("");
@@ -65,7 +66,6 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
   public void mouseEntered(MouseEvent e){}
   public void mouseExited(MouseEvent e){}
   public void mousePressed(MouseEvent e){
-    System.out.println(e.getSource());
     if(e.getSource() == view.getPanel()){
       reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
     }/*else if(e.getSource() == view.getChatPanel()){
