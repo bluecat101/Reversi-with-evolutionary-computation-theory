@@ -77,6 +77,7 @@ class ReversiView extends JFrame implements ActionListener{
   public void actionPerformed(ActionEvent e){
     if(e.getSource()==titlepanel.start){
       layout.show(cardPanel,"game");
+      getPanel().requestFocus();
     }else if(e.getSource()==titlepanel.setting){
       layout.show(cardPanel,"setting");
     }else if(e.getSource()==titlepanel.finish){
