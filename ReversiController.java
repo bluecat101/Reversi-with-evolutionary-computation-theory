@@ -31,15 +31,11 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     view.getPanel().addKeyListener(this);
     view.getPanel().setFocusable(true);
     view.getChatPanel().addMouseListener(this);
-    //view.cardPanel.setFocusable(true);//add saitou
-    //view.cardPanel.addKeyListener(this);//add saitou
     view.getResetButton().addActionListener(this);
     view.getChatButton().addActionListener(this);
     view.getChatBox().addActionListener(this);
     view.getResetButton().addKeyListener(this);
     view.getChatButton().addKeyListener(this);
-    //ai = new reversiModel.make_Ai(3);
-
     //add------------------------------------------
     view.revel1Button().addActionListener(this);
     view.revel2Button().addActionListener(this);
@@ -77,6 +73,8 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
       ai=new Ai_1(model);//delete 引数
     }else if(e.getSource()==view.revel2Button()){
       ai=new Ai_2(model);//delete　引数
+    }else if(e.getSource()==view.revel3Button()){
+      ai=new Ai_3(model);
     }
     //-------------------------------------------
 

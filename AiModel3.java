@@ -2,38 +2,39 @@
 
 import java.util.ArrayList;
 class Ai_3 extends Model{
-  private int[] result={0,0};
   private int player;
   private int board_size;
   private Model.ReversiModel reversiModel;
   //back_judge_arrayの中身は変えないでね(変えるなら一度コピーしてからしてください。)
-  private int[][] back_judge_array=reversiModel.getJudgeBoardArray(player);
+  private int[][] back_judge_array;
   
   //コンストラクタ
-  public Ai_3(int player,int board_size){
-    this.player=player;//playerの指定
-    this.board_size=board_size;//盤面のサイズを指定。
+  public Ai_3(Model m){
+    reversiModel = m.getReversiModel();
+    this.player=reversiModel.getOpponentStone(reversiModel.getPlayer());//playerの指定
+    this.board_size=reversiModel.board_size;//盤面のサイズを指定。
   }
   
   //呼び出される関数
-  public int[] AiLevel_3(){//みんなのプログラムを追加する。
+  public void run(){//みんなのプログラムを追加する。
     //再帰のことも考え、今の盤面を入れる配列を関数内で作成する。
     int[][] back_board_array= new int[board_size][board_size];
     //今の盤面をコピーする
     getBackBoardArray(back_board_array);
+    //can_put_positionで必要な変数
+    back_judge_array=reversiModel.getJudgeBoardArray(player);
     //再帰のことも考え、置ける位置の配列を関数内で作成する。
     ArrayList<int[]> can_put_position=getCanPutArray();
 
     //ここに盤面から選んだ値をresultに格納する。
     //
-    result[0]=can_put_position.get(0)[0];
-    result[1]=can_put_position.get(0)[1];
+    int length = can_put_position.size();
+    reversiModel.xySetStone(can_put_position.get(length-1)[0],can_put_position.get(length-1)[1]);
     //例:can_put_positionの中の値を一つ一つback_board_arrayに代入して、
     //ひっくり返った数を数えて一番多い位置をresultに入れる。
     //
     //
 
-    return result;//置く座標の値をresultに格納する。
   }
   
   //現在の盤面のコピー
