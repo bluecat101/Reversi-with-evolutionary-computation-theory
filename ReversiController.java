@@ -15,7 +15,12 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
   protected ReversiView view;
   private int num=0;
   private int test_player = 1;
-  private Model.Ai ai;
+  //private Model.Ai ai;
+
+  //add-----------------
+  private Model ai;//aiのクラスを保持
+  //--------------------
+
   public ReversiController(Model m, ReversiView v){
     model = m;
     reversiModel = model.getReversiModel();
@@ -25,14 +30,23 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     view.getPanel().addMouseMotionListener(this);
     view.getPanel().addKeyListener(this);
     view.getPanel().setFocusable(true);
-    view.cardPanel.setFocusable(true);//add saitou
-    view.cardPanel.addKeyListener(this);//add saitou
+    view.getChatPanel().addMouseListener(this);
+    //view.cardPanel.setFocusable(true);//add saitou
+    //view.cardPanel.addKeyListener(this);//add saitou
     view.getResetButton().addActionListener(this);
     view.getChatButton().addActionListener(this);
     view.getChatBox().addActionListener(this);
     view.getResetButton().addKeyListener(this);
     view.getChatButton().addKeyListener(this);
-    ai = new Model.Ai(3);
+    //ai = new reversiModel.make_Ai(3);
+
+    //add------------------------------------------
+    view.revel1Button().addActionListener(this);
+    view.revel2Button().addActionListener(this);
+    view.revel3Button().addActionListener(this);//それぞれのレベルのボタン
+    ai=new Ai_1(2,8,model);//デフォルトのAIを設定。
+    //----------------------------------------------
+
   }
   public void actionPerformed(ActionEvent e){
     if(e.getSource() == view.getResetButton()){
@@ -46,11 +60,26 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
       }
     }else if(e.getSource() == view.getChatBox()){
       String chat_sentence = view.getChatBox().getText();
-      chatModel.setChat(chat_sentence, test_player);
-      if(test_player == 1){test_player++;}
-      else{test_player--;}
-      view.getChatBox().setText("");
+      if(chat_sentence.equals("")){
+        view.getChatBox().setEnabled(false); num--;
+      }else{
+        chatModel.setChat(chat_sentence, test_player);
+        System.out.println(chat_sentence);
+        if(test_player == 1){test_player++;}
+        else{test_player--;}
+        view.getChatBox().setText("");
+      }
     }
+    
+    //add--------------------------------
+    //ここでレベルを変えている。aiというModelクラスの変数を変更するだけで今のaiのレベルを保持。
+    else if(e.getSource()==view.revel1Button()){
+      ai=new Ai_1(2, 8,model);
+    }else if(e.getSource()==view.revel2Button()){
+      ai=new Ai_2(2, 8,model);
+    }
+    //-------------------------------------------
+
   }
   public void mouseDragged(MouseEvent e){}
   public void mouseMoved(MouseEvent e){
@@ -62,10 +91,19 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
   public void mousePressed(MouseEvent e){
     if(e.getSource() == view.getPanel()){
       reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
-      //System.out.println("aaaa");
+
+      //add------
+      ai.run();//今設定されているaiのrun関数を呼び出して石をセットする。
+      //-----------
+
     }/*else if(e.getSource() == view.getChatPanel()){
-      view.getChatPanel().setFocusable(true);
-      //System.out.println("bbbb");
+      System.out.println("chat");
+      if(num%2==1){
+        view.getChatBox().setEnabled(false); num--;
+      }else{
+        view.getChatBox().setEnabled(true);
+        view.getChatBox().grabFocus(); num++;
+      }
     }*/
   }
   public void mouseReleased(MouseEvent e){}
@@ -74,13 +112,16 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     switch(c){
       case 'z':
       reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
+      //add----------
+      ai.run();
+      //----------------
       break;
       case 'r':
       reversiModel.initBoard();
       break;
       case 'p':
       reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
-      ai.exeAi();
+      //ai.exeAi();
       break;
     }
   }
@@ -99,6 +140,10 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
         break;
       case KeyEvent.VK_DOWN:
         reversiModel.next_position(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y(),2);
+        break;
+      case KeyEvent.VK_ENTER:
+        view.getChatBox().setEnabled(true);
+        view.getChatBox().grabFocus(); num++;
         break;
       default:
         break;
