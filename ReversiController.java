@@ -112,6 +112,9 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     switch(c){
       case 'z':
       reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
+      //add----------
+      ai.run();
+      //----------------
       break;
       case 'r':
       reversiModel.initBoard();
