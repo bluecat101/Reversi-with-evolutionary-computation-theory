@@ -1,7 +1,7 @@
 //鈴村用
 
 import java.util.ArrayList;
-class Ai_1 extends Model{
+class AiModel1 extends Model{
   private int[] result={0,0};
   private int player;
   private int board_size;
@@ -10,7 +10,7 @@ class Ai_1 extends Model{
   private int[][] back_judge_array=reversiModel.getJudgeBoardArray(player);
   
   //コンストラクタ
-  public Ai_1(int player,int board_size){
+  public AiModel1(int player,int board_size){
     this.player=player;//playerの指定
     this.board_size=board_size;//盤面のサイズを指定。
   }
