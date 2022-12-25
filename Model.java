@@ -22,7 +22,7 @@ class Model {
   //---------------------
   
 class ReversiModel extends Observable{
-  final int board_size=8;
+  protected final int board_size=8;
   final int sizeOfOne=70;
   private int[][] board_array= new int[board_size][board_size];
   private int[][] judge_array= new int[board_size][board_size];

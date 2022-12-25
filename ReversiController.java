@@ -44,7 +44,7 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     view.revel1Button().addActionListener(this);
     view.revel2Button().addActionListener(this);
     view.revel3Button().addActionListener(this);//それぞれのレベルのボタン
-    ai=new Ai_1(2,8,model);//デフォルトのAIを設定。
+    ai=new Ai_1(model);//デフォルトのAIを設定。//のちにAiの設定をactionPerformedでやればいいかなって思ってる。
     //----------------------------------------------
 
   }
@@ -74,9 +74,9 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     //add--------------------------------
     //ここでレベルを変えている。aiというModelクラスの変数を変更するだけで今のaiのレベルを保持。
     else if(e.getSource()==view.revel1Button()){
-      ai=new Ai_1(2, 8,model);
+      ai=new Ai_1(model);//delete 引数
     }else if(e.getSource()==view.revel2Button()){
-      ai=new Ai_2(2, 8,model);
+      ai=new Ai_2(model);//delete　引数
     }
     //-------------------------------------------
 

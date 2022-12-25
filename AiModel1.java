@@ -10,10 +10,10 @@ class Ai_1 extends Model{
   private int[][] back_judge_array;
   
   //コンストラクタ
-  public Ai_1(int player,int board_size,Model m){
+  public Ai_1(Model m){//引数の削除
     reversiModel = m.getReversiModel();
-    this.player=player;//playerの指定
-    this.board_size=board_size;//盤面のサイズを指定。
+    this.player=reversiModel.getOpponentStone(reversiModel.getPlayer());//playerの指定
+    this.board_size=reversiModel.board_size;//盤面のサイズを指定。
   }
   
   //呼び出される関数
