@@ -16,6 +16,11 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
   private int num=0;
   private int test_player = 1;
   //private Model.Ai ai;
+
+  //add-----------------
+  private Model ai;//aiのクラスを保持
+  //--------------------
+
   public ReversiController(Model m, ReversiView v){
     model = m;
     reversiModel = model.getReversiModel();
@@ -34,6 +39,14 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     view.getResetButton().addKeyListener(this);
     view.getChatButton().addKeyListener(this);
     //ai = new reversiModel.make_Ai(3);
+
+    //add------------------------------------------
+    view.revel1Button().addActionListener(this);
+    view.revel2Button().addActionListener(this);
+    view.revel3Button().addActionListener(this);//それぞれのレベルのボタン
+    ai=new Ai_1(2,8,model);//デフォルトのAIを設定。
+    //----------------------------------------------
+
   }
   public void actionPerformed(ActionEvent e){
     if(e.getSource() == view.getResetButton()){
@@ -57,6 +70,16 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
         view.getChatBox().setText("");
       }
     }
+    
+    //add--------------------------------
+    //ここでレベルを変えている。aiというModelクラスの変数を変更するだけで今のaiのレベルを保持。
+    else if(e.getSource()==view.revel1Button()){
+      ai=new Ai_1(2, 8,model);
+    }else if(e.getSource()==view.revel2Button()){
+      ai=new Ai_2(2, 8,model);
+    }
+    //-------------------------------------------
+
   }
   public void mouseDragged(MouseEvent e){}
   public void mouseMoved(MouseEvent e){
@@ -68,6 +91,11 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
   public void mousePressed(MouseEvent e){
     if(e.getSource() == view.getPanel()){
       reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
+
+      //add------
+      ai.run();//今設定されているaiのrun関数を呼び出して石をセットする。
+      //-----------
+
     }/*else if(e.getSource() == view.getChatPanel()){
       System.out.println("chat");
       if(num%2==1){

@@ -10,6 +10,7 @@ class ReversiView extends JFrame implements ActionListener{
   protected TitlePanel titlepanel;
   protected JPanel cardPanel;
   protected CardLayout layout;
+  protected RevPanel revpanel;
  
   public ReversiView(Model m,String st) {
     super(st);
@@ -29,6 +30,11 @@ class ReversiView extends JFrame implements ActionListener{
     settingpanel = new SettingPanel();
     settingpanel.returnButton.addActionListener(this);
 
+    /*パネル4 */
+    revpanel = new RevPanel();
+    revpanel.returnButton.addActionListener(this);
+    revpanel.startButton.addActionListener(this);
+
     cardPanel = new JPanel();
     layout = new CardLayout();
     cardPanel.setLayout(layout);
@@ -36,6 +42,7 @@ class ReversiView extends JFrame implements ActionListener{
     cardPanel.add(titlepanel, "title");
     cardPanel.add(settingpanel, "setting");
     cardPanel.add(gamepanel, "game");
+    cardPanel.add(revpanel,"revel");
 
     getContentPane().add(cardPanel, BorderLayout.CENTER);
     // pack は JFrameのサイズを自動設定するメソッド．
@@ -74,10 +81,21 @@ class ReversiView extends JFrame implements ActionListener{
     return gamepanel.chat;
   }
 
+  public JButton revel1Button(){
+    return revpanel.revel1;
+  }
+
+  public JButton revel2Button(){
+    return revpanel.revel2;
+  }
+
+  public JButton revel3Button(){
+    return revpanel.revel3;
+  }
+
   public void actionPerformed(ActionEvent e){
     if(e.getSource()==titlepanel.start){
-      layout.show(cardPanel,"game");
-      getPanel().requestFocus();
+      layout.show(cardPanel,"revel");
     }else if(e.getSource()==titlepanel.setting){
       layout.show(cardPanel,"setting");
     }else if(e.getSource()==titlepanel.finish){
@@ -86,6 +104,11 @@ class ReversiView extends JFrame implements ActionListener{
       layout.show(cardPanel,"title");
     }else if(e.getSource()==gamepanel.finish){
       layout.show(cardPanel,"title");
+    }else if(e.getSource()==revpanel.returnButton){
+      layout.show(cardPanel,"title");
+    }else if(e.getSource()==revpanel.startButton){
+      layout.show(cardPanel,"game");
+      getPanel().requestFocus();
     }
   }
 }

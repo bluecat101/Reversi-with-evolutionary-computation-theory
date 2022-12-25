@@ -16,6 +16,11 @@ class Model {
   public ChatModel getChatModel(){
     return chatModel;
   }
+
+  //add------------------
+  public void run(){}
+  //---------------------
+  
 class ReversiModel extends Observable{
   final int board_size=8;
   final int sizeOfOne=70;
@@ -276,43 +281,43 @@ class ReversiModel extends Observable{
       }
     } 
   }
-  class Ai{
-    private int Ai_level;
-    private Ai_1 AI_1;
-    private Ai_2 AI_2;
-    private Ai_3 AI_3;
-    public Ai(int level){
-      Ai_level=level;
-      switch(level){
-        case 1:
-        AI_1=new Ai_1(player,board_size);//playerが変わることはない。
-        break;
-        case 2:
-        AI_2=new Ai_2(player,board_size);//playerが変わることはない。
-        break;
-        case 3:
-        AI_3=new Ai_3(player,board_size);//playerが変わることはない。
-        break;
-      }
-    }
-    public void exeAi(){
-      int[] result={0,0};
-      switch(Ai_level){
-        case 1:
-        result=AI_1.AiLevel_1();
-        break;
-        case 2:
-        result=AI_2.AiLevel_2();
-        break;
-        case 3:
-        result=AI_3.AiLevel_3();
-        break;
-      }
+  // class Ai{
+  //   private int Ai_level;
+  //   private Ai_1 AI_1;
+  //   private Ai_2 AI_2;
+  //   private Ai_3 AI_3;
+  //   public Ai(int level){
+  //     Ai_level=level;
+  //     switch(level){
+  //       case 1:
+  //       AI_1=new Ai_1(player,board_size);//playerが変わることはない。
+  //       break;
+  //       case 2:
+  //       AI_2=new Ai_2(player,board_size);//playerが変わることはない。
+  //       break;
+  //       case 3:
+  //       AI_3=new Ai_3(player,board_size);//playerが変わることはない。
+  //       break;
+  //     }
+  //   }
+  //   public void exeAi(){
+  //     int[] result={0,0};
+  //     switch(Ai_level){
+  //       case 1:
+  //       result=AI_1.AiLevel_1();
+  //       break;
+  //       case 2:
+  //       result=AI_2.AiLevel_2();
+  //       break;
+  //       case 3:
+  //       result=AI_3.AiLevel_3();
+  //       break;
+  //     }
       
-      xySetStone(result[0],result[1]);
-    }
+  //     xySetStone(result[0],result[1]);
+  //   }
 
-    }
+  //   }
 
 }
 class ChatModel{
