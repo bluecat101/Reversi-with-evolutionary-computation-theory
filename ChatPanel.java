@@ -132,7 +132,6 @@ class ChatPanel extends JPanel implements Observer ,AdjustmentListener{
   }
   public void update(Observable o,Object arg){
     remake();
-    System.out.println(panelheight);
     stheight = fontMetrics.getAscent()*(message.size());
     if(panelheight -stheight -80<0){
       scrollbar.setMinimum(panelheight-20);
