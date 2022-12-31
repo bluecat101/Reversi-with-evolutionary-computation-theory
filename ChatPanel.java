@@ -67,12 +67,12 @@ class ChatPanel extends JPanel implements Observer ,AdjustmentListener{
   private void remake(){
     int panelwidth = this.getWidth();
     int i=message.size()-1;
-    while(fontMetrics.stringWidth(getPostfix(0, i)) > panelwidth-40){
-      // System.out.println(fontMetrics.stringWidth(getPostfix(0, i))+"  "+(panelwidth-40));
+    while(fontMetrics.stringWidth(getPostfix(0, i)) > panelwidth-60){
+      // System.out.println(fontMetrics.stringWidth(getPostfix(0, i))+"  "+(panelwidth-60));
       message.add(i+1,new StringBuffer());//ArrayListにStringBufferを追加
       // System.out.print("fasd");
       int j=0;
-      while(fontMetrics.stringWidth(getPrefix(j, i)) <= panelwidth-40){
+      while(fontMetrics.stringWidth(getPrefix(j, i)) <= panelwidth-60){
         j++;
       }
       // System.out.println(""+fontMetrics.stringWidth(getPostfix(j, i)));
@@ -110,10 +110,18 @@ class ChatPanel extends JPanel implements Observer ,AdjustmentListener{
             g.fillRect(20, h1sub+extray+20-fontMetrics.getAscent(), buffersize(f), fontMetrics.getAscent());
           }
         }else{
-          while(buffersize(f)!=0){
-            g.fillRect(20, h1sub+extray+20-fontMetrics.getAscent(), 145, fontMetrics.getAscent());
-            f=message.get(++j);
-            h1sub +=h;
+          if(player.get(playernum)==1){
+            while(buffersize(f)!=0){
+              g.fillRect(20+20, h1sub+extray+20-fontMetrics.getAscent(), 125, fontMetrics.getAscent());
+              f=message.get(++j);
+              h1sub +=h;
+            }
+          }else{
+            while(buffersize(f)!=0){
+              g.fillRect(20, h1sub+extray+20-fontMetrics.getAscent(), 125, fontMetrics.getAscent());
+              f=message.get(++j);
+              h1sub +=h;
+            }
           }
         }
         chatflag=0;
@@ -124,7 +132,11 @@ class ChatPanel extends JPanel implements Observer ,AdjustmentListener{
       if(player.get(playernum-1)==1 && (i==0 || buffersize(message.get(i-1))==0) && buffersize(message.get(i+1))==0){
         g.drawString(s,20+145-buffersize(f),h1+extray+20);
       }else{
-        g.drawString(s,20,h1+extray+20);
+        if(player.get(playernum-1)==1){
+          g.drawString(s,20+20,h1+extray+20);
+        }else{
+          g.drawString(s,20,h1+extray+20);
+        }
       }
       h1 =h1+h;//それぞれのStringBufferをずらして置くために値を変更していく
       if(fontMetrics.stringWidth(s)==0){chatflag=1;}
