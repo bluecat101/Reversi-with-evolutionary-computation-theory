@@ -282,34 +282,25 @@ class ReversiModel extends Observable{
     } 
   }
 }
-class ChatModel{
-  private ArrayList<String> message;
+class ChatModel extends Observable{
+  private ArrayList<StringBuffer> message;
   private ArrayList<Integer> player;
   public ChatModel(){
     message= new ArrayList<>();
     player= new ArrayList<>();
   }
-  public void setChat(String message,int player){//打った人,messageで入っている。
+  public void setChat(StringBuffer message,int player){//打った人,messageで入っている。
     this.player.add(player);
-    this.message.add(message);
+    this.message.add(new StringBuffer());
+    this.message.get(this.message.size()-1).append(message);
+    setChanged();
+    notifyObservers();
   }
-  //------------
-  public ArrayList<String> getChatMessage(){
+  public ArrayList<StringBuffer> getChatMessage(){
     return message;
   }
   public ArrayList<Integer> getChatPlayer(){
     return player;
   }
-  //------------上か下のどちらかを使ってね
-  public int getChatSize(){//長さを返す。
-    return message.size();
-  }
-  public String getChatOneMessage(int index){//0を先頭とする
-    return message.get(index);
-  }
-  public int getChatOnePlayer(int index){//0を先頭とする
-    return player.get(index);
-  }
-  //------------
 }
 }
