@@ -86,6 +86,26 @@ class ChatPanel extends JPanel implements Observer ,AdjustmentListener{
       message.add(i+1,new StringBuffer());//ArrayListにStringBufferを追加
     }
   }
+
+  private void round(Graphics g,int x,int y,int width,int height,int player){
+    int dir=20;
+    g.fillOval(x-dir/2, y, dir, dir);
+    g.fillOval(x-dir/2+width, y, dir, dir);
+
+    g.fillRect(x-dir/2, y+dir/2, dir, height-dir/2);
+    g.fillRect(x-dir/2+width, y+dir/2, dir, height-dir/2);
+
+    g.fillOval(x-dir/2, y+height-dir/2, dir, dir);
+    g.fillOval(x-dir/2+width, y+height-dir/2, dir, dir);
+
+    g.fillRect(x, y+height-dir/2, width, dir);
+
+    if(player==1){
+      g.fillPolygon(new int[] {x-dir/2+width,x+dir/2+width,x+dir/2+width+10}, new int[] {y+2,y+15,y+5}, 3);
+    }else{
+      g.fillPolygon(new int[] {x-dir/2+10,x-dir/2,x-dir}, new int[] {y+2,y+15,y+5}, 3);    }
+  }
+
   private void drawString(Graphics g,int extray) {
     int h = fontMetrics.getAscent();
     int h1 = h;
@@ -105,23 +125,47 @@ class ChatPanel extends JPanel implements Observer ,AdjustmentListener{
         }
         if(buffersize(message.get(j+1))==0){
           if(player.get(playernum)==1){
-            g.fillRect(20+145-buffersize(f), h1sub+extray+20-fontMetrics.getAscent(), buffersize(f), fontMetrics.getAscent());
+            int x=20+145-buffersize(f)+5;
+            int y=h1sub+extray+20-fontMetrics.getAscent();
+            int width=buffersize(f)-10;
+            int height=fontMetrics.getAscent();
+            g.fillRect(x, y, width, height);
+
+            round(g, x, y, width, height,1);
           }else{
-            g.fillRect(20, h1sub+extray+20-fontMetrics.getAscent(), buffersize(f), fontMetrics.getAscent());
+            int x=25;
+            int y=h1sub+extray+20-fontMetrics.getAscent();
+            int width=buffersize(f)-10;
+            int height=fontMetrics.getAscent();
+            g.fillRect(x, y, width, height);
+
+            round(g, x, y, width, height,2);
           }
         }else{
           if(player.get(playernum)==1){
+            int x=20+20+5;
+            int width=115;
+            int height=fontMetrics.getAscent();
+            int ysub = h1sub+extray+20-fontMetrics.getAscent();
             while(buffersize(f)!=0){
-              g.fillRect(20+20, h1sub+extray+20-fontMetrics.getAscent(), 125, fontMetrics.getAscent());
+              int y=h1sub+extray+20-fontMetrics.getAscent();
+              g.fillRect(x,y,width,height);
               f=message.get(++j);
               h1sub +=h;
             }
+            round(g, x, ysub, width, height*(j-i),1);
           }else{
+            int x=25;
+            int width=115;
+            int height=fontMetrics.getAscent();
+            int ysub = h1sub+extray+20-fontMetrics.getAscent();
             while(buffersize(f)!=0){
-              g.fillRect(20, h1sub+extray+20-fontMetrics.getAscent(), 125, fontMetrics.getAscent());
+              int y=h1sub+extray+20-fontMetrics.getAscent();
+              g.fillRect(x,y,width,height);
               f=message.get(++j);
               h1sub +=h;
             }
+            round(g, x, ysub, width, height*(j-i),2);
           }
         }
         chatflag=0;
