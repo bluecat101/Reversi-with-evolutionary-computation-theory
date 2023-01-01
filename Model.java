@@ -289,13 +289,13 @@ class ChatModel extends Observable{
     message= new ArrayList<>();
     player= new ArrayList<>();
   }
-  public void setChat(StringBuffer message,int player){//打った人,messageで入っている。
+  public void setChat(String message,int player){//打った人,messageで入っている。
     this.player.add(player);
     this.message.add(new StringBuffer());
     this.message.get(this.message.size()-1).append(message);
     setChanged();
     notifyObservers();
-  }
+  } 
   public ArrayList<StringBuffer> getChatMessage(){
     return message;
   }
