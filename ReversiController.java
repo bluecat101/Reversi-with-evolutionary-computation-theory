@@ -15,7 +15,7 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
   protected ReversiView view;
   private int num=0;
   private int test_player = 1;
-  //private Model.Ai ai;
+  private javax.swing.Timer timer;
 
   //add-----------------
   private Model ai;//aiのクラスを保持
@@ -41,10 +41,16 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     view.revel2Button().addActionListener(this);
     view.revel3Button().addActionListener(this);//それぞれのレベルのボタン
     ai=new Ai_1(model);//デフォルトのAIを設定。//のちにAiの設定をactionPerformedでやればいいかなって思ってる。
+    timer = new javax.swing.Timer(2000,this);
     //----------------------------------------------
 
   }
   public void actionPerformed(ActionEvent e){
+    if(e.getSource() == timer){
+      ai.run();
+      view.getPanel().requestFocus();
+      timer.stop();
+    }
     if(e.getSource() == view.getResetButton()){
       reversiModel.initBoard();
     }else if(e.getSource() == view.getChatButton()){
@@ -111,7 +117,10 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
       case 'z':
       reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
       //add----------
-      ai.run();
+      //ai.run();
+      timer.start();
+      view.getChatBox().setEnabled(true);
+      view.getChatBox().grabFocus(); num++;
       //----------------
       break;
       case 'r':
