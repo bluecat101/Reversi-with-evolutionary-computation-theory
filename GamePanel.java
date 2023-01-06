@@ -1,11 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
-// import java.awt.event.*;
+import java.awt.event.*;
 import javax.swing.border.LineBorder;
 import java.util.*;
 
 @SuppressWarnings("deprecation")
-class GamePanel extends JPanel implements Observer {
+class GamePanel extends JPanel implements Observer,ActionListener {
   protected Model model;
   protected Model.ReversiModel reversiModel;
   protected ReversiPanel panel;
@@ -15,9 +15,11 @@ class GamePanel extends JPanel implements Observer {
   protected JTextField chatbox;
   protected JButton chat;
   protected JScrollBar scrollbar;
+  private javax.swing.Timer timer;
 
  
   public GamePanel(Model m) {
+    timer = new javax.swing.Timer(1000,this);
     model = m;
     reversiModel = model.getReversiModel();
     reversiModel.addObserver(this);
@@ -233,16 +235,7 @@ class ReversiPanel extends JPanel {
   }
 
   public void update(Observable o, Object arg) {
-    panel.repaint();state.setText("パス");
-    if(reversiModel.getPassFlag()==1){
-     
-      System.out.println("pass");
-      panel.repaint();
-      try {
-        Thread.sleep(1000); // 1秒間だけ処理を止める
-      } catch (InterruptedException e) {
-      }
-    }
+    panel.repaint();
     if(reversiModel.getPlayer()==1){
       state.setText("黒の手番です");
     }else{
@@ -254,6 +247,20 @@ class ReversiPanel extends JPanel {
       }else{
         state.setText("白の勝利");
       }
+    }
+    if(reversiModel.getPassFlag()==1){
+      state.setText("パス");
+      timer.start();
+    }
+  }
+  public void actionPerformed(ActionEvent e){
+    if(e.getSource() == timer){
+      if(reversiModel.getPlayer()==1){
+        state.setText("黒の手番です");
+      }else{
+        state.setText("白の手番です");
+      }
+      timer.stop();
     }
   }
 }
