@@ -11,6 +11,11 @@ class ReversiView extends JFrame implements ActionListener{
   protected JPanel cardPanel;
   protected CardLayout layout;
   protected SinglePanel singlepanel;
+  protected ModePanel modepanel;
+  protected MultiPanel multipanel;
+  protected Model ai;
+  protected Model model;
+  protected boolean server;
  
   public ReversiView(Model m,String st) {
     super(st);
@@ -34,6 +39,21 @@ class ReversiView extends JFrame implements ActionListener{
     singlepanel = new SinglePanel();
     singlepanel.returnButton.addActionListener(this);
     singlepanel.startButton.addActionListener(this);
+    singlepanel.level1.addActionListener(this);
+    singlepanel.level2.addActionListener(this);
+    singlepanel.level3.addActionListener(this);
+    ai=new Ai_1(model);
+
+    modepanel = new ModePanel();
+    modepanel.returnButton.addActionListener(this);
+    modepanel.single.addActionListener(this);
+    modepanel.multi.addActionListener(this);
+
+    multipanel = new MultiPanel();
+    multipanel.returnButton.addActionListener(this);
+    multipanel.serverButton.addActionListener(this);
+    multipanel.clientButton.addActionListener(this);
+    multipanel.startButton.addActionListener(this);
 
     cardPanel = new JPanel();
     layout = new CardLayout();
@@ -42,7 +62,10 @@ class ReversiView extends JFrame implements ActionListener{
     cardPanel.add(titlepanel, "title");
     cardPanel.add(settingpanel, "setting");
     cardPanel.add(gamepanel, "game");
-    cardPanel.add(singlepanel,"level");
+    cardPanel.add(singlepanel,"single");
+    cardPanel.add(modepanel,"mode");
+    cardPanel.add(multipanel,"multi");
+
 
     getContentPane().add(cardPanel, BorderLayout.CENTER);
     // pack は JFrameのサイズを自動設定するメソッド．
@@ -81,34 +104,63 @@ class ReversiView extends JFrame implements ActionListener{
     return gamepanel.chat;
   }
 
-  public JButton level1Button(){
-    return singlepanel.level1;
+  public JButton getSingleStartButton(){
+    return singlepanel.startButton;
   }
 
-  public JButton level2Button(){
-    return singlepanel.level2;
+  public JButton getMultiStartButton(){
+    return multipanel.startButton;
   }
 
-  public JButton level3Button(){
-    return singlepanel.level3;
+  public Model getAiMode(){
+    return ai;
   }
 
+  public boolean getSVMode(){
+    return server;
+  }
+
+  public void movepanel(String s){
+    layout.show(cardPanel,s);
+  }
   public void actionPerformed(ActionEvent e){
     if(e.getSource()==titlepanel.start){
-      layout.show(cardPanel,"level");
+      movepanel("mode");
     }else if(e.getSource()==titlepanel.setting){
-      layout.show(cardPanel,"setting");
+      movepanel("setting");
     }else if(e.getSource()==titlepanel.finish){
       System.exit(0);
     }else if(e.getSource()==settingpanel.returnButton){
-      layout.show(cardPanel,"title");
+      movepanel("title");
     }else if(e.getSource()==gamepanel.finish){
-      layout.show(cardPanel,"title");
+      movepanel("title");
     }else if(e.getSource()==singlepanel.returnButton){
-      layout.show(cardPanel,"title");
+      movepanel("mode");
     }else if(e.getSource()==singlepanel.startButton){
-      layout.show(cardPanel,"game");
+      movepanel("game");
       getPanel().requestFocus();
+    }else if(e.getSource()==modepanel.returnButton){
+      movepanel("title");
+    }else if(e.getSource()==modepanel.single){
+      movepanel("single");
+    }else if(e.getSource()==modepanel.multi){
+      movepanel("multi");
+    }else if(e.getSource()==singlepanel.level1){
+      ai=new Ai_1(model);//delete 引数
+    }else if(e.getSource()==singlepanel.level1){
+      ai=new Ai_2(model);//delete　引数
+    }else if(e.getSource()==singlepanel.level1){
+      ai=new Ai_3(model);
+    }else if(e.getSource()==multipanel.returnButton){
+      movepanel("mode");
+    }else if(e.getSource()==multipanel.startButton){
+      movepanel("game");
+    }else if(e.getSource()==multipanel.serverButton){
+      server = true;
+      //サーバーのボタンが押されたときの処理
+    }else if(e.getSource()==multipanel.clientButton){
+      server = false;
+      //クライアントのボタンが押されたときの処理
     }
   }
 }
