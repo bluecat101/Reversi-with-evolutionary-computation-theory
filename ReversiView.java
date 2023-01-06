@@ -16,6 +16,7 @@ class ReversiView extends JFrame implements ActionListener{
   protected Model ai;
   protected Model model;
   protected boolean server;
+  protected MultiServerPanel multiserverpanel;
  
   public ReversiView(Model m,String st) {
     super(st);
@@ -53,7 +54,10 @@ class ReversiView extends JFrame implements ActionListener{
     multipanel.returnButton.addActionListener(this);
     multipanel.serverButton.addActionListener(this);
     multipanel.clientButton.addActionListener(this);
-    multipanel.startButton.addActionListener(this);
+
+    multiserverpanel = new MultiServerPanel();
+    multiserverpanel.password.addActionListener(this);
+    multiserverpanel.returnButton.addActionListener(this);
 
     cardPanel = new JPanel();
     layout = new CardLayout();
@@ -65,7 +69,7 @@ class ReversiView extends JFrame implements ActionListener{
     cardPanel.add(singlepanel,"single");
     cardPanel.add(modepanel,"mode");
     cardPanel.add(multipanel,"multi");
-
+    cardPanel.add(multiserverpanel,"multiserver");
 
     getContentPane().add(cardPanel, BorderLayout.CENTER);
     // pack は JFrameのサイズを自動設定するメソッド．
@@ -108,8 +112,8 @@ class ReversiView extends JFrame implements ActionListener{
     return singlepanel.startButton;
   }
 
-  public JButton getMultiStartButton(){
-    return multipanel.startButton;
+  public JTextField getMultiPasswordBox(){
+    return multiserverpanel.password;
   }
 
   public Model getAiMode(){
@@ -153,14 +157,17 @@ class ReversiView extends JFrame implements ActionListener{
       ai=new Ai_3(model);
     }else if(e.getSource()==multipanel.returnButton){
       movepanel("mode");
-    }else if(e.getSource()==multipanel.startButton){
-      movepanel("game");
     }else if(e.getSource()==multipanel.serverButton){
-      server = true;
+      server = true;movepanel("multiserver");
       //サーバーのボタンが押されたときの処理
     }else if(e.getSource()==multipanel.clientButton){
-      server = false;
+      server = false;movepanel("multiserver");
       //クライアントのボタンが押されたときの処理
+    }else if(e.getSource()==multiserverpanel.password){
+      movepanel("game");
+      getPanel().requestFocus();
+    }else if(e.getSource()==multiserverpanel.returnButton){
+      movepanel("multi");
     }
   }
 }

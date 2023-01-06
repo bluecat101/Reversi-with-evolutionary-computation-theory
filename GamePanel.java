@@ -102,7 +102,7 @@ class GamePanel extends JPanel implements Observer,ActionListener {
     gbc.gridwidth = 2;
     gbc.insets = new Insets(20, 0, 0, 20);
     gbc.weightx = 1.0;
-    gbc.weighty = 0.2;
+    gbc.weighty = 0.15;
     layout2.setConstraints(whitepanel,gbc);
 
     gbc.gridy=1;
@@ -142,6 +142,11 @@ class GamePanel extends JPanel implements Observer,ActionListener {
 class ReversiPanel extends JPanel {
     public void paintComponent(Graphics g) {
       super.paintComponent(g);
+      Graphics2D g2 = (Graphics2D)g;
+ 
+      //図形や線のアンチエイリアシングの有効化
+      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
       int[][] board_array = reversiModel.getBoardArray();
       int[][] canput = reversiModel.getJudgeBoardArray(reversiModel.getPlayer());//modelのおけるか配列
       g.setColor(new Color(0,180,0));
@@ -156,10 +161,14 @@ class ReversiPanel extends JPanel {
       for(int i=0;i<8;i++){
         for(int j=0;j<8;j++){
           if(board_array[i][j]==1){
-            drawblack(g, i, j);
+            // drawblack(g, i, j);
+            g.setColor(Color.BLACK);
+            g.fillOval(20+70*i+5 ,20+70*j+5, 60, 60);
           }
           if(board_array[i][j]==2){
-            drawwhite(g, i, j);
+            // drawwhite(g, i, j);
+            g.setColor(Color.WHITE);
+            g.fillOval(20+70*i+5 ,20+70*j+5, 60, 60);
           }
           if(canput[i][j]==3){
             if(reversiModel.getPlayer()==1){
@@ -210,13 +219,25 @@ class ReversiPanel extends JPanel {
 
   class BlackStone extends JPanel {
     public void paintComponent(Graphics g){
-      drawblack(g, 0, 0);
+      Graphics2D g2 = (Graphics2D)g;
+ 
+      //図形や線のアンチエイリアシングの有効化
+      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      // drawblack(g, 0, 0);
+      g.setColor(Color.BLACK);
+      g.fillOval(20+15 ,20+15, 60, 60);
     }
   }
 
   class WhiteStone extends JPanel {
     public void paintComponent(Graphics g){
-      drawwhite(g, 0, 0);
+      Graphics2D g2 = (Graphics2D)g;
+ 
+      //図形や線のアンチエイリアシングの有効化
+      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      // drawwhite(g, 0, 0);
+      g.setColor(Color.WHITE);
+      g.fillOval(20+15 ,20+15, 60, 60);
     }
   }
 
