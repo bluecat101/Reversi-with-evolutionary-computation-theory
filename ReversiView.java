@@ -147,9 +147,9 @@ class ReversiView extends JFrame implements ActionListener{
       movepanel("multi");
     }else if(e.getSource()==singlepanel.level1){
       ai=new Ai_1(model);//delete 引数
-    }else if(e.getSource()==singlepanel.level1){
+    }else if(e.getSource()==singlepanel.level2){
       ai=new Ai_2(model);//delete　引数
-    }else if(e.getSource()==singlepanel.level1){
+    }else if(e.getSource()==singlepanel.level3){
       ai=new Ai_3(model);
     }else if(e.getSource()==multipanel.returnButton){
       movepanel("mode");
