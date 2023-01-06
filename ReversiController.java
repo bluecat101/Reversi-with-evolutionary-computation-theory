@@ -37,9 +37,9 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     view.getResetButton().addKeyListener(this);
     view.getChatButton().addKeyListener(this);
     //add------------------------------------------
-    view.revel1Button().addActionListener(this);
-    view.revel2Button().addActionListener(this);
-    view.revel3Button().addActionListener(this);//それぞれのレベルのボタン
+    view.level1Button().addActionListener(this);
+    view.level2Button().addActionListener(this);
+    view.level3Button().addActionListener(this);//それぞれのレベルのボタン
     ai=new Ai_1(model);//デフォルトのAIを設定。//のちにAiの設定をactionPerformedでやればいいかなって思ってる。
     timer = new javax.swing.Timer(2000,this);
     //----------------------------------------------
@@ -75,11 +75,11 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     
     //add--------------------------------
     //ここでレベルを変えている。aiというModelクラスの変数を変更するだけで今のaiのレベルを保持。
-    else if(e.getSource()==view.revel1Button()){
+    else if(e.getSource()==view.level1Button()){
       ai=new Ai_1(model);//delete 引数
-    }else if(e.getSource()==view.revel2Button()){
+    }else if(e.getSource()==view.level2Button()){
       ai=new Ai_2(model);//delete　引数
-    }else if(e.getSource()==view.revel3Button()){
+    }else if(e.getSource()==view.level3Button()){
       ai=new Ai_3(model);
     }
     //-------------------------------------------
