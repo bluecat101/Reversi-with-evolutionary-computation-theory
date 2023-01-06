@@ -20,7 +20,7 @@ class ReversiView extends JFrame implements ActionListener{
   public ReversiView(Model m,String st) {
     super(st);
     this.setTitle("Leversi Panel");
-    
+    model=m;
     /* タイトルパネル */
     titlepanel = new TitlePanel();
     titlepanel.start.addActionListener(this);
