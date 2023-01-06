@@ -14,6 +14,7 @@ class GamePanel extends JPanel implements Observer {
   protected JButton finish,reset;
   protected JTextField chatbox;
   protected JButton chat;
+  protected JScrollBar scrollbar;
 
  
   public GamePanel(Model m) {
@@ -33,8 +34,14 @@ class GamePanel extends JPanel implements Observer {
     CountPanel whitepanel = new CountPanel(2,"White");
     whitepanel.setBorder(new LineBorder(Color.BLACK,2,true));
 
-    chatpanel = new ChatPanel();
-    chatpanel.setBorder(new LineBorder(Color.BLACK,2,true));
+    scrollbar = new JScrollBar(JScrollBar.VERTICAL);
+
+    chatpanel = new ChatPanel(model,scrollbar);
+    JPanel cp = new JPanel();
+    cp.setLayout(new BorderLayout());
+    cp.add(chatpanel,BorderLayout.CENTER);
+    cp.add(scrollbar,BorderLayout.EAST);
+    cp.setBorder(new LineBorder(Color.BLACK,2,true));
 
     state = new JLabel("黒の手番です",JLabel.CENTER);
     state.setBorder(new LineBorder(Color.BLACK,2,true));
@@ -60,18 +67,19 @@ class GamePanel extends JPanel implements Observer {
     layout.setConstraints(blackpanel,gbc);
 
     gbc.gridy=1;
-    gbc.insets = new Insets(20, 20, 0, 0);
+    gbc.gridwidth = 1;
     gbc.weightx = 1.0;
     gbc.weighty = 1.0;
-    layout.setConstraints(chatpanel, gbc);
+    layout.setConstraints(cp, gbc);
 
+    gbc.gridx=0;
     gbc.gridy=3;
     gbc.insets = new Insets(0, 20, 20, 0);
     gbc.weightx = 1.0;
     gbc.weighty = 0.01;
     layout.setConstraints(chat, gbc);
     
-    p1.add(blackpanel);p1.add(chatpanel);p1.add(chat);
+    p1.add(blackpanel);p1.add(cp);p1.add(chat);
 
     //以下を開放してテキストボックスを追加
 
@@ -168,14 +176,6 @@ class ReversiPanel extends JPanel {
 
       //下の一行は確認のために一マス特定の場所を光らせたもの。
       //g.fillRect(20+70*3,20+70*2,70,70);
-    }
-  }
-
-  class ChatPanel extends JPanel {
-    public void paintComponent(Graphics g){
-      super.paintComponent(g);
-      g.setColor(new Color(0,180,0));
-      g.fillRect(0, 0, 100, 100);
     }
   }
 
