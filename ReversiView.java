@@ -10,7 +10,7 @@ class ReversiView extends JFrame implements ActionListener{
   protected TitlePanel titlepanel;
   protected JPanel cardPanel;
   protected CardLayout layout;
-  protected LevPanel levpanel;
+  protected SinglePanel singlepanel;
  
   public ReversiView(Model m,String st) {
     super(st);
@@ -31,9 +31,9 @@ class ReversiView extends JFrame implements ActionListener{
     settingpanel.returnButton.addActionListener(this);
 
     /*パネル4 */
-    levpanel = new LevPanel();
-    levpanel.returnButton.addActionListener(this);
-    levpanel.startButton.addActionListener(this);
+    singlepanel = new SinglePanel();
+    singlepanel.returnButton.addActionListener(this);
+    singlepanel.startButton.addActionListener(this);
 
     cardPanel = new JPanel();
     layout = new CardLayout();
@@ -42,7 +42,7 @@ class ReversiView extends JFrame implements ActionListener{
     cardPanel.add(titlepanel, "title");
     cardPanel.add(settingpanel, "setting");
     cardPanel.add(gamepanel, "game");
-    cardPanel.add(levpanel,"level");
+    cardPanel.add(singlepanel,"level");
 
     getContentPane().add(cardPanel, BorderLayout.CENTER);
     // pack は JFrameのサイズを自動設定するメソッド．
@@ -82,15 +82,15 @@ class ReversiView extends JFrame implements ActionListener{
   }
 
   public JButton level1Button(){
-    return levpanel.level1;
+    return singlepanel.level1;
   }
 
   public JButton level2Button(){
-    return levpanel.level2;
+    return singlepanel.level2;
   }
 
   public JButton level3Button(){
-    return levpanel.level3;
+    return singlepanel.level3;
   }
 
   public void actionPerformed(ActionEvent e){
@@ -104,9 +104,9 @@ class ReversiView extends JFrame implements ActionListener{
       layout.show(cardPanel,"title");
     }else if(e.getSource()==gamepanel.finish){
       layout.show(cardPanel,"title");
-    }else if(e.getSource()==levpanel.returnButton){
+    }else if(e.getSource()==singlepanel.returnButton){
       layout.show(cardPanel,"title");
-    }else if(e.getSource()==levpanel.startButton){
+    }else if(e.getSource()==singlepanel.startButton){
       layout.show(cardPanel,"game");
       getPanel().requestFocus();
     }
