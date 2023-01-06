@@ -1,6 +1,7 @@
 //阪上用
 
 import java.util.ArrayList;
+import java.util.Random;
 class Ai_2 extends Model{
   private int player;
   private int board_size;
@@ -17,15 +18,44 @@ class Ai_2 extends Model{
   
   //呼び出される関数
   public void run(){//みんなのプログラムを追加する。
+    int x=-1,y=-1;
     System.out.println("2da-");
     back_judge_array=reversiModel.getJudgeBoardArray(player);
+    ArrayList<int[]> can_put_array_edge = new ArrayList<>();
+    ArrayList<int[]> can_put_array_sub_edge = new ArrayList<>();
+    ArrayList<int[]> can_put_array_otherwise = new ArrayList<>();
     for(int i=0;i<board_size;i++){
       for(int j=0;j<board_size;j++){
-        if(back_judge_array[i][j]==3){
-          reversiModel.xySetStone(i,j);
-          return;
+        if(back_judge_array[i][j]==3 && ((i==0 || i==7) && (j==0 || j==7))){
+          int[] k={i,j};
+          can_put_array_edge.add(k);
+          //reversiModel.xySetStone(i,j); return;
+        }else if(back_judge_array[i][j]==3 &&  ((i<=1 || i>=6) && (j<=1 || j>=6))){
+          int[] k={i,j};
+          can_put_array_sub_edge.add(k);
+        }else if(back_judge_array[i][j]==3){
+          int[] k={i,j};
+          can_put_array_otherwise.add(k);
+          //reversiModel.xySetStone(i,j); return;
         }
       }
+    }
+    int edge_size = can_put_array_edge.size();
+    int sub_edge_size = can_put_array_sub_edge.size();
+    int otherwise_size = can_put_array_otherwise.size();
+    Random rand = new Random();
+    if(edge_size != 0){
+      int element = rand.nextInt(edge_size);
+      reversiModel.xySetStone(can_put_array_edge.get(element)[0],can_put_array_edge.get(element)[1]);
+      return;
+    }else if(otherwise_size != 0){
+      int element = rand.nextInt(otherwise_size);
+      reversiModel.xySetStone(can_put_array_otherwise.get(element)[0],can_put_array_otherwise.get(element)[1]);
+      return;
+    }else if(sub_edge_size != 0){
+      int element = rand.nextInt(sub_edge_size);
+      reversiModel.xySetStone(can_put_array_sub_edge.get(element)[0],can_put_array_sub_edge.get(element)[1]);
+      return;
     }
     //再帰のことも考え、今の盤面を入れる配列を関数内で作成する。
     // int[][] back_board_array= new int[board_size][board_size];
