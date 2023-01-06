@@ -118,7 +118,7 @@ class ReversiModel extends Observable{
     return 1;
   }
   //マウスの座標を配列に変換する関数。
-  private int transformMousePoint(int mouse){
+  protected int transformMousePoint(int mouse){
     if(mouse<20||mouse>=sizeOfOne*8+20){
       return -1;
     }

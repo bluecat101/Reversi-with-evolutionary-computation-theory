@@ -93,11 +93,14 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
   public void mouseEntered(MouseEvent e){}
   public void mouseExited(MouseEvent e){}
   public void mousePressed(MouseEvent e){
-    if(e.getSource() == view.getPanel()){
+    if(e.getSource() == view.getPanel() && reversiModel.transformMousePoint(e.getX()) == reversiModel.getPikaPika_x() && reversiModel.transformMousePoint(e.getY()) == reversiModel.getPikaPika_y()){
       reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
 
       //add------
-      ai.run();//今設定されているaiのrun関数を呼び出して石をセットする。
+      //ai.run();//今設定されているaiのrun関数を呼び出して石をセットする。
+      timer.start();
+      view.getChatBox().setEnabled(true);
+      view.getChatBox().grabFocus(); num++;
       //-----------
 
     }/*else if(e.getSource() == view.getChatPanel()){
@@ -125,10 +128,6 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
       break;
       case 'r':
       reversiModel.initBoard();
-      break;
-      case 'p':
-      reversiModel.xySetStone(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());
-      //ai.exeAi();
       break;
     }
   }
