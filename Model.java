@@ -278,8 +278,8 @@ class ReversiModel extends Observable{
     } 
   }
   private CommServer csv;
-  public void newServer(){
-    csv = new CommServer(10010,getReversiModel());
+  public void newServer(int port){
+    csv = new CommServer(port,getReversiModel());
     csv.setTimeout(10);
   }
   public CommServer getServer(){
