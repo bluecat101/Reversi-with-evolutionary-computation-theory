@@ -1,7 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.border.LineBorder;
 import java.util.*;
 
 @SuppressWarnings("deprecation")
@@ -280,6 +276,14 @@ class ReversiModel extends Observable{
         }
       }
     } 
+  }
+  private CommServer csv;
+  public void newServer(){
+    csv = new CommServer(10010,getReversiModel());
+    csv.setTimeout(10);
+  }
+  public CommServer getServer(){
+    return csv;
   }
 }
 class ChatModel extends Observable{
