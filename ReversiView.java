@@ -108,18 +108,24 @@ class ReversiView extends JFrame implements ActionListener{
     return gamepanel.chat;
   }
 
+  //一人プレイを開始するときのボタン
   public JButton getSingleStartButton(){
     return singlepanel.startButton;
   }
 
+  //二人プレイの時にこのテキストフィールドに合言葉を入れてエンターを押したときにゲーム画面に
+  //遷移するようにした。このテキストフィールドを使えばポート番号をもらうのとサーバー立ち上げるのが同時にできると思う。
+  //サーバー側もクライアント側もこのテキストのエンターを押したら画面が遷移する。
   public JTextField getMultiPasswordBox(){
     return multiserverpanel.password;
   }
 
+  //aiのクラスが入っている。
   public Model getAiMode(){
     return ai;
   }
 
+  //サーバーかどうかの変数。trueならサーバー
   public boolean getSVMode(){
     return server;
   }
@@ -158,10 +164,14 @@ class ReversiView extends JFrame implements ActionListener{
     }else if(e.getSource()==multipanel.returnButton){
       movepanel("mode");
     }else if(e.getSource()==multipanel.serverButton){
-      server = true;movepanel("multiserver");
+      server = true;
+      multiserverpanel.s="合言葉を決定";
+      movepanel("multiserver");
       //サーバーのボタンが押されたときの処理
     }else if(e.getSource()==multipanel.clientButton){
-      server = false;movepanel("multiserver");
+      server = false;
+      multiserverpanel.s="決めた合言葉を入力";
+      movepanel("multiserver");
       //クライアントのボタンが押されたときの処理
     }else if(e.getSource()==multiserverpanel.password){
       movepanel("game");
