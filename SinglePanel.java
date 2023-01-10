@@ -2,10 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class LevPanel extends JPanel{
+public class SinglePanel extends JPanel{
   JButton returnButton,startButton;
   JButton level1,level2,level3;
-  LevPanel(){
+  SinglePanel(){
     setLayout(null);
     JPanel levPanel = new JPanel();
     level1 = new JButton("level1");

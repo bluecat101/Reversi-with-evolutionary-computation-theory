@@ -31,6 +31,13 @@ class ChatPanel extends JPanel implements Observer ,AdjustmentListener{
   }
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
+    Graphics2D g2 = (Graphics2D)g;
+ 
+		//図形や線のアンチエイリアシングの有効化
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+ 
+		//文字描画のアンチエイリアシングの有効化
+		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
     panelheight = this.getHeight();
     int newextray = panelheight -stheight -20;
     int extray = 0;

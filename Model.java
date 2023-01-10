@@ -1,7 +1,3 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.border.LineBorder;
 import java.util.*;
 
 @SuppressWarnings("deprecation")
@@ -30,9 +26,9 @@ class ReversiModel extends Observable{
   private int pikapika_y=3;//阪上
   private int player;
   private int pass_flag,finish_flag;
+  private boolean isYourturn=true;
   public ReversiModel(){
     initBoard();
-
   }
 
   //コントローラーから呼び出される。playerは1,2で渡してほしい。
@@ -280,6 +276,22 @@ class ReversiModel extends Observable{
         }
       }
     } 
+  }
+  public boolean getIsYourTurn(){
+    return isYourturn;
+  }
+  public void changeIsYourTurn(){
+    isYourturn=!isYourturn;
+    System.out.println(isYourturn);
+  }
+  
+  private CommServer csv;
+  public void newServer(int port){
+    csv = new CommServer(port,getReversiModel());
+    csv.setTimeout(10);
+  }
+  public CommServer getServer(){
+    return csv;
   }
 }
 class ChatModel extends Observable{
