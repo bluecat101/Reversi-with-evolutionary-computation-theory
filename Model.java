@@ -106,6 +106,10 @@ class ReversiModel extends Observable{
     }
     return false;
   }
+  //先行と後攻を決める(Ai用)
+  public void setPlayer(int player){
+    this.player=player;
+  }
   //相手のプレイヤーの番号を返す関数。
   public int getOpponentStone(int player){
     if(player == 1){
