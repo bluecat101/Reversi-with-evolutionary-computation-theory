@@ -17,6 +17,7 @@ class ReversiView extends JFrame implements ActionListener{
   protected Model model;
   protected boolean server;
   protected MultiServerPanel multiserverpanel;
+  protected int a=0;
  
   public ReversiView(Model m,String st) {
     super(st);
@@ -40,9 +41,7 @@ class ReversiView extends JFrame implements ActionListener{
     singlepanel = new SinglePanel();
     singlepanel.returnButton.addActionListener(this);
     singlepanel.startButton.addActionListener(this);
-    singlepanel.level1.addActionListener(this);
-    singlepanel.level2.addActionListener(this);
-    singlepanel.level3.addActionListener(this);
+    singlepanel.cb.addItemListener(new SelectItemListener());
     ai=new Ai_1(model);
 
     modepanel = new ModePanel();
@@ -78,6 +77,18 @@ class ReversiView extends JFrame implements ActionListener{
     this.pack();
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setVisible(true);
+  }
+  class SelectItemListener implements ItemListener {
+    public void itemStateChanged(final ItemEvent ie) {
+      final int imgidx = singlepanel.cb.getSelectedIndex();
+      if (imgidx == 0) {
+        ai=new Ai_1(model);
+      } else if (imgidx == 1) {
+        ai=new Ai_2(model);
+      } else if (imgidx == 2) {
+        ai=new Ai_3(model);
+      }
+    }
   }
 
   public JPanel getPanel(){
@@ -155,12 +166,6 @@ class ReversiView extends JFrame implements ActionListener{
       movepanel("single");
     }else if(e.getSource()==modepanel.multi){
       movepanel("multi");
-    }else if(e.getSource()==singlepanel.level1){
-      ai=new Ai_1(model);//delete 引数
-    }else if(e.getSource()==singlepanel.level2){
-      ai=new Ai_2(model);//delete　引数
-    }else if(e.getSource()==singlepanel.level3){
-      ai=new Ai_3(model);
     }else if(e.getSource()==multipanel.returnButton){
       movepanel("mode");
     }else if(e.getSource()==multipanel.serverButton){
@@ -176,6 +181,7 @@ class ReversiView extends JFrame implements ActionListener{
     }else if(e.getSource()==multiserverpanel.password){
       movepanel("game");
       getPanel().requestFocus();
+      a=1;
     }else if(e.getSource()==multiserverpanel.returnButton){
       movepanel("multi");
     }
