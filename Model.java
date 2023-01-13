@@ -159,12 +159,32 @@ class ReversiModel extends Observable{
       pass_flag=0;//初期化
       return 1;//元の値
     }
-   
+  }
+  public int getPassFlag(String callername){
+    if(pass_flag==0){//passでない。
+      return pass_flag;
+    }else{
+      if(callername=="controller"){
+        pass_flag=0;//初期化
+      }
+      return 1;//元の値
+    }
   }
   public int getFinishFlag(){
     if(finish_flag==0){//finishでない。
       return finish_flag;
     }else{
+      return 1;//元の値
+    }
+  }
+  public int getFinishFlag(String callername){
+    if(finish_flag==0){//finishでない。
+      return finish_flag;
+    }else{
+      if(callername=="Ai"){
+        // System.out.println("init passflag");
+        pass_flag=0;//初期化
+      }
       return 1;//元の値
     }
    
@@ -289,6 +309,13 @@ class ReversiModel extends Observable{
     System.out.println(isYourturn);
   }
   
+  public void setBoard_onlyAI(int[][] resultBoard){
+    for(int i=0;i<board_size;i++){
+      for(int j=0;j<board_size;j++){
+        board_array[i][j]=resultBoard[i][j];
+      } 
+    } 
+  }
   private CommServer csv;
   public void newServer(int port){
     csv = new CommServer(port,getReversiModel());
