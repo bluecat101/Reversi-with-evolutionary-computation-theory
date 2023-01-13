@@ -36,7 +36,7 @@ class ReversiModel extends Observable{
     // int x=mouse_x;int y=mouse_y;
     int x = transformMousePoint(mouse_x);//mouseの座標の変換
     int y = transformMousePoint(mouse_y);//mouseの座標の変換
-    System.out.println(x+" "+y);
+    //System.out.println(x+" "+y);
     if(x==-1||y==-1||board_array[x][y]!=0){//範囲外
       return ;
     }
@@ -56,6 +56,7 @@ class ReversiModel extends Observable{
           finish_flag=1;
         }
       }
+      changeIsYourTurn();
       setChanged();
       notifyObservers();
     }
