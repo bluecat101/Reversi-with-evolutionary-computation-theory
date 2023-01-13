@@ -107,6 +107,7 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
         int port=getPort(view.getMultiPasswordBox().getText());//合言葉をポート番号に変換する。
         cl = new CommClient("localhost",port,this.reversiModel);//クライアントの確立
         cl.setTimeout(10);//タイムアウトを設定
+        reversiModel.changeIsYourTurn();
       }
       timer =new javax.swing.Timer(300,this);//0.3秒ごとにクライアントかサーバーで変化があったのかを確認する。
         timer.start();//変化の探査開始
@@ -167,9 +168,6 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
         cl.send(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y());//クライアントからサーバーに送る
       }
 
-      break;
-      case 'r':
-      reversiModel.initBoard();
       break;
       case 'a':
       reversiModel.changeIsYourTurn();
