@@ -36,7 +36,7 @@ class ReversiModel extends Observable{
     // int x=mouse_x;int y=mouse_y;
     int x = transformMousePoint(mouse_x);//mouseの座標の変換
     int y = transformMousePoint(mouse_y);//mouseの座標の変換
-    System.out.println(x+" "+y);
+    //System.out.println(x+" "+y);
     if(x==-1||y==-1||board_array[x][y]!=0){//範囲外
       return ;
     }
@@ -56,6 +56,7 @@ class ReversiModel extends Observable{
           finish_flag=1;
         }
       }
+      changeIsYourTurn();
       setChanged();
       notifyObservers();
     }
@@ -159,12 +160,32 @@ class ReversiModel extends Observable{
       pass_flag=0;//初期化
       return 1;//元の値
     }
-   
+  }
+  public int getPassFlag(String callername){
+    if(pass_flag==0){//passでない。
+      return pass_flag;
+    }else{
+      if(callername=="controller"){
+        pass_flag=0;//初期化
+      }
+      return 1;//元の値
+    }
   }
   public int getFinishFlag(){
     if(finish_flag==0){//finishでない。
       return finish_flag;
     }else{
+      return 1;//元の値
+    }
+  }
+  public int getFinishFlag(String callername){
+    if(finish_flag==0){//finishでない。
+      return finish_flag;
+    }else{
+      if(callername=="Ai"){
+        // System.out.println("init passflag");
+        pass_flag=0;//初期化
+      }
       return 1;//元の値
     }
    
@@ -289,6 +310,13 @@ class ReversiModel extends Observable{
     System.out.println(isYourturn);
   }
   
+  public void setBoard_onlyAI(int[][] resultBoard){
+    for(int i=0;i<board_size;i++){
+      for(int j=0;j<board_size;j++){
+        board_array[i][j]=resultBoard[i][j];
+      } 
+    } 
+  }
   private CommServer csv;
   public void newServer(int port){
     csv = new CommServer(port,getReversiModel());
