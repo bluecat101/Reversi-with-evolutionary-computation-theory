@@ -48,6 +48,7 @@ class ReversiModel extends Observable{
       judge_array = getJudgeBoardArray(getOpponentStone(player));//相手プレイヤーが置けるかどうか
       if(canPut()==true){//置けるなら
         player=getOpponentStone(player);//プレイヤーの交代
+        changeIsYourTurn();
       }else{
         judge_array = getJudgeBoardArray(player);//自分プレイヤーの置ける位置を格納。
         if(canPut()==true){
@@ -56,7 +57,7 @@ class ReversiModel extends Observable{
           finish_flag=1;
         }
       }
-      changeIsYourTurn();
+      
       setChanged();
       notifyObservers();
     }
