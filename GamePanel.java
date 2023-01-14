@@ -278,7 +278,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
         state.setText("白の勝利");
       }
     }
-    if (reversiModel.getPassFlag() == 1) {
+    if (reversiModel.getPassFlag("view") == 1) {
       state.setText("パス");
       timer.start();
     }
