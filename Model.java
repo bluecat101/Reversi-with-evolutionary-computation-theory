@@ -178,15 +178,6 @@ class Model {
       return player;
     }
 
-    public int getPassFlag() {
-      if (pass_flag == 0) {// passでない。
-        return pass_flag;
-      } else {
-        pass_flag = 0;// 初期化
-        return 1;// 元の値
-      }
-    }
-
     public int getPassFlag(String callername) {
       if (pass_flag == 0) {// passでない。
         return pass_flag;
@@ -211,7 +202,6 @@ class Model {
         return finish_flag;
       } else {
         if (callername == "Ai") {
-          // System.out.println("init passflag");
           pass_flag = 0;// 初期化
         }
         return 1;// 元の値
@@ -356,7 +346,6 @@ class Model {
 
     public void changeIsYourTurn() {
       isYourturn = !isYourturn;
-      System.out.println(isYourturn);
     }
 
     public void setBoard_onlyAI(int[][] resultBoard) {
