@@ -108,6 +108,7 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
         cl = new CommClient("localhost",port,this.reversiModel);//クライアントの確立
         cl.setTimeout(10);//タイムアウトを設定
         reversiModel.changeIsYourTurn();
+        reversiModel.changePlayerNum();
       }
       timer =new javax.swing.Timer(300,this);//0.3秒ごとにクライアントかサーバーで変化があったのかを確認する。
         timer.start();//変化の探査開始
