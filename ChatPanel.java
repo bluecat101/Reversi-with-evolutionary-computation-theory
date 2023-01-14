@@ -16,6 +16,8 @@ class ChatPanel extends JPanel implements Observer ,AdjustmentListener{
   protected JScrollBar scrollbar;
   protected int stheight;
   protected int panelheight;
+  protected int playernum;
+  protected int opponent=2;
   
   public ChatPanel(Model m,JScrollBar scrollbar){
     model = m;
@@ -25,6 +27,14 @@ class ChatPanel extends JPanel implements Observer ,AdjustmentListener{
     chatmodel = model.getChatModel();
     message = chatmodel.getChatMessage();
     player  = chatmodel.getChatPlayer();
+
+    //Chatmodelからplayerの番号を取得する。
+    // playernum=chatmodel.getPlayerNum();
+    
+    //下の状態だとplayerの番号が2だから偶数回目のメッセージが自分側に表示される。
+    playernum=2;
+    if(playernum==2){opponent=1;}
+
     font = new Font("Serif",Font.PLAIN,20);
     fontMetrics = this.getFontMetrics(font);
     chatmodel.addObserver(this);
@@ -107,7 +117,7 @@ class ChatPanel extends JPanel implements Observer ,AdjustmentListener{
 
     g.fillRect(x, y+height-dir/2, width, dir);
 
-    if(player==1){
+    if(player==playernum){
       g.fillPolygon(new int[] {x-dir/2+width,x+dir/2+width,x+dir/2+width+10}, new int[] {y+2,y+15,y+5}, 3);
     }else{
       g.fillPolygon(new int[] {x-dir/2+10,x-dir/2,x-dir}, new int[] {y+2,y+15,y+5}, 3);    }
@@ -117,7 +127,7 @@ class ChatPanel extends JPanel implements Observer ,AdjustmentListener{
     int h = fontMetrics.getAscent();
     int h1 = h;
     int chatflag=1;
-    int playernum=0;
+    int pn=0;
 
     for(int i=0;i<message.size();i++){
       StringBuffer f = message.get(i);
@@ -125,20 +135,20 @@ class ChatPanel extends JPanel implements Observer ,AdjustmentListener{
       int j=i;
       int h1sub = h1;
       if(chatflag==1){
-        if(player.get(playernum)==1){
+        if(player.get(pn)==playernum){
           g.setColor(Color.orange);
         }else{
           g.setColor(Color.green);
         }
         if(buffersize(message.get(j+1))==0){
-          if(player.get(playernum)==1){
+          if(player.get(pn)==playernum){
             int x=20+145-buffersize(f)+5;
             int y=h1sub+extray+20-fontMetrics.getAscent();
             int width=buffersize(f)-10;
             int height=fontMetrics.getAscent();
             g.fillRect(x, y, width, height);
 
-            round(g, x, y, width, height,1);
+            round(g, x, y, width, height,playernum);
           }else{
             int x=25;
             int y=h1sub+extray+20-fontMetrics.getAscent();
@@ -146,10 +156,10 @@ class ChatPanel extends JPanel implements Observer ,AdjustmentListener{
             int height=fontMetrics.getAscent();
             g.fillRect(x, y, width, height);
 
-            round(g, x, y, width, height,2);
+            round(g, x, y, width, height,opponent);
           }
         }else{
-          if(player.get(playernum)==1){
+          if(player.get(pn)==playernum){
             int x=20+20+5;
             int width=115;
             int height=fontMetrics.getAscent();
@@ -160,7 +170,7 @@ class ChatPanel extends JPanel implements Observer ,AdjustmentListener{
               f=message.get(++j);
               h1sub +=h;
             }
-            round(g, x, ysub, width, height*(j-i),1);
+            round(g, x, ysub, width, height*(j-i),playernum);
           }else{
             int x=25;
             int width=115;
@@ -172,18 +182,18 @@ class ChatPanel extends JPanel implements Observer ,AdjustmentListener{
               f=message.get(++j);
               h1sub +=h;
             }
-            round(g, x, ysub, width, height*(j-i),2);
+            round(g, x, ysub, width, height*(j-i),opponent);
           }
         }
         chatflag=0;
-        playernum++;
+        pn++;
       }
       g.setColor(Color.black);
       g.setFont(font);
-      if(player.get(playernum-1)==1 && (i==0 || buffersize(message.get(i-1))==0) && buffersize(message.get(i+1))==0){
+      if(player.get(pn-1)==playernum && (i==0 || buffersize(message.get(i-1))==0) && buffersize(message.get(i+1))==0){
         g.drawString(s,20+145-buffersize(f),h1+extray+20);
       }else{
-        if(player.get(playernum-1)==1){
+        if(player.get(pn-1)==playernum){
           g.drawString(s,20+20,h1+extray+20);
         }else{
           g.drawString(s,20,h1+extray+20);
