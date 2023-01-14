@@ -52,6 +52,10 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     if(e.getSource()==timer){
       if(mode.contains("Ai")){
         ai.run();
+        if(reversiModel.getPassFlag("controller")==0){//現状がpassじゃない<=>自分のターンに移る
+          view.getPanel().requestFocus();
+          timer.stop(); 
+        }
         view.getPanel().requestFocus();
         timer.stop();
       }else if(mode=="server&client"){
