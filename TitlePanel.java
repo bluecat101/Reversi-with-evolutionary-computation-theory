@@ -47,7 +47,7 @@ class TitlePanel extends JPanel {
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
     g.setColor(Color.BLACK);
-    this.paintLine(g);
+    //this.paintLine(g);
   }
   
   public void paintLine(Graphics g){
