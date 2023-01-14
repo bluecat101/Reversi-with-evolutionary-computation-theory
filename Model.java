@@ -346,7 +346,6 @@ class Model {
 
     public void changeIsYourTurn() {
       isYourturn = !isYourturn;
-      System.out.println(isYourturn);
     }
 
     public void setBoard_onlyAI(int[][] resultBoard) {
