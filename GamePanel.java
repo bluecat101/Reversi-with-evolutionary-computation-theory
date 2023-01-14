@@ -176,7 +176,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
             g.setColor(Color.WHITE);
             g.fillOval(20 + 70 * i + 5, 20 + 70 * j + 5, 60, 60);
           }
-          if (canput[i][j] == 3 && reversiModel.getIsYourTurn()) {
+          if (canput[i][j] == 3) {
             if (reversiModel.getPlayer() == 1) {
               g.setColor(new Color(0, 0, 0, 70));
             } else {
@@ -186,14 +186,10 @@ class GamePanel extends JPanel implements Observer, ActionListener {
           }
         }
       }
+      g.setColor(new Color(255, 255, 0, 100));
 
       // 下の一行は実際に動かすときに使う関数
-      if (reversiModel.getIsYourTurn()) {
-        g.setColor(new Color(255, 255, 0, 100));
-
-        g.fillRect(20 + 70 * reversiModel.getPikaPika_x(), 20 + 70 * reversiModel.getPikaPika_y(), 70, 70);
-
-      }
+      g.fillRect(20 + 70 * reversiModel.getPikaPika_x(), 20 + 70 * reversiModel.getPikaPika_y(), 70, 70);
 
       // 下の一行は確認のために一マス特定の場所を光らせたもの。
       // g.fillRect(20+70*3,20+70*2,70,70);
@@ -270,8 +266,10 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     panel.repaint();
     if (reversiModel.getIsYourTurn()) {
       state.setText("あなたの番です");
+
     } else {
       state.setText("相手の番です");
+
     }
     if (reversiModel.getFinishFlag() == 1) {
       if (reversiModel.countStorn(1) > reversiModel.countStorn(2)) {
@@ -292,6 +290,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
         state.setText("あなたの番です");
       } else {
         state.setText("相手の番です");
+
       }
       timer.stop();
     }
