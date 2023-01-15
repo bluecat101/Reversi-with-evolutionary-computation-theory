@@ -51,6 +51,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     state.setBorder(new LineBorder(Color.BLACK, 2, true));
     Font font = new Font(Font.SANS_SERIF, Font.BOLD, 32);
     state.setFont(font);
+    state.setPreferredSize(new Dimension(210,50));
 
     finish = new JButton("Return Title");
     reset = new JButton("Reset");
@@ -213,7 +214,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
         stone = new WhiteStone();
       }
       count = new JLabel("2", JLabel.CENTER);
-      stone.setPreferredSize(new Dimension(100, 40));// ラベルのサイズを設定
+      stone.setPreferredSize(new Dimension(108, 40));// ラベルのサイズを設定
       count.setFont(font);
       reversiModel.addObserver(this);
       this.add(stone);

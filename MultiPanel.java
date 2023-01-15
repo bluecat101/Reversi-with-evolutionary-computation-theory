@@ -23,7 +23,7 @@ public class MultiPanel extends JPanel{
     serverButton.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
     serverButton.setForeground(Color.GREEN); //文字の色
     serverButton.setBorderPainted(false); //ボタンの枠削除
-    serverButton.setBounds(250,220,240,135);
+    serverButton.setBounds(270,220,240,135);
     clientButton = new JButton("Join a room",icon1);
     clientButton.setRolloverIcon(icon2);
     clientButton.setContentAreaFilled(false); //背景透明化
@@ -31,7 +31,7 @@ public class MultiPanel extends JPanel{
     clientButton.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
     clientButton.setForeground(Color.GREEN); //文字の色
     clientButton.setBorderPainted(false); //ボタンの枠削除
-    clientButton.setBounds(550,220,240,135);
+    clientButton.setBounds(570,220,240,135);
     returnButton = new JButton("Back",icon1);
     returnButton.setRolloverIcon(icon2);
     returnButton.setContentAreaFilled(false); //背景透明化
@@ -39,7 +39,7 @@ public class MultiPanel extends JPanel{
     returnButton.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
     returnButton.setForeground(Color.GREEN); //文字の色
     returnButton.setBorderPainted(false); //ボタンの枠削除
-    returnButton.setBounds(400, 370, 240, 135);
+    returnButton.setBounds(420, 370, 240, 135);
     add(returnButton);add(clientButton);add(serverButton);
   }
   public void paintComponent(Graphics g) {
@@ -51,9 +51,11 @@ public class MultiPanel extends JPanel{
  
     g.drawImage(imgBack, 0, 0, 1080, 600, null);
     g.setFont(f2);
+    FontMetrics fontMetrics = this.getFontMetrics(f2);
+    int a=fontMetrics.stringWidth("Multi Mode");
     g.setColor(new Color(0,100,255));
-    g.drawString("Multi Mode", 305, 195);
+    g.drawString("Multi Mode", 540-a/2+5, 195);
     g.setColor(new Color(255,0,60));
-    g.drawString("Multi Mode", 300, 190);
+    g.drawString("Multi Mode", 540-a/2, 190);
   }
 }

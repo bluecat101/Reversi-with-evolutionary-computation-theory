@@ -19,7 +19,7 @@ public class MultiServerPanel extends JPanel{
     ImageIcon icon1 = new ImageIcon("osero-illust7.png");
     ImageIcon icon2 = new ImageIcon("osero-illust8.png");
     password = new JTextField();
-    password.setBounds(400,220,240,100);
+    password.setBounds(420,220,240,100);
     returnButton = new JButton("Back",icon1);
     returnButton.setRolloverIcon(icon2);
     returnButton.setContentAreaFilled(false); //背景透明化
@@ -27,7 +27,7 @@ public class MultiServerPanel extends JPanel{
     returnButton.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
     returnButton.setForeground(Color.GREEN); //文字の色
     returnButton.setBorderPainted(false); //ボタンの枠削除
-    returnButton.setBounds(400, 370, 240, 135);
+    returnButton.setBounds(420, 370, 240, 135);
     add(returnButton);add(password);
   }
   public void paintComponent(Graphics g) {
@@ -39,9 +39,11 @@ public class MultiServerPanel extends JPanel{
  
     g.drawImage(imgBack, 0, 0, 1080, 600, null);
     g.setFont(f2);
+    FontMetrics fontMetrics = this.getFontMetrics(f2);
+    int a=fontMetrics.stringWidth(s);
     g.setColor(new Color(0,100,255));
-    g.drawString(s, 305, 195);
+    g.drawString(s, 540-a/2+5, 195);
     g.setColor(new Color(255,0,60));
-    g.drawString(s, 300, 190);
+    g.drawString(s, 540-a/2, 190);
 	}
 }
