@@ -355,17 +355,6 @@ class Model {
         }
       }
     }
-
-    private CommServer csv;
-
-    public void newServer(int port) {
-      csv = new CommServer(port, getReversiModel());
-      csv.setTimeout(10);
-    }
-
-    public CommServer getServer() {
-      return csv;
-    }
   }
 
   class ChatModel extends Observable {
