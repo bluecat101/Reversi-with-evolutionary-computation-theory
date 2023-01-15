@@ -112,8 +112,10 @@ class TitlePanel extends JPanel {
     int xpoint3[] = {205,220,0,-150};
     int ypoint3[] = {0,0,40,40};
     g.fillPolygon(xpoint3,ypoint3,4);
-    g.setColor(new Color(180,0,240));
     g.setFont(f2);
+    g.setColor(new Color(0,0,255));
+    g.drawString("REVERSI", 355, 155);
+    g.setColor(new Color(255,0,0));
     g.drawString("REVERSI", 350, 150);
   }
 }
