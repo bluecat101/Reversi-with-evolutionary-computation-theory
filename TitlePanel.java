@@ -46,14 +46,23 @@ class TitlePanel extends JPanel {
 
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
-    g.setColor(Color.BLACK);
-    //this.paintLine(g);
+    g.setColor(new Color(0,180,0));
+    this.paintLine(g);
   }
   
   public void paintLine(Graphics g){
-    for(int i=0; i<10; i++){
-      g.drawLine(373,0,368+i,600);
-    }
-		//g.fillRect(368,100,10,600);
+    g.setColor(new Color(0,180,0));
+    g.setColor(new Color(40,40,40));
+    g.fillRect(0,0,1050,600);
+    int xpoint[] = {493,513,353,313};
+    int ypoint[] = {200,200,600,600};
+    g.fillRect(0,560,1050,30);
+    g.fillRect(0,345,1050,30);
+    g.fillRect(0,200,1050,30);
+    //g.fillPolygon(xpoint,ypoint,4);
+    for(int j=0; j<2; j++){
+      g.fillPolygon(xpoint,ypoint,4);
+      for(int i=0; i<4; i++){xpoint[i] = (1065 - xpoint[i]);}//線対称
+		//g.fillRect(368,0,60,600);
   }
 }
