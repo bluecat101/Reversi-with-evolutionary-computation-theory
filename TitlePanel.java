@@ -21,8 +21,8 @@ class TitlePanel extends JPanel {
     start.setBorderPainted(false); //ボタンの枠削除
     start.setBounds(414,350+20,240,135);
     
-    setting = new JButton("setting", icon2);
-    setting.setRolloverIcon(icon1);
+    setting = new JButton("setting", icon1);
+    setting.setRolloverIcon(icon2);
     setting.setContentAreaFilled(false); //背景透明化
     setting.setHorizontalTextPosition(JButton.CENTER);
     setting.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
@@ -30,8 +30,8 @@ class TitlePanel extends JPanel {
     setting.setBorderPainted(false); //ボタンの枠削除
     setting.setBounds(82,350+20,240,135);
 
-    finish = new JButton("finish", icon2);
-    finish.setRolloverIcon(icon1);
+    finish = new JButton("finish", icon1);
+    finish.setRolloverIcon(icon2);
     finish.setContentAreaFilled(false); //背景透明化
     finish.setHorizontalTextPosition(JButton.CENTER);
     finish.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
