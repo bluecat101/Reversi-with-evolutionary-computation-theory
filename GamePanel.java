@@ -21,7 +21,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
 
   public GamePanel(Model m) {
     timer = new javax.swing.Timer(1000, this);
-    animation = new javax.swing.Timer(10,this);
+    animation = new javax.swing.Timer(1,this);
     model = m;
     reversiModel = model.getReversiModel();
     reversiModel.addObserver(this);
@@ -334,10 +334,10 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     }
     if(e.getSource() == animation){
       if(a==0){
-        aninum++;
+        aninum+=2;
         if(aninum==60){a=1;}
       }else{
-        aninum--;
+        aninum-=2;
       }
       // System.out.println(aninum);
       panel.repaint();
