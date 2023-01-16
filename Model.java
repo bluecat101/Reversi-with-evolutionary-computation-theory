@@ -15,16 +15,15 @@ class Model {
     return chatModel;
   }
 
-  // add------------------
   public void run() {
   }
-  // ---------------------
 
   class ReversiModel extends Observable {
     protected final int board_size = 8;
     final int sizeOfOne = 70;
     private int[][] board_array = new int[board_size][board_size];
     private int[][] judge_array = new int[board_size][board_size];
+    private int[][] animation = new int[board_size][board_size];
     private int pikapika_x = 2;// 阪上
     private int pikapika_y = 3;// 阪上
     private int player;
@@ -35,20 +34,35 @@ class Model {
       initBoard();
     }
 
+    // add 1/16--------------------------------------------------
+    // animationの追加
+    public int[][] getAniArray() {
+      return animation;
+    }
+
+    private void resetAniArray() {
+      for (int i = 0; i < board_size; i++) {
+        for (int j = 0; j < board_size; j++) {
+          animation[i][j] = 0;
+        }
+      }
+    }
+    // --------------------------------------------------
+
     // コントローラーから呼び出される。playerは1,2で渡してほしい。
     public void setStone(int mouse_x, int mouse_y) {
-      // int x=mouse_x;int y=mouse_y;
       int x = transformMousePoint(mouse_x);// mouseの座標の変換
       int y = transformMousePoint(mouse_y);// mouseの座標の変換
-      // System.out.println(x+" "+y);
       if (x == -1 || y == -1 || board_array[x][y] != 0) {// 範囲外
         return;
       }
+      resetAniArray();// animationをリセットする。
       // searchする座標を探す
       judge_array = getJudgeBoardArray(player);
       if (judge_array[x][y] == 3) {// 自分のところに置ける
         search(x, y);
         board_array[x][y] = player;// 自分の位置に置く
+        animation[x][y] = 3;
         judge_array = getJudgeBoardArray(getOpponentStone(player));// 相手プレイヤーが置けるかどうか
         if (canPut() == true) {// 置けるなら
           player = getOpponentStone(player);// プレイヤーの交代
@@ -63,7 +77,7 @@ class Model {
         }
 
         setChanged();
-        notifyObservers();
+        notifyObservers(1);
       }
     }
 
@@ -90,6 +104,7 @@ class Model {
             search_y -= j;
             while (search_x != x || search_y != y) {
               board_array[search_x][search_y] = player;// ひっくり返す。
+              animation[search_x][search_y] = 4;
               search_x -= i;
               search_y -= j;
             }
