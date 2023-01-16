@@ -1,31 +1,49 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import javax.imageio.ImageIO;
 
 public class MultiServerPanel extends JPanel{
   JButton returnButton;
   JTextField password;
+  Image imgBack;
   String s="合言葉を決める";
   MultiServerPanel(){
     setLayout(null);
+    try {
+      imgBack = ImageIO.read(new File("haikei.jpg"));
+    } catch (Exception e) {
+        System.out.println(e);
+        System.exit(0);
+    }
+    ImageIcon icon1 = new ImageIcon("osero-illust7.png");
+    ImageIcon icon2 = new ImageIcon("osero-illust8.png");
     password = new JTextField();
-    password.setBounds(400,270,250,100);
-    returnButton = new JButton("Back");
-    returnButton.setBounds(400, 425, 250, 100);
+    password.setBounds(420,220,240,100);
+    returnButton = new JButton("Back",icon1);
+    returnButton.setRolloverIcon(icon2);
+    returnButton.setContentAreaFilled(false); //背景透明化
+    returnButton.setHorizontalTextPosition(JButton.CENTER);
+    returnButton.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
+    returnButton.setForeground(Color.GREEN); //文字の色
+    returnButton.setBorderPainted(false); //ボタンの枠削除
+    returnButton.setBounds(420, 370, 240, 135);
     add(returnButton);add(password);
   }
   public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		Font f2 = new Font("HGP創英角ﾎﾟｯﾌﾟ体", Font.BOLD, 25);
+		Font f2 = new Font("HGP創英角ﾎﾟｯﾌﾟ体", Font.BOLD, 80);
 		Graphics2D g2 = (Graphics2D)g;
- 
-		//図形や線のアンチエイリアシングの有効化
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
  
 		//文字描画のアンチエイリアシングの有効化
 		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
  
-		//アンチエイリアシングありで描画
-		g.setFont(f2);
-		g.drawString(s, 400, 100);
+    g.drawImage(imgBack, 0, 0, 1080, 600, null);
+    g.setFont(f2);
+    FontMetrics fontMetrics = this.getFontMetrics(f2);
+    int a=fontMetrics.stringWidth(s);
+    g.setColor(new Color(0,100,255));
+    g.drawString(s, 540-a/2+5, 195);
+    g.setColor(new Color(255,0,60));
+    g.drawString(s, 540-a/2, 190);
 	}
 }
