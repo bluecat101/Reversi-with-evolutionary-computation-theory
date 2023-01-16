@@ -15,10 +15,13 @@ class GamePanel extends JPanel implements Observer, ActionListener {
   protected JTextField chatbox;
   protected JButton chat;
   protected JScrollBar scrollbar;
-  private javax.swing.Timer timer;
+  protected javax.swing.Timer timer;
+  protected javax.swing.Timer animation;
+  protected int aninum=0;
 
   public GamePanel(Model m) {
     timer = new javax.swing.Timer(1000, this);
+    animation = new javax.swing.Timer(10,this);
     model = m;
     reversiModel = model.getReversiModel();
     reversiModel.addObserver(this);
@@ -156,6 +159,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
 
       int[][] board_array = reversiModel.getBoardArray();
       int[][] canput = reversiModel.getJudgeBoardArray(reversiModel.getPlayer());// modelのおけるか配列
+      int[][] aniarray = reversiModel.getAniArray();
       g.setColor(new Color(0, 180, 0));
       g.fillRect(20, 20, 560, 560);
       g.setColor(Color.BLACK);
@@ -168,14 +172,34 @@ class GamePanel extends JPanel implements Observer, ActionListener {
       for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
           if (board_array[i][j] == 1) {
-            // drawblack(g, i, j);
+            // fillblack(g, i, j);
             g.setColor(Color.BLACK);
-            g.fillOval(20 + 70 * i + 5, 20 + 70 * j + 5, 60, 60);
+            if(aniarray[i][j]==4){
+              if(a==0 && flag==0){
+                g.setColor(Color.WHITE);
+              }else{
+                flag=1;
+                g.setColor(Color.BLACK);
+              }
+              g.fillOval(20+70*i+5 ,20+70*j+5+aninum/2, 60, 60-aninum);//白から黒へアニメーション
+            }else{
+              g.fillOval(20 + 70 * i + 5, 20 + 70 * j + 5, 60, 60);
+            }
           }
           if (board_array[i][j] == 2) {
-            // drawwhite(g, i, j);
+            // fillwhite(g, i, j);
             g.setColor(Color.WHITE);
-            g.fillOval(20 + 70 * i + 5, 20 + 70 * j + 5, 60, 60);
+            if(aniarray[i][j]==4){
+              if(a==0 && flag==0){
+                g.setColor(Color.BLACK);
+              }else{
+                flag=1;
+                g.setColor(Color.WHITE);
+              }
+              g.fillOval(20+70*i+5 ,20+70*j+5+aninum/2, 60, 60-aninum);//黒から白へアニメーション
+            }else{
+              g.fillOval(20 + 70 * i + 5, 20 + 70 * j + 5, 60, 60);//黒から白へアニメーション
+            }
           }
           if (canput[i][j] == 3 && reversiModel.getIsYourTurn()) {
             if (reversiModel.getPlayer() == 1) {
@@ -185,17 +209,24 @@ class GamePanel extends JPanel implements Observer, ActionListener {
             }
             g.fillOval(20 + 70 * i + 5, 20 + 70 * j + 5, 60, 60);
           }
+          if(aniarray[i][j]==3){
+            g.setColor(new Color(255, 255, 0, 100));
+            // 下の一行は実際に動かすときに使う関数
+            g.fillRect(20 + 70 * i, 20 + 70 * j, 70, 70);
+          }
         }
       }
       if (reversiModel.getIsYourTurn()) {
-        g.setColor(new Color(255, 255, 0, 100));
-
+        g.setColor(Color.WHITE);
         // 下の一行は実際に動かすときに使う関数
-        g.fillRect(20 + 70 * reversiModel.getPikaPika_x(), 20 + 70 * reversiModel.getPikaPika_y(), 70, 70);
+        g.fillRect(22 + 70 * reversiModel.getPikaPika_x(), 22 + 70 * reversiModel.getPikaPika_y(), 2, 66);
+        g.fillRect(22 + 70 * reversiModel.getPikaPika_x(), 22 + 70 * reversiModel.getPikaPika_y(), 66, 2);
+        g.fillRect(86 + 70 * reversiModel.getPikaPika_x(), 22 + 70 * reversiModel.getPikaPika_y(), 2, 66);
+        g.fillRect(22 + 70 * reversiModel.getPikaPika_x(), 86 + 70 * reversiModel.getPikaPika_y(), 66, 2);
       }
 
       // 下の一行は確認のために一マス特定の場所を光らせたもの。
-      // g.fillRect(20+70*3,20+70*2,70,70);
+      // g.fillRect(20+66*3,20+70*2,70,70);
     }
   }
 
@@ -214,7 +245,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
         stone = new WhiteStone();
       }
       count = new JLabel("2", JLabel.CENTER);
-      stone.setPreferredSize(new Dimension(108, 40));// ラベルのサイズを設定
+      stone.setPreferredSize(new Dimension(100, 40));// ラベルのサイズを設定
       count.setFont(font);
       reversiModel.addObserver(this);
       this.add(stone);
@@ -233,7 +264,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
 
       // 図形や線のアンチエイリアシングの有効化
       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-      // drawblack(g, 0, 0);
+      // fillblack(g, 0, 0);
       g.setColor(Color.BLACK);
       g.fillOval(20 + 15, 20 + 15, 60, 60);
     }
@@ -245,27 +276,31 @@ class GamePanel extends JPanel implements Observer, ActionListener {
 
       // 図形や線のアンチエイリアシングの有効化
       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-      // drawwhite(g, 0, 0);
+      // fillwhite(g, 0, 0);
       g.setColor(Color.WHITE);
       g.fillOval(20 + 15, 20 + 15, 60, 60);
     }
   }
 
-  public void drawwhite(Graphics g, int i, int j) {
+  public void fillwhite(Graphics g, int i, int j) {
     for (int k = 0; k <= 20; k++) {
       g.setColor(new Color(k * 3 + 195, k * 3 + 195, k * 3 + 195)); // グラデーション
       g.fillOval(20 + 70 * i + 5 + (int) (k * 1.5), 20 + 70 * j + 5 + (int) (k * 1.5), 60 - k * 3, 60 - k * 3);
     }
   }
 
-  public void drawblack(Graphics g, int i, int j) {
+  public void fillblack(Graphics g, int i, int j) {
     for (int k = 0; k <= 20; k++) {
       g.setColor(new Color(k * 3, k * 3, k * 3)); // グラデーション
       g.fillOval(20 + 70 * i + 5 + (int) (k * 1.5), 20 + 70 * j + 5 + (int) (k * 1.5), 60 - k * 3, 60 - k * 3);
     }
   }
-
+  private int flag;
   public void update(Observable o, Object arg) {
+    if(arg==(Object)1){
+      flag=0;
+      animation.start();
+    }
     panel.repaint();
     if (reversiModel.getIsYourTurn()) {
       state.setText("あなたの番です");
@@ -286,7 +321,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
       timer.start();
     }
   }
-
+  protected int a=0;
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == timer) {
       if (reversiModel.getIsYourTurn()) {
@@ -296,6 +331,17 @@ class GamePanel extends JPanel implements Observer, ActionListener {
 
       }
       timer.stop();
+    }
+    if(e.getSource() == animation){
+      if(a==0){
+        aninum++;
+        if(aninum==60){a=1;}
+      }else{
+        aninum--;
+      }
+      // System.out.println(aninum);
+      panel.repaint();
+      if(aninum==0){a=0;animation.stop();}      
     }
   }
 }
