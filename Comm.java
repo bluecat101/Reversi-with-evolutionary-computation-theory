@@ -199,7 +199,7 @@ class CommClient {
         chatModel.setChat(xy_chat[1], Integer.parseInt(xy_chat[2]));
       }
     } catch (SocketTimeoutException e) {
-      return true;
+      return false;
     } catch (IOException e) {
       System.err.println("受信に失敗しました。");
       System.exit(1);

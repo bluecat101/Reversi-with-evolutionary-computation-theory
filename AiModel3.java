@@ -15,10 +15,10 @@ class Ai_3 extends Model {
   private int[][] back_judge_array;
 
   // コンストラクタ
-  public Ai_3(Model m) {
+  public Ai_3(Model m,int aiPlayer) {
     reversiModel = m.getReversiModel();
     virtualModel = (new Model()).getReversiModel();
-    this.player = reversiModel.getOpponentStone(reversiModel.getPlayer());// playerの指定
+    this.player = aiPlayer;// playerの指定
     this.board_size = reversiModel.board_size;// 盤面のサイズを指定。
     if (!is_maxcount) {// Aiの考え方によって変更する必要のある変数
       result_init_num = 100;
