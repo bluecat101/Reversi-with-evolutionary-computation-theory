@@ -1,6 +1,17 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+ 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 // import javax.swing.border.LineBorder;
 // import java.util.*;
 
@@ -13,16 +24,21 @@ class ReversiView extends JFrame implements ActionListener{
   protected SinglePanel singlepanel;
   protected ModePanel modepanel;
   protected MultiPanel multipanel;
-  protected Model ai;
+  protected int ai_level=1;
+  protected boolean first=true;
+  // protected Model ai;
   protected Model model;
   protected boolean server;
   protected MultiServerPanel multiserverpanel;
   protected int a=0;
+  protected Clip clip;
  
   public ReversiView(Model m,String st) {
     super(st);
     this.setTitle("Leversi Panel");
     model=m;
+    clip = createClip(new File("set.wav"));
+		//ここで再生メソッドの呼び出し
     /* タイトルパネル */
     titlepanel = new TitlePanel();
     titlepanel.start.addActionListener(this);
@@ -42,7 +58,9 @@ class ReversiView extends JFrame implements ActionListener{
     singlepanel.returnButton.addActionListener(this);
     singlepanel.startButton.addActionListener(this);
     singlepanel.cb.addItemListener(new SelectItemListener());
-    ai=new Ai_1(model);
+    singlepanel.first.addItemListener(new SelectItemListener());
+
+    // ai=new Ai_1(model);
 
     modepanel = new ModePanel();
     modepanel.returnButton.addActionListener(this);
@@ -80,13 +98,23 @@ class ReversiView extends JFrame implements ActionListener{
   }
   class SelectItemListener implements ItemListener {
     public void itemStateChanged(final ItemEvent ie) {
-      final int imgidx = singlepanel.cb.getSelectedIndex();
-      if (imgidx == 0) {
-        ai=new Ai_1(model);
-      } else if (imgidx == 1) {
-        ai=new Ai_2(model);
-      } else if (imgidx == 2) {
-        ai=new Ai_3(model);
+      if(ie.getSource()==singlepanel.cb){
+        final int imgidx = singlepanel.cb.getSelectedIndex();
+        if (imgidx == 0) {
+          ai_level=1;
+        } else if (imgidx == 1) {
+          ai_level=2;
+        } else if (imgidx == 2) {
+          ai_level=3;
+        }
+      }
+      if(ie.getSource()==singlepanel.first){
+        final int imgidx = singlepanel.first.getSelectedIndex();
+        if(imgidx==0){
+          first = true;
+        }else if(imgidx==1){
+          first = false;
+        }
       }
     }
   }
@@ -132,8 +160,18 @@ class ReversiView extends JFrame implements ActionListener{
   }
 
   //aiのクラスが入っている。
-  public Model getAiMode(){
-    return ai;
+  // public Model getAiMode(){
+  //   return ai;
+  // }
+
+  //trueなら先攻falseなら後攻
+  public boolean getFirst(){
+    return first;
+  }
+
+  //int型でaiのれべるを返す
+  public int getAiLevel(){
+    return ai_level;
   }
 
   //サーバーかどうかの変数。trueならサーバー
@@ -144,8 +182,38 @@ class ReversiView extends JFrame implements ActionListener{
   public void movepanel(String s){
     layout.show(cardPanel,s);
   }
+  
+  public static Clip createClip(File path) {
+		//指定されたURLのオーディオ入力ストリームを取得
+		try (AudioInputStream ais = AudioSystem.getAudioInputStream(path)){
+			
+			//ファイルの形式取得
+			AudioFormat af = ais.getFormat();
+			
+			//単一のオーディオ形式を含む指定した情報からデータラインの情報オブジェクトを構築
+			DataLine.Info dataLine = new DataLine.Info(Clip.class,af);
+			
+			//指定された Line.Info オブジェクトの記述に一致するラインを取得
+			Clip c = (Clip)AudioSystem.getLine(dataLine);
+			
+			//再生準備完了
+			c.open(ais);
+			
+			return c;
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (UnsupportedAudioFileException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
   public void actionPerformed(ActionEvent e){
     if(e.getSource()==titlepanel.start){
+      clip.start();
       movepanel("mode");
     }else if(e.getSource()==titlepanel.setting){
       movepanel("setting");

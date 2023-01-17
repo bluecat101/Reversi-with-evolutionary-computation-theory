@@ -10,6 +10,7 @@ public class SinglePanel extends JPanel{
   JButton returnButton,startButton;
   JButton level1,level2,level3;
   JComboBox<String> cb;
+  JComboBox<String> first;
   Image imgBack;
   SinglePanel(){
     setLayout(null);
@@ -24,7 +25,11 @@ public class SinglePanel extends JPanel{
     cb=new JComboBox<>();
     cb.setFont(new Font("HGP創英角ﾎﾟｯﾌﾟ体", Font.BOLD, 60));
     cb.addItem("level1");cb.addItem("level2");cb.addItem("level3");
-    cb.setBounds(270,220,240,135);
+    cb.setBounds(250,220,240,135);
+    first=new JComboBox<>();
+    first.setFont(new Font("HGP創英角ﾎﾟｯﾌﾟ体", Font.BOLD, 60));
+    first.addItem("先攻");first.addItem("後攻");
+    first.setBounds(550,370,240,135);
     startButton = new JButton("Start",icon1);
     startButton.setRolloverIcon(icon2);
     startButton.setContentAreaFilled(false); //背景透明化
@@ -32,7 +37,7 @@ public class SinglePanel extends JPanel{
     startButton.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
     startButton.setForeground(Color.GREEN); //文字の色
     startButton.setBorderPainted(false); //ボタンの枠削除
-    startButton.setBounds(570,220,240,135);
+    startButton.setBounds(550,220,240,135);
     returnButton = new JButton("Back",icon1);
     returnButton.setRolloverIcon(icon2);
     returnButton.setContentAreaFilled(false); //背景透明化
@@ -40,8 +45,8 @@ public class SinglePanel extends JPanel{
     returnButton.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
     returnButton.setForeground(Color.GREEN); //文字の色
     returnButton.setBorderPainted(false); //ボタンの枠削除
-    returnButton.setBounds(420, 370, 240, 135);
-    add(returnButton);add(startButton);add(cb);
+    returnButton.setBounds(400, 370, 240, 135);
+    add(returnButton);add(startButton);add(cb);add(first);
   }
   public void paintComponent(Graphics g) {
     Font f2 = new Font("HGP創英角ﾎﾟｯﾌﾟ体", Font.BOLD, 80);
@@ -52,11 +57,9 @@ public class SinglePanel extends JPanel{
  
     g.drawImage(imgBack, 0, 0, 1080, 600, null);
     g.setFont(f2);
-    FontMetrics fontMetrics = this.getFontMetrics(f2);
-    int a=fontMetrics.stringWidth("Select AILevel");
     g.setColor(new Color(0,100,255));
-    g.drawString("Select AILevel", 540-a/2+5, 195);
+    g.drawString("Select AILevel", 275, 195);
     g.setColor(new Color(255,0,60));
-    g.drawString("Select AILevel", 540-a/2, 190);
+    g.drawString("Select AILevel", 270, 190);
   }
 }
