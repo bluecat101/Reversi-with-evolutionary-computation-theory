@@ -32,12 +32,16 @@ class ReversiView extends JFrame implements ActionListener{
   protected MultiServerPanel multiserverpanel;
   protected int a=0;
   protected Clip clip;
+  protected Clip bgm;
  
   public ReversiView(Model m,String st) {
     super(st);
     this.setTitle("Leversi Panel");
     model=m;
     clip = createClip(new File("set.wav"));
+    bgm = createClip(new File("Tea_Time_Waltz.wav"));
+    bgm.loop(Clip.LOOP_CONTINUOUSLY);
+    bgm.start();
 		//ここで再生メソッドの呼び出し
     /* タイトルパネル */
     titlepanel = new TitlePanel();
@@ -46,7 +50,7 @@ class ReversiView extends JFrame implements ActionListener{
     titlepanel.finish.addActionListener(this);
 
     /* パネル2 */
-    gamepanel = new GamePanel(m);
+    gamepanel = new GamePanel(m,clip);
     gamepanel.finish.addActionListener(this);
 
     /*パネル3 */
@@ -95,6 +99,9 @@ class ReversiView extends JFrame implements ActionListener{
     this.pack();
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setVisible(true);
+  }
+  public Clip getClip(){
+    return clip;
   }
   class SelectItemListener implements ItemListener {
     public void itemStateChanged(final ItemEvent ie) {
@@ -213,7 +220,6 @@ class ReversiView extends JFrame implements ActionListener{
 	}
   public void actionPerformed(ActionEvent e){
     if(e.getSource()==titlepanel.start){
-      clip.start();
       movepanel("mode");
     }else if(e.getSource()==titlepanel.setting){
       movepanel("setting");
@@ -252,6 +258,11 @@ class ReversiView extends JFrame implements ActionListener{
       a=1;
     }else if(e.getSource()==multiserverpanel.returnButton){
       movepanel("multi");
+    }
+    if(e.getSource()!=multiserverpanel.password){
+      clip.flush();
+      clip.setFramePosition(0);
+      clip.start();
     }
   }
 }

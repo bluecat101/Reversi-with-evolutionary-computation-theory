@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.border.LineBorder;
 import java.util.*;
+import javax.sound.sampled.Clip;
 
 @SuppressWarnings("deprecation")
 class GamePanel extends JPanel implements Observer, ActionListener {
@@ -18,8 +19,10 @@ class GamePanel extends JPanel implements Observer, ActionListener {
   protected javax.swing.Timer timer;
   protected javax.swing.Timer animation;
   protected int aninum=0;
+  protected Clip clip;
 
-  public GamePanel(Model m) {
+  public GamePanel(Model m,Clip clip) {
+    this.clip=clip;
     timer = new javax.swing.Timer(1000, this);
     animation = new javax.swing.Timer(1,this);
     model = m;
@@ -300,6 +303,9 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     if(arg==(Object)1){
       flag=0;
       animation.start();
+      clip.flush();
+      clip.setFramePosition(0);
+      clip.start();
     }
     panel.repaint();
     if (reversiModel.getIsYourTurn()) {
