@@ -178,13 +178,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
             // fillblack(g, i, j);
             g.setColor(Color.BLACK);
             if(aniarray[i][j]==4){
-              if(a==0 && flag==0){
-                g.setColor(Color.WHITE);
-              }else{
-                flag=1;
-                g.setColor(Color.BLACK);
-              }
-              g.fillOval(20+70*i+5 ,20+70*j+5+aninum/2, 60, 60-aninum);//白から黒へアニメーション
+              drawStone(g, i, j,1);//白から黒へアニメーション
             }else{
               g.fillOval(20 + 70 * i + 5, 20 + 70 * j + 5, 60, 60);
             }
@@ -193,13 +187,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
             // fillwhite(g, i, j);
             g.setColor(Color.WHITE);
             if(aniarray[i][j]==4){
-              if(a==0 && flag==0){
-                g.setColor(Color.BLACK);
-              }else{
-                flag=1;
-                g.setColor(Color.WHITE);
-              }
-              g.fillOval(20+70*i+5 ,20+70*j+5+aninum/2, 60, 60-aninum);//黒から白へアニメーション
+              drawStone(g, i, j,2);//黒から白へアニメーション
             }else{
               g.fillOval(20 + 70 * i + 5, 20 + 70 * j + 5, 60, 60);//黒から白へアニメーション
             }
@@ -230,6 +218,23 @@ class GamePanel extends JPanel implements Observer, ActionListener {
 
       // 下の一行は確認のために一マス特定の場所を光らせたもの。
       // g.fillRect(20+66*3,20+70*2,70,70);
+    }
+    public void drawStone(Graphics g,int i,int j,int color){
+      if(a==0 && flag==0){
+        if(color==1){
+          g.setColor(Color.WHITE);
+        }else{
+          g.setColor(Color.BLACK);
+        }
+      }else{
+        flag=1;
+        if(color==1){
+          g.setColor(Color.BLACK);
+        }else{
+          g.setColor(Color.WHITE);          
+        }
+      }
+      g.fillOval(20+70*i+5 ,20+70*j+5+aninum/2, 60, 60-aninum);
     }
   }
 

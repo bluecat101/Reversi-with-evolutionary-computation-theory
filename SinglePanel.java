@@ -1,15 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
+// import java.awt.event.*;
+// import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
-import java.io.IOException;
+// import java.io.IOException;
 
 public class SinglePanel extends JPanel{
   JButton returnButton,startButton;
   JButton level1,level2,level3;
-  JComboBox<String> cb;
+  JComboBox<Object> cb;
   JComboBox<String> first;
   Image imgBack;
   SinglePanel(){
@@ -22,10 +22,20 @@ public class SinglePanel extends JPanel{
     }
     ImageIcon icon1 = new ImageIcon("osero-illust7.png");
     ImageIcon icon2 = new ImageIcon("osero-illust8.png");
-    cb=new JComboBox<>();
-    cb.setFont(new Font("HGP創英角ﾎﾟｯﾌﾟ体", Font.BOLD, 60));
-    cb.addItem("level1");cb.addItem("level2");cb.addItem("level3");
-    cb.setBounds(250,220,240,135);
+    // cb=new JComboBox<>();
+    DefaultComboBoxModel<Object> md = new DefaultComboBoxModel<>();
+    md.addElement(new ComboLabel("Level1", new ImageIcon("./osero-black.png")));
+    md.addElement(new ComboLabel("Level2", new ImageIcon("./osero-black.png")));
+    md.addElement(new ComboLabel("Level3", new ImageIcon("./osero-black.png")));
+
+    cb = new JComboBox<>(md);
+
+    ListCellRenderer<Object> renderer = new MyCellRenderer();
+    cb.setRenderer(renderer);
+    cb.setFont(new Font("HGP創英角ﾎﾟｯﾌﾟ体", Font.BOLD, 40));
+    cb.setBackground(Color.WHITE);
+    // cb.addItem("level1");cb.addItem("level2");cb.addItem("level3");
+    cb.setBounds(250,237,240,100);
     first=new JComboBox<>();
     first.setFont(new Font("HGP創英角ﾎﾟｯﾌﾟ体", Font.BOLD, 60));
     first.addItem("先攻");first.addItem("後攻");
@@ -48,6 +58,53 @@ public class SinglePanel extends JPanel{
     returnButton.setBounds(400, 370, 240, 135);
     add(returnButton);add(startButton);add(cb);add(first);
   }
+  class ComboLabel{
+    String text;
+    Icon icon;
+
+    ComboLabel(String text, Icon icon){
+      this.text = text;
+      this.icon = icon;
+    }
+
+    public String getText(){
+      return text;
+    }
+
+    public Icon getIcon(){
+      return icon;
+    }
+  }
+
+  class MyCellRenderer extends JLabel implements ListCellRenderer<Object>{
+
+    MyCellRenderer(){
+      setOpaque(true);
+    }
+
+    public Component getListCellRendererComponent(
+            JList<? extends Object> list,
+            Object value,
+            int index,
+            boolean isSelected,
+            boolean cellHasFocus){
+
+      ComboLabel data = (ComboLabel)value;
+      setText(data.getText());
+      setIcon(data.getIcon());
+
+      if (isSelected){
+        setForeground(Color.white);
+        setBackground(Color.black);
+      }else{
+        setForeground(Color.black);
+        setBackground(Color.white);
+      }
+
+      return this;
+    }
+  }
+  
   public void paintComponent(Graphics g) {
     Font f2 = new Font("HGP創英角ﾎﾟｯﾌﾟ体", Font.BOLD, 80);
 		Graphics2D g2 = (Graphics2D)g;
