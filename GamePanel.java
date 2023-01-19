@@ -32,7 +32,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     model = m;
     reversiModel = model.getReversiModel();
     reversiModel.addObserver(this);
-    JPanel p1 = new JPanel();
+    p1 = new JPanel();
     JPanel p2 = new JPanel();
 
     // Frame内の要素
