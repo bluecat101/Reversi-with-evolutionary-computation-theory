@@ -20,6 +20,9 @@ class GamePanel extends JPanel implements Observer, ActionListener {
   protected javax.swing.Timer animation;
   protected int aninum=0;
   protected Clip clip;
+  protected JPanel p1;
+  protected GridBagConstraints gbc;
+  protected GridBagLayout layout;
 
   public GamePanel(Model m,Clip clip) {
     this.clip=clip;
@@ -65,9 +68,9 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     chat = new JButton("Chat");
 
     // Panelによる塊の作成
-    GridBagLayout layout = new GridBagLayout();
+    layout = new GridBagLayout();
     p1.setLayout(layout);
-    GridBagConstraints gbc = new GridBagConstraints();
+    gbc = new GridBagConstraints();
 
     gbc.fill = GridBagConstraints.BOTH;
     gbc.gridx = 0;
@@ -152,6 +155,24 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     this.setVisible(true);
   }
 
+  // 左側のパネルの更新(chatかhistoryか)
+  public void nochatbox(String witch_Ai_or_Server) {
+    if (witch_Ai_or_Server == "Ai") {
+      p1.remove(chatbox);// chat boxの削除
+      chat.setText("HISTORY");// ボタンのtextの変更
+    } else if (witch_Ai_or_Server == "Server") {
+      if (p1.getComponentCount() == 3) {// chat boxがないなら
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.insets = new Insets(20, 20, 20, 0);
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.02;
+        layout.setConstraints(chatbox, gbc);
+        p1.add(chatbox);// chat box
+      }
+      chat.setText("chat");// ボタンのtextの変更
+    }
+  }
   // ReversiPanel を GamePanel の内部クラスとして実装
   class ReversiPanel extends JPanel {
     public void paintComponent(Graphics g) {
