@@ -33,7 +33,7 @@ public class ModePanel extends JPanel{
     multi.setForeground(Color.GREEN); //文字の色
     multi.setBorderPainted(false); //ボタンの枠削除
     multi.setBounds(570,220,240,135);
-    returnButton = new JButton("<html>Return<br /> Title</html>",icon1);
+    returnButton = new JButton("<html>Return<br /><center> Title</center></html>",icon1);
     returnButton.setRolloverIcon(icon2);
     returnButton.setContentAreaFilled(false); //背景透明化
     returnButton.setHorizontalTextPosition(JButton.CENTER);

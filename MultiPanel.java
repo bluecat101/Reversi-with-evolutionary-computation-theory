@@ -16,11 +16,11 @@ public class MultiPanel extends JPanel{
     }
     ImageIcon icon1 = new ImageIcon("osero-illust7.png");
     ImageIcon icon2 = new ImageIcon("osero-illust8.png");
-    serverButton = new JButton("Make a room",icon1);
+    serverButton = new JButton("<html>Make a <br /><center> room</center></html>",icon1);
     serverButton.setRolloverIcon(icon2);
     serverButton.setContentAreaFilled(false); //背景透明化
     serverButton.setHorizontalTextPosition(JButton.CENTER);
-    serverButton.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
+    serverButton.setFont(new Font("Arial Black", Font.BOLD, 30));
     serverButton.setForeground(Color.GREEN); //文字の色
     serverButton.setBorderPainted(false); //ボタンの枠削除
     serverButton.setBounds(270,220,240,135);
@@ -28,7 +28,7 @@ public class MultiPanel extends JPanel{
     clientButton.setRolloverIcon(icon2);
     clientButton.setContentAreaFilled(false); //背景透明化
     clientButton.setHorizontalTextPosition(JButton.CENTER);
-    clientButton.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
+    clientButton.setFont(new Font("Arial Black", Font.BOLD, 30));
     clientButton.setForeground(Color.GREEN); //文字の色
     clientButton.setBorderPainted(false); //ボタンの枠削除
     clientButton.setBounds(570,220,240,135);
@@ -36,7 +36,7 @@ public class MultiPanel extends JPanel{
     returnButton.setRolloverIcon(icon2);
     returnButton.setContentAreaFilled(false); //背景透明化
     returnButton.setHorizontalTextPosition(JButton.CENTER);
-    returnButton.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
+    returnButton.setFont(new Font("Arial Black", Font.BOLD, 30));
     returnButton.setForeground(Color.GREEN); //文字の色
     returnButton.setBorderPainted(false); //ボタンの枠削除
     returnButton.setBounds(420, 370, 240, 135);
