@@ -8,10 +8,12 @@ class Ai_1 extends Model{
   private Model.ReversiModel reversiModel;
   //back_judge_arrayの中身は変えないでね(変えるなら一度コピーしてからしてください。)
   private int[][] back_judge_array;
+  private Model.ChatModel chatModel;// chatmodel
   
   //コンストラクタ
   public Ai_1(Model m ,int aiPlayer){//引数の削除
     reversiModel = m.getReversiModel();
+    chatModel = m.getChatModel();
     // this.player=reversiModel.getOpponentStone(reversiModel.getPlayer());//playerの指定
     this.player=aiPlayer;
     this.board_size=reversiModel.board_size;//盤面のサイズを指定。
@@ -24,6 +26,7 @@ class Ai_1 extends Model{
     for(int i=0;i<board_size;i++){
       for(int j=0;j<board_size;j++){
         if(back_judge_array[i][j]==3){
+          chatModel.writeHistroy(i,j,reversiModel.getIsYourTurn());// 履歴に書く。
           reversiModel.xySetStone(i,j);
           return;
         }

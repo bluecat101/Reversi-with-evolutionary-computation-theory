@@ -82,7 +82,6 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     if (e.getSource() == view.getSingleStartButton()) {
         mode = "Ai";
         timer = new javax.swing.Timer(2000, this);// aiが2秒後に行動する。
-        // add -1/16--------------------------
         if (!view.getFirst()) {// 後攻なら
           reversiModel.changeIsYourTurn();// クライアントを後攻とする
           if (view.getAiLevel() == 1) {
@@ -107,7 +106,6 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
           }
         }
         reversiModel.clickStart();// 初期画面をリセットする
-        // ---------------------------------------
     } else if (e.getSource() == view.getMultiPasswordBox()) {
       if (view.getSVMode()) {
         int port = getPort(view.getMultiPasswordBox().getText());// 合言葉をポート番号に変換する。
@@ -119,7 +117,6 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
           reversiModel.changeIsYourTurn();
           chatModel.changePlayerNum();// chatの番号を２番目であるとする
           sv.send("serve first");// serverが後攻であることと通知する
-          reversiModel.clickStart();//初期画面の更新
         }
       } else {
         mode = "client";
@@ -129,9 +126,9 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
         if (!cl.recv()) {// メッセージが何もない<=>cl.recv()=falseなら自分が後攻
           reversiModel.changeIsYourTurn();// クライアントを後攻とする
           chatModel.changePlayerNum();// chatの番号を２番目であるとする
-          reversiModel.clickStart();// 初期画面の更新
         }
       }
+      reversiModel.clickStart();// 初期画面の更新
       timer = new javax.swing.Timer(300, this);// 0.3秒ごとにクライアントかサーバーで変化があったのかを確認する。
       timer.start();// 変化の探査開始
     }
@@ -165,11 +162,10 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
   }
 
   public void mousePressed(MouseEvent e) {
-    // add---------------------------&&reversiModel.getIsYourTurn())
     if (e.getSource() == view.getPanel() && reversiModel.transformMousePoint(e.getX()) == reversiModel.getPikaPika_x()
         && reversiModel.transformMousePoint(e.getY()) == reversiModel.getPikaPika_y()&&reversiModel.getIsYourTurn()) {
-    // ---------------------------
       if (mode.contains("Ai")) {
+        chatModel.writeHistroy(reversiModel.getPikaPika_x(),reversiModel.getPikaPika_y(), reversiModel.getIsYourTurn());// 履歴に書く。
         reversiModel.xySetStone(reversiModel.getPikaPika_x(), reversiModel.getPikaPika_y());
         timer.start();
       } else if (mode == "server&client") {
@@ -178,17 +174,7 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
         cl.send(reversiModel.getPikaPika_x(), reversiModel.getPikaPika_y());// クライアントからサーバーに送る
       }
 
-    } /*
-       * else if(e.getSource() == view.getChatPanel()){
-       * System.out.println("chat");
-       * if(num%2==1){
-       * view.getChatBox().setEnabled(false); num--;
-       * }else{
-       * view.getChatBox().setEnabled(true);
-       * view.getChatBox().grabFocus(); num++;
-       * }
-       * }
-       */
+    } 
   }
 
   public void mouseReleased(MouseEvent e) {
@@ -198,10 +184,9 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     char c = e.getKeyChar();
     switch (c) {
       case 'z':
-      //add 
       if(reversiModel.getIsYourTurn()){
-      //add 
         if (mode.contains("Ai")) {
+          chatModel.writeHistroy(reversiModel.getPikaPika_x(), reversiModel.getPikaPika_y(),reversiModel.getIsYourTurn());// 履歴に書く。
           reversiModel.xySetStone(reversiModel.getPikaPika_x(), reversiModel.getPikaPika_y());
           timer.start();
         } else if (mode == "server&client") {
