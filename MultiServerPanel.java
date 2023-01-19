@@ -31,7 +31,7 @@ public class MultiServerPanel extends JPanel{
     add(returnButton);add(password);
   }
   public void paintComponent(Graphics g) {
-		Font f2 = new Font("HGP創英角ﾎﾟｯﾌﾟ体", Font.BOLD, 80);
+		Font f2 = new Font("メイリオ", Font.BOLD, 80);
 		Graphics2D g2 = (Graphics2D)g;
  
 		//文字描画のアンチエイリアシングの有効化
@@ -41,9 +41,9 @@ public class MultiServerPanel extends JPanel{
     g.setFont(f2);
     FontMetrics fontMetrics = this.getFontMetrics(f2);
     int a=fontMetrics.stringWidth(s);
-    g.setColor(new Color(0,100,255));
+    g.setColor(new Color(100,100,100));
     g.drawString(s, 540-a/2+5, 195);
-    g.setColor(new Color(255,0,60));
+    g.setColor(new Color(30,200,30));
     g.drawString(s, 540-a/2, 190);
 	}
 }
