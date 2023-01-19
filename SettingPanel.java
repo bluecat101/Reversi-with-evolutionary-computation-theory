@@ -53,7 +53,7 @@ class SettingPanel extends JPanel {
     //ruleText = new JLabel("", JLabel.LEFT);
     g.drawString("・　移動　 : 矢印キー or マウス", 170,200);
     g.drawString("・駒を置く : Zキー or 左クリック",170,270);
-    g.drawString("・チャット : SPACEキー or Chatボタン",170,340);
+    g.drawString("・チャット : Enterキー or Chatボタン",170,340);
     //this.add(ruleText);
   }
 }
