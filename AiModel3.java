@@ -11,12 +11,15 @@ class Ai_3 extends Model {
   private int board_size;
   private Model.ReversiModel reversiModel;// 実際に動かすmodel
   private Model.ReversiModel virtualModel;// 仮想的に動かして様子を見るmodel
+  private Model.ChatModel chatModel;// chatmodel
+  
   // back_judge_arrayの中身は変えないでね(変えるなら一度コピーしてからしてください。)
   private int[][] back_judge_array;
 
   // コンストラクタ
   public Ai_3(Model m,int aiPlayer) {
     reversiModel = m.getReversiModel();
+    chatModel = m.getChatModel();
     virtualModel = (new Model()).getReversiModel();
     this.player = aiPlayer;// playerの指定
     this.board_size = reversiModel.board_size;// 盤面のサイズを指定。
@@ -36,6 +39,7 @@ class Ai_3 extends Model {
     virtualModel.setBoard_onlyAI(back_board_array);
     virtualModel.setPlayer(this.player);
     int[] storn_position = recursive_run(back_board_array, 2 * (future_hand_num - 1) + 1);
+    chatModel.writeHistroy(storn_position[0], storn_position[1], reversiModel.getIsYourTurn());// 履歴に書く。
     reversiModel.xySetStone(storn_position[0], storn_position[1]);
   }
 

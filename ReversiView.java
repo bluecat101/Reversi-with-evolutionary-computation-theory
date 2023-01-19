@@ -232,6 +232,7 @@ class ReversiView extends JFrame implements ActionListener{
     }else if(e.getSource()==singlepanel.returnButton){
       movepanel("mode");
     }else if(e.getSource()==singlepanel.startButton){
+      gamepanel.nochatbox("Ai");//chatをhistroyに変化
       movepanel("game");
       getPanel().requestFocus();
     }else if(e.getSource()==modepanel.returnButton){
@@ -253,6 +254,7 @@ class ReversiView extends JFrame implements ActionListener{
       movepanel("multiserver");
       //クライアントのボタンが押されたときの処理
     }else if(e.getSource()==multiserverpanel.password){
+      gamepanel.nochatbox("Server");//chatの更新(historyの可能性があるため)
       movepanel("game");
       getPanel().requestFocus();
       a=1;

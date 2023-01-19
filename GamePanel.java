@@ -25,6 +25,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     this.clip=clip;
     timer = new javax.swing.Timer(1000, this);
     animation = new javax.swing.Timer(1,this);
+    animation2 = new  javax.swing.Timer(1,this);
     model = m;
     reversiModel = model.getReversiModel();
     reversiModel.addObserver(this);
@@ -178,27 +179,30 @@ class GamePanel extends JPanel implements Observer, ActionListener {
             // fillblack(g, i, j);
             g.setColor(Color.BLACK);
             if(aniarray[i][j]==4){
-              drawStone(g, i, j,1);//白から黒へアニメーション
+              drawAniStone(g, i, j,1);//白から黒へアニメーション
             }else{
-              g.fillOval(20 + 70 * i + 5, 20 + 70 * j + 5, 60, 60);
+              drawStone(g, i, j, 1, 255);
             }
           }
           if (board_array[i][j] == 2) {
             // fillwhite(g, i, j);
             g.setColor(Color.WHITE);
             if(aniarray[i][j]==4){
-              drawStone(g, i, j,2);//黒から白へアニメーション
+              drawAniStone(g, i, j,2);//黒から白へアニメーション
             }else{
-              g.fillOval(20 + 70 * i + 5, 20 + 70 * j + 5, 60, 60);//黒から白へアニメーション
+              drawStone(g, i, j, 2, 255);
             }
           }
-          if (canput[i][j] == 3 && reversiModel.getIsYourTurn()) {
+          if (canput[i][j] == 3 
+          // && reversiModel.getIsYourTurn()
+          ) {
             if (reversiModel.getPlayer() == 1) {
               g.setColor(new Color(0, 0, 0, 70));
+              drawStone(g, i, j, 1, 70);
             } else {
               g.setColor(new Color(255, 255, 255, 150));
+              drawStone(g, i, j, 2,70);
             }
-            g.fillOval(20 + 70 * i + 5, 20 + 70 * j + 5, 60, 60);
           }
           if(aniarray[i][j]==3){
             g.setColor(new Color(255, 255, 0, 100));
@@ -215,26 +219,60 @@ class GamePanel extends JPanel implements Observer, ActionListener {
         g.fillRect(86 + 70 * reversiModel.getPikaPika_x(), 22 + 70 * reversiModel.getPikaPika_y(), 2, 66);
         g.fillRect(22 + 70 * reversiModel.getPikaPika_x(), 86 + 70 * reversiModel.getPikaPika_y(), 66, 2);
       }
-
       // 下の一行は確認のために一マス特定の場所を光らせたもの。
       // g.fillRect(20+66*3,20+70*2,70,70);
     }
-    public void drawStone(Graphics g,int i,int j,int color){
+    protected int delay=10;
+    public void drawStone(Graphics g,int i,int j,int color,int a){
+      if(color==1){
+        g.setColor(new Color(175,175,175,a));
+        g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4, 54, 62, 54, 54);
+        g.setColor(new Color(80,80,80,a));
+        g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4, 54, 58, 54, 54);
+        g.setColor(new Color(0,0,0,a));
+      }else{
+        g.setColor(new Color(80,80,80,a));
+        g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4, 54, 62, 54, 54);
+        g.setColor(new Color(175,175,175,a));
+        g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4, 54, 58, 54, 54);
+        g.setColor(new Color(255,255,255,a));
+      }
+      g.fillOval(20 + 70 * i + 8, 20 + 70 * j + 4, 54, 54);
+    }
+    //1白→黒2黒→白
+    public void drawAniStone(Graphics g,int i,int j,int color){
       if(a==0 && flag==0){
         if(color==1){
-          g.setColor(Color.WHITE);
+          g.setColor(new Color(80,80,80));
+          g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4+aninum/2, 54, 62-aninum, 54, 54);
+          g.setColor(new Color(175,175,175));
+          g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4+aninum/2, 54, 58-aninum, 54, 54);
+          g.setColor(new Color(255,255,255));
         }else{
-          g.setColor(Color.BLACK);
+          g.setColor(new Color(175,175,175));
+          g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4+aninum/2, 54, 62-aninum, 54, 54);
+          g.setColor(new Color(80,80,80));
+          g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4+aninum/2, 54, 58-aninum, 54, 54);
+          g.setColor(new Color(0,0,0));
         }
+        g.fillOval(20 + 70 * i + 8, 20 + 70 * j + 4+aninum/2, 54, 54-aninum);
       }else{
         flag=1;
         if(color==1){
-          g.setColor(Color.BLACK);
+          g.setColor(new Color(175,175,175));
+          g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 8+aninum/2-aninum2, 54, 62-aninum, 54, 54);
+          g.setColor(new Color(80,80,80));
+          g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 8+aninum/2-aninum2, 54, 58-aninum, 54, 54);
+          g.setColor(new Color(0,0,0));
         }else{
-          g.setColor(Color.WHITE);          
+          g.setColor(new Color(80,80,80));
+          g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 8+aninum/2-aninum2, 54, 62-aninum, 54, 54);
+          g.setColor(new Color(175,175,175));
+          g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 8+aninum/2-aninum2, 54, 58-aninum, 54, 54);
+          g.setColor(new Color(255,255,255));
         }
+        g.fillOval(20 + 70 * i + 8, 20 + 70 * j + 12+aninum/2-2*aninum2, 54, 54-aninum);
       }
-      g.fillOval(20+70*i+5 ,20+70*j+5+aninum/2, 60, 60-aninum);
     }
   }
 
@@ -307,9 +345,10 @@ class GamePanel extends JPanel implements Observer, ActionListener {
   public void update(Observable o, Object arg) {
     if(arg==(Object)1){
       flag=0;
+      aninum2=0;
       animation.start();
       clip.flush();
-      clip.setFramePosition(0);
+      clip.setFramePosition(4500);
       clip.start();
     }
     panel.repaint();
@@ -333,6 +372,8 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     }
   }
   protected int a=0;
+  protected int aninum2=0;
+  protected javax.swing.Timer animation2;
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == timer) {
       if (reversiModel.getIsYourTurn()) {
@@ -343,16 +384,24 @@ class GamePanel extends JPanel implements Observer, ActionListener {
       }
       timer.stop();
     }
+    if (e.getSource() == animation2) {
+      aninum2+=1;
+      panel.repaint();
+      if(aninum2==4){animation2.stop();}
+    }
     if(e.getSource() == animation){
       if(a==0){
         aninum+=2;
-        if(aninum==60){a=1;}
+        if(aninum==54){a=1;}
       }else{
         aninum-=2;
+        aninum2=4-(int)(aninum/14);
       }
       // System.out.println(aninum);
       panel.repaint();
-      if(aninum==0){a=0;animation.stop();}      
+      if(aninum==0){a=0;animation.stop();
+        // animation2.start();
+      }      
     }
   }
 }
