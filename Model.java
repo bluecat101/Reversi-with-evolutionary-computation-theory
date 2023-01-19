@@ -355,6 +355,11 @@ class Model {
       }
     }
 
+    public void clickStart() {// 描画を更新させる。
+      setChanged();
+      notifyObservers();
+    }
+
     public boolean getIsYourTurn() {
       return isYourturn;
     }
