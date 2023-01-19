@@ -328,7 +328,6 @@ class Model {
         next_x = x;
         next_y = y;
       }
-      System.out.println(next_x + "    " + next_y);
       setPikaPika_x(next_x);
       setPikaPika_y(next_y);
       setChanged();
@@ -412,6 +411,18 @@ class Model {
         playernum = 2;
       } else {
         playernum = 1;
+      }
+    }
+    
+    public void writeHistroy(int x, int y, boolean flag) {
+      int player = 2;
+      if (flag) {
+        player = 1;
+      }
+      if (player == 1) {
+        setChat("黒：横　　" + (1 + x) + "　　縦　　" + (1 + y), player);
+      } else {
+        setChat("白：横　　" + (1 + x) + "　　縦　　" + (1 + y), player);
       }
     }
   }
