@@ -420,9 +420,9 @@ class Model {
         player = 1;
       }
       if (player == 1) {
-        setChat("黒：横　　" + (1 + x) + "　　縦　　" + (1 + y), player);
+        setChat("黒：横　　" + (1 + x) + "　　　縦　　" + (1 + y), player);
       } else {
-        setChat("白：横　　" + (1 + x) + "　　縦　　" + (1 + y), player);
+        setChat("白：横　　" + (1 + x) + "　　　縦　　" + (1 + y), player);
       }
     }
   }

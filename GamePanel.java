@@ -113,6 +113,8 @@ class GamePanel extends JPanel implements Observer, ActionListener {
       if (this.getComponentCount() == 8) {// chat boxがないなら
         chatbox.setBounds(20,510,220,25);
         this.add(chatbox);// chat box
+        cp.setBounds(20,170,220,320);
+        this.add(cp);
       }
       chat.setText("chat");// ボタンのtextの変更
     }
