@@ -36,7 +36,7 @@ class ReversiView extends JFrame implements ActionListener{
  
   public ReversiView(Model m,String st) {
     super(st);
-    this.setTitle("Leversi Panel");
+    this.setTitle("Reversi Panel");
     model=m;
     clip = createClip(new File("set.wav"));
     bgm = createClip(new File("Tea_Time_Waltz.wav"));
