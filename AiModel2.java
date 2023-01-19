@@ -12,8 +12,7 @@ class Ai_2 extends Model{
   //コンストラクタ
   public Ai_2(Model m, int aiPlayer){
     reversiModel = m.getReversiModel();
-    // this.player=reversiModel.getOpponentStone(reversiModel.getPlayer());//playerの指定
-    this.player=aiPlayer;
+    this.player=aiPlayer;//playerの指定
     this.board_size=reversiModel.board_size;//盤面のサイズを指定。
   }
   
