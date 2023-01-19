@@ -21,7 +21,7 @@ public class ModePanel extends JPanel{
     single.setRolloverIcon(icon2);
     single.setContentAreaFilled(false); //背景透明化
     single.setHorizontalTextPosition(JButton.CENTER);
-    single.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
+    single.setFont(new Font("Arial Black", Font.BOLD, 30));
     single.setForeground(Color.GREEN); //文字の色
     single.setBorderPainted(false); //ボタンの枠削除
     single.setBounds(270,220,240,135);
@@ -29,7 +29,7 @@ public class ModePanel extends JPanel{
     multi.setRolloverIcon(icon2);
     multi.setContentAreaFilled(false); //背景透明化
     multi.setHorizontalTextPosition(JButton.CENTER);
-    multi.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
+    multi.setFont(new Font("Arial Black", Font.BOLD, 30));
     multi.setForeground(Color.GREEN); //文字の色
     multi.setBorderPainted(false); //ボタンの枠削除
     multi.setBounds(570,220,240,135);
@@ -37,7 +37,7 @@ public class ModePanel extends JPanel{
     returnButton.setRolloverIcon(icon2);
     returnButton.setContentAreaFilled(false); //背景透明化
     returnButton.setHorizontalTextPosition(JButton.CENTER);
-    returnButton.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
+    returnButton.setFont(new Font("Arial Black", Font.BOLD, 30));
     returnButton.setForeground(Color.GREEN); //文字の色
     returnButton.setBorderPainted(false); //ボタンの枠削除
     returnButton.setBounds(420, 370, 240, 135);
