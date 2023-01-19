@@ -43,7 +43,6 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
       if (mode.contains("Ai")) {
         ai.run();
         if (reversiModel.getPassFlag("controller") == 0) {// 現状がpassじゃない<=>自分のターンに移る
-          view.getPanel().requestFocus();
           timer.stop();
         }
       } else if (mode == "server&client") {
@@ -173,9 +172,6 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
       if (mode.contains("Ai")) {
         reversiModel.xySetStone(reversiModel.getPikaPika_x(), reversiModel.getPikaPika_y());
         timer.start();
-        view.getChatBox().setEnabled(true);
-        view.getChatBox().grabFocus();
-        num++;
       } else if (mode == "server&client") {
         sv.send(reversiModel.getPikaPika_x(), reversiModel.getPikaPika_y());// サーバーに直接送る
       } else if (mode == "client") {
@@ -208,9 +204,6 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
         if (mode.contains("Ai")) {
           reversiModel.xySetStone(reversiModel.getPikaPika_x(), reversiModel.getPikaPika_y());
           timer.start();
-          view.getChatBox().setEnabled(true);
-          view.getChatBox().grabFocus();
-          num++;
         } else if (mode == "server&client") {
           sv.send(reversiModel.getPikaPika_x(), reversiModel.getPikaPika_y());// サーバーに直接送る
         } else if (mode == "client") {
