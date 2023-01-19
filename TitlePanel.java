@@ -16,7 +16,7 @@ class TitlePanel extends JPanel {
     start.setRolloverIcon(icon2);
     start.setContentAreaFilled(false); //背景透明化
     start.setHorizontalTextPosition(JButton.CENTER);
-    start.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
+    start.setFont(new Font("Arial Black", Font.BOLD, 33));
     start.setForeground(Color.GREEN); //文字の色
     start.setBorderPainted(false); //ボタンの枠削除
     start.setBounds(414,350+20,240,135);
@@ -25,7 +25,7 @@ class TitlePanel extends JPanel {
     setting.setRolloverIcon(icon2);
     setting.setContentAreaFilled(false); //背景透明化
     setting.setHorizontalTextPosition(JButton.CENTER);
-    setting.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
+    setting.setFont(new Font("Arial Black", Font.BOLD, 33));
     setting.setForeground(Color.GREEN); //文字の色
     setting.setBorderPainted(false); //ボタンの枠削除
     setting.setBounds(82,350+20,240,135);
@@ -34,7 +34,7 @@ class TitlePanel extends JPanel {
     finish.setRolloverIcon(icon2);
     finish.setContentAreaFilled(false); //背景透明化
     finish.setHorizontalTextPosition(JButton.CENTER);
-    finish.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
+    finish.setFont(new Font("Arial Black", Font.BOLD, 33));
     finish.setForeground(Color.GREEN); //文字の色
     finish.setBorderPainted(false); //ボタンの枠削除
     finish.setBounds(746,350+20,240,135);
