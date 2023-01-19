@@ -38,8 +38,8 @@ public class SinglePanel extends JPanel{
     cb.setBounds(250,237,240,100);
 
     DefaultComboBoxModel<Object> md1 = new DefaultComboBoxModel<>();
-    md1.addElement(new ComboLabel("先攻", new ImageIcon("./osero-black.png")));
-    md1.addElement(new ComboLabel("後攻", new ImageIcon("./osero-black.png")));
+    md1.addElement(new ComboLabel("First", new ImageIcon("./osero-black.png")));
+    md1.addElement(new ComboLabel("Second", new ImageIcon("./osero-black.png")));
 
     first = new JComboBox<>(md1);
 

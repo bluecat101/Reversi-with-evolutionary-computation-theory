@@ -63,12 +63,12 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     cp.setBorder(new LineBorder(Color.BLACK, 2, true));
     cp.setBounds(20,170,220,320);
     if (reversiModel.getIsYourTurn()) {
-      state = new JLabel("<html>あなたの番<br /><center> です</center></html>", JLabel.CENTER);
+      state = new JLabel("<html>Your<br /><center> turn</center></html>", JLabel.CENTER);
     } else {
-      state = new JLabel("<html>相手の番<br /><center> です</center></html>", JLabel.CENTER);
+      state = new JLabel("<html>Opponent's<br /><center> turn</center></html>", JLabel.CENTER);
     }
     state.setBorder(new LineBorder(Color.BLACK, 2, true));
-    Font font = new Font(Font.SANS_SERIF, Font.BOLD, 40);
+    Font font = new Font(Font.SANS_SERIF, Font.BOLD, 36);
     state.setFont(font);
     state.setPreferredSize(new Dimension(210,50));
     state.setBounds(840,170,220,365);
@@ -319,17 +319,17 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     }
     panel.repaint();
     if (reversiModel.getIsYourTurn()) {
-      state.setText("<html>あなたの番<br /><center> です</center></html>");
+      state.setText("<html>Your<br /><center>turn</center></html>");
 
     } else {
-      state.setText("<html>相手の番<br /><center> です</center></html>");
+      state.setText("<html>Opponent's<br /><center> turn</center></html>");
 
     }
     if (reversiModel.getFinishFlag() == 1) {
-      if (reversiModel.countStorn(1) > reversiModel.countStorn(2)) {
-        state.setText("<html>あなた<br /><center>の</center><center>勝利!!</center></html>");
+      if (reversiModel.countStorn(reversiModel.getPlayer()) > reversiModel.countStorn(reversiModel.getOpponentStone(reversiModel.getPlayer()))) {
+        state.setText("<html>You<br /><center>win!!</center></html>");
       } else {
-        state.setText("<html>相手<br /><center>の</center><center>勝利!!</center></html>");
+        state.setText("<html>Opponent<br /><center>win!!</center></html>");
       }
     }
     if (reversiModel.getPassFlag("view") == 1) {
@@ -343,9 +343,9 @@ class GamePanel extends JPanel implements Observer, ActionListener {
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == timer) {
       if (reversiModel.getIsYourTurn()) {
-        state.setText("<html>あなたの番<br /><center> です</center></html>");
+        state.setText("<html>Your<br /><center>turn</center></html>");
       } else {
-        state.setText("<html>相手の番<br /><center> です</center></html>");
+        state.setText("<html>Opponent's<br /><center> turn</center></html>");
 
       }
       timer.stop();
