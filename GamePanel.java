@@ -98,9 +98,9 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     this.add(panel);
     this.setVisible(true);
   }
-  public void paintComponent(Graphics g) {
-    g.drawImage(imgBack, 0, 0, 1080, 600, null);
-  }
+  // public void paintComponent(Graphics g) {
+  //   g.drawImage(imgBack, 0, 0, 1080, 600, null);
+  // }
 
   public void nochatbox(String witch_Ai_or_Server) {
     if (witch_Ai_or_Server == "Ai") {
