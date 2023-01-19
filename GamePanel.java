@@ -124,10 +124,10 @@ class GamePanel extends JPanel implements Observer, ActionListener {
   class ReversiPanel extends JPanel {
     public void paintComponent(Graphics g) {
       super.paintComponent(g);
-      // Graphics2D g2 = (Graphics2D) g;
+      Graphics2D g2 = (Graphics2D) g;
 
-      // // 図形や線のアンチエイリアシングの有効化
-      // g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      // 図形や線のアンチエイリアシングの有効化
+      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
       int[][] board_array = reversiModel.getBoardArray();
       int[][] canput = reversiModel.getJudgeBoardArray(reversiModel.getPlayer());// modelのおけるか配列

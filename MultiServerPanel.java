@@ -7,7 +7,7 @@ public class MultiServerPanel extends JPanel{
   JButton returnButton;
   JTextField password;
   Image imgBack;
-  String s="合言葉を決める";
+  String s="Decide Password";
   MultiServerPanel(){
     setLayout(null);
     try {
@@ -19,7 +19,7 @@ public class MultiServerPanel extends JPanel{
     ImageIcon icon1 = new ImageIcon("osero-illust7.png");
     ImageIcon icon2 = new ImageIcon("osero-illust8.png");
     password = new JTextField();
-    password.setBounds(420,220,240,100);
+    password.setBounds(420,250,240,100);
     returnButton = new JButton("Back",icon1);
     returnButton.setRolloverIcon(icon2);
     returnButton.setContentAreaFilled(false); //背景透明化
