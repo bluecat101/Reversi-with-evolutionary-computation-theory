@@ -63,9 +63,9 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     cp.setBorder(new LineBorder(Color.BLACK, 2, true));
     cp.setBounds(20,170,220,320);
     if (reversiModel.getIsYourTurn()) {
-      state = new JLabel("あなたの番です", JLabel.CENTER);
+      state = new JLabel("<html>あなたの番<br /><center> です</center></html>", JLabel.CENTER);
     } else {
-      state = new JLabel("相手の番です", JLabel.CENTER);
+      state = new JLabel("<html>相手の番<br /><center> です</center></html>", JLabel.CENTER);
     }
     state.setBorder(new LineBorder(Color.BLACK, 2, true));
     Font font = new Font(Font.SANS_SERIF, Font.BOLD, 32);
@@ -324,7 +324,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
       state.setText("<html>あなたの番<br /><center> です</center></html>");
 
     } else {
-      state.setText("相手の番です");
+      state.setText("<html>相手の番<br /><center> です</center></html>");
 
     }
     if (reversiModel.getFinishFlag() == 1) {
@@ -347,7 +347,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
       if (reversiModel.getIsYourTurn()) {
         state.setText("<html>あなたの番<br /><center> です</center></html>");
       } else {
-        state.setText("相手の番です");
+        state.setText("<html>相手の番<br /><center> です</center></html>");
 
       }
       timer.stop();
