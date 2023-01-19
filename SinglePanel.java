@@ -10,7 +10,7 @@ public class SinglePanel extends JPanel{
   JButton returnButton,startButton;
   JButton level1,level2,level3;
   JComboBox<Object> cb;
-  JComboBox<String> first;
+  JComboBox<Object> first;
   Image imgBack;
   SinglePanel(){
     setLayout(null);
@@ -36,10 +36,23 @@ public class SinglePanel extends JPanel{
     cb.setBackground(Color.WHITE);
     // cb.addItem("level1");cb.addItem("level2");cb.addItem("level3");
     cb.setBounds(250,237,240,100);
-    first=new JComboBox<>();
-    first.setFont(new Font("HGP創英角ﾎﾟｯﾌﾟ体", Font.BOLD, 60));
-    first.addItem("先攻");first.addItem("後攻");
-    first.setBounds(550,370,240,135);
+
+    DefaultComboBoxModel<Object> md1 = new DefaultComboBoxModel<>();
+    md1.addElement(new ComboLabel("先攻", new ImageIcon("./osero-black.png")));
+    md1.addElement(new ComboLabel("後攻", new ImageIcon("./osero-black.png")));
+
+    first = new JComboBox<>(md1);
+
+    ListCellRenderer<Object> renderer1 = new MyCellRenderer();
+    first.setRenderer(renderer1);
+    first.setFont(new Font("HGP創英角ﾎﾟｯﾌﾟ体", Font.BOLD, 40));
+    first.setBackground(Color.WHITE);
+    first.setBounds(550,237,240,100);
+
+    // first=new JComboBox<>();
+    // first.setFont(new Font("HGP創英角ﾎﾟｯﾌﾟ体", Font.BOLD, 60));
+    // first.addItem("先攻");first.addItem("後攻");
+    // first.setBounds(550,370,240,135);
     startButton = new JButton("Start",icon1);
     startButton.setRolloverIcon(icon2);
     startButton.setContentAreaFilled(false); //背景透明化
@@ -47,7 +60,7 @@ public class SinglePanel extends JPanel{
     startButton.setFont(new Font("Arial Black", Font.BOLD, 30));
     startButton.setForeground(Color.GREEN); //文字の色
     startButton.setBorderPainted(false); //ボタンの枠削除
-    startButton.setBounds(550,220,240,135);
+    startButton.setBounds(550,370,240,135);
     returnButton = new JButton("Back",icon1);
     returnButton.setRolloverIcon(icon2);
     returnButton.setContentAreaFilled(false); //背景透明化
@@ -55,7 +68,7 @@ public class SinglePanel extends JPanel{
     returnButton.setFont(new Font("Arial Black", Font.BOLD, 30));
     returnButton.setForeground(Color.GREEN); //文字の色
     returnButton.setBorderPainted(false); //ボタンの枠削除
-    returnButton.setBounds(400, 370, 240, 135);
+    returnButton.setBounds(250, 370, 240, 135);
     add(returnButton);add(startButton);add(cb);add(first);
   }
   class ComboLabel{
