@@ -20,11 +20,21 @@ class SettingPanel extends JPanel {
         System.exit(0);
     }
     returnButton = new JButton("Return Title");
-    returnButton.setBounds(400, 425, 250, 100);
+    ImageIcon icon1 = new ImageIcon("osero-illust7.png");
+    ImageIcon icon2 = new ImageIcon("osero-illust8.png");
+    returnButton = new JButton("back", icon1);
+    returnButton.setRolloverIcon(icon2);
+    returnButton.setContentAreaFilled(false); //背景透明化
+    returnButton.setHorizontalTextPosition(JButton.CENTER);
+    returnButton.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 30));
+    returnButton.setForeground(Color.GREEN); //文字の色
+    returnButton.setBorderPainted(false); //ボタンの枠削除
+    returnButton.setBounds(414,350+20,240,135);
     add(returnButton);
   }
   public void paintComponent(Graphics g) {
-    Font f2 = new Font("HGP創英角ﾎﾟｯﾌﾟ体", Font.BOLD, 80);
+    //Font f2 = new Font("HGP創英角ﾎﾟｯﾌﾟ体", Font.BOLD, 40);
+    Font f2 = new Font("メイリオ", Font.BOLD, 40);
 		Graphics2D g2 = (Graphics2D)g;
 
     FontMetrics fontMetrics = this.getFontMetrics(f2);
@@ -35,13 +45,15 @@ class SettingPanel extends JPanel {
     g.drawImage(imgBack, 0, 0, 1080, 600, null);
     g.setFont(f2);
     int a=fontMetrics.stringWidth("Rule");
-    g.setColor(new Color(0,100,255));
-    g.drawString("Rule", 540-a/2+5, 195);
-    g.setColor(new Color(255,0,60));
-    g.drawString("Rule", 540-a/2, 190);
+    g.setColor(new Color(100,100,100));
+    g.drawString("Rule", 540-a/2+5, 145);
+    g.setColor(new Color(30,200,30));
+    g.drawString("Rule", 540-a/2, 140);
     g.setColor(Color.BLACK);
-    ruleText = new JLabel("", JLabel.LEFT);
-    ruleText.setText("<html>"+"・移動 : 矢印キー or マウス<br>"+"</html>");
-    this.add(ruleText);
+    //ruleText = new JLabel("", JLabel.LEFT);
+    g.drawString("・　移動　 : 矢印キー or マウス", 170,200);
+    g.drawString("・駒を置く : Zキー or 左クリック",170,270);
+    g.drawString("・チャット : SPACEキー or Chatボタン",170,340);
+    //this.add(ruleText);
   }
 }
