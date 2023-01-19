@@ -68,7 +68,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
       state = new JLabel("<html>相手の番<br /><center> です</center></html>", JLabel.CENTER);
     }
     state.setBorder(new LineBorder(Color.BLACK, 2, true));
-    Font font = new Font(Font.SANS_SERIF, Font.BOLD, 32);
+    Font font = new Font(Font.SANS_SERIF, Font.BOLD, 40);
     state.setFont(font);
     state.setPreferredSize(new Dimension(210,50));
     state.setBounds(840,170,220,365);
@@ -124,10 +124,10 @@ class GamePanel extends JPanel implements Observer, ActionListener {
   class ReversiPanel extends JPanel {
     public void paintComponent(Graphics g) {
       super.paintComponent(g);
-      Graphics2D g2 = (Graphics2D) g;
+      // Graphics2D g2 = (Graphics2D) g;
 
-      // 図形や線のアンチエイリアシングの有効化
-      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      // // 図形や線のアンチエイリアシングの有効化
+      // g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
       int[][] board_array = reversiModel.getBoardArray();
       int[][] canput = reversiModel.getJudgeBoardArray(reversiModel.getPlayer());// modelのおけるか配列
@@ -161,9 +161,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
               drawStone(g, i, j, 2, 255);
             }
           }
-          if (canput[i][j] == 3 
-          // && reversiModel.getIsYourTurn()
-          ) {
+          if (canput[i][j] == 3 && reversiModel.getIsYourTurn()) {
             if (reversiModel.getPlayer() == 1) {
               g.setColor(new Color(0, 0, 0, 70));
               drawStone(g, i, j, 1, 70);
@@ -329,9 +327,9 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     }
     if (reversiModel.getFinishFlag() == 1) {
       if (reversiModel.countStorn(1) > reversiModel.countStorn(2)) {
-        state.setText("黒の勝利");
+        state.setText("<html>あなた<br /><center>の</center><center>勝利!!</center></html>");
       } else {
-        state.setText("白の勝利");
+        state.setText("<html>相手<br /><center>の</center><center>勝利!!</center></html>");
       }
     }
     if (reversiModel.getPassFlag("view") == 1) {
