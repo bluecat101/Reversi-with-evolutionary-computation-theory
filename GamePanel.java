@@ -44,6 +44,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     panel = new ReversiPanel();
     panel.setPreferredSize(new Dimension(600, 600));
     panel.setBounds(240,0,600,600);
+    panel.setOpaque(false);
 
     CountPanel blackpanel = new CountPanel(1, "Black");
     blackpanel.setBorder(new LineBorder(Color.BLACK, 2, true));
@@ -69,6 +70,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     }
     state.setBorder(new LineBorder(Color.BLACK, 2, true));
     Font font = new Font(Font.SANS_SERIF, Font.BOLD, 36);
+    state.setOpaque(true);
     state.setFont(font);
     state.setPreferredSize(new Dimension(210,50));
     state.setBounds(840,170,220,365);
@@ -99,9 +101,9 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     this.add(panel);
     this.setVisible(true);
   }
-  // public void paintComponent(Graphics g) {
-  //   g.drawImage(imgBack, 0, 0, 1080, 600, null);
-  // }
+  public void paintComponent(Graphics g) {
+    g.drawImage(imgBack, 0, 0, 1080, 600, null);
+  }
 
   public void nochatbox(String witch_Ai_or_Server) {
     if (witch_Ai_or_Server == "Ai") {
