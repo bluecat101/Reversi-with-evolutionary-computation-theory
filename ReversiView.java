@@ -40,8 +40,8 @@ class ReversiView extends JFrame implements ActionListener{
     model=m;
     clip = createClip(new File("set.wav"));
     bgm = createClip(new File("Tea_Time_Waltz.wav"));
-    bgm.loop(Clip.LOOP_CONTINUOUSLY);
-    bgm.start();
+    // bgm.loop(Clip.LOOP_CONTINUOUSLY);
+    // bgm.start();
 		//ここで再生メソッドの呼び出し
     /* タイトルパネル */
     titlepanel = new TitlePanel();
@@ -229,11 +229,11 @@ class ReversiView extends JFrame implements ActionListener{
     }else if(e.getSource()==settingpanel.returnButton){
       movepanel("title");
     }else if(e.getSource()==gamepanel.finish){
+      model.getReversiModel().initBoard();
       movepanel("title");
     }else if(e.getSource()==singlepanel.returnButton){
       movepanel("mode");
     }else if(e.getSource()==singlepanel.startButton){
-      gamepanel.nochatbox("Ai");//chatをhistroyに変化
       movepanel("game");
       getPanel().requestFocus();
     }else if(e.getSource()==modepanel.returnButton){
@@ -255,7 +255,6 @@ class ReversiView extends JFrame implements ActionListener{
       movepanel("multiserver");
       //クライアントのボタンが押されたときの処理
     }else if(e.getSource()==multiserverpanel.password){
-      gamepanel.nochatbox("Server");//chatの更新(historyの可能性があるため)
       movepanel("game");
       getPanel().requestFocus();
       a=1;
@@ -264,7 +263,7 @@ class ReversiView extends JFrame implements ActionListener{
     }
     if(e.getSource()!=multiserverpanel.password){
       clip.flush();
-      clip.setFramePosition(0);
+      clip.setFramePosition(4500);
       clip.start();
     }
   }
