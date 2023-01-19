@@ -96,7 +96,8 @@ class ReversiView extends JFrame implements ActionListener{
     // pack は JFrameのサイズを自動設定するメソッド．
 
     // this.setSize(300,200); などの代わり
-    this.pack();
+    // this.pack();
+    this.setSize(1090,635); 
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setVisible(true);
   }

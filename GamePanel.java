@@ -4,6 +4,8 @@ import java.awt.event.*;
 import javax.swing.border.LineBorder;
 import java.util.*;
 import javax.sound.sampled.Clip;
+import java.io.File;
+import javax.imageio.ImageIO;
 
 @SuppressWarnings("deprecation")
 class GamePanel extends JPanel implements Observer, ActionListener {
@@ -12,19 +14,23 @@ class GamePanel extends JPanel implements Observer, ActionListener {
   protected ReversiPanel panel;
   protected ChatPanel chatpanel;
   protected JLabel state;
-  protected JButton finish, reset;
+  protected JButton finish, reset,chat;
   protected JTextField chatbox;
-  protected JButton chat;
   protected JScrollBar scrollbar;
   protected javax.swing.Timer timer;
   protected javax.swing.Timer animation;
   protected int aninum=0;
   protected Clip clip;
-  protected JPanel p1;
-  protected GridBagConstraints gbc;
-  protected GridBagLayout layout;
-
+  protected Image imgBack;
+  
   public GamePanel(Model m,Clip clip) {
+    this.setLayout(null);
+    try {
+      imgBack = ImageIO.read(new File("haikei.jpg"));
+    } catch (Exception e) {
+        System.out.println(e);
+        System.exit(0);
+    }
     this.clip=clip;
     timer = new javax.swing.Timer(1000, this);
     animation = new javax.swing.Timer(1,this);
@@ -32,18 +38,19 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     model = m;
     reversiModel = model.getReversiModel();
     reversiModel.addObserver(this);
-    p1 = new JPanel();
-    JPanel p2 = new JPanel();
 
     // Frame内の要素
     panel = new ReversiPanel();
     panel.setPreferredSize(new Dimension(600, 600));
+    panel.setBounds(240,0,600,600);
 
     CountPanel blackpanel = new CountPanel(1, "Black");
     blackpanel.setBorder(new LineBorder(Color.BLACK, 2, true));
+    blackpanel.setBounds(20,20,220,130);
 
     CountPanel whitepanel = new CountPanel(2, "White");
     whitepanel.setBorder(new LineBorder(Color.BLACK, 2, true));
+    whitepanel.setBounds(840,20,220,130);
 
     scrollbar = new JScrollBar(JScrollBar.VERTICAL);
 
@@ -53,6 +60,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     cp.add(chatpanel, BorderLayout.CENTER);
     cp.add(scrollbar, BorderLayout.EAST);
     cp.setBorder(new LineBorder(Color.BLACK, 2, true));
+    cp.setBounds(20,170,220,320);
     if (reversiModel.getIsYourTurn()) {
       state = new JLabel("あなたの番です", JLabel.CENTER);
     } else {
@@ -62,117 +70,51 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     Font font = new Font(Font.SANS_SERIF, Font.BOLD, 32);
     state.setFont(font);
     state.setPreferredSize(new Dimension(210,50));
+    state.setBounds(840,170,220,365);
 
     finish = new JButton("Return Title");
+    finish.setBounds(940,555,110,25);
     reset = new JButton("Reset");
+    reset.setBounds(840,555,80,25);
     chat = new JButton("Chat");
+    chat.setBounds(20,555,220,25);
 
-    // Panelによる塊の作成
-    layout = new GridBagLayout();
-    p1.setLayout(layout);
-    gbc = new GridBagConstraints();
-
-    gbc.fill = GridBagConstraints.BOTH;
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.insets = new Insets(20, 20, 0, 0);
-    gbc.weightx = 1.0;
-    gbc.weighty = 0.2;
-    layout.setConstraints(blackpanel, gbc);
-
-    gbc.gridy = 1;
-    gbc.gridwidth = 1;
-    gbc.weightx = 1.0;
-    gbc.weighty = 1.0;
-    layout.setConstraints(cp, gbc);
-
-    gbc.gridx = 0;
-    gbc.gridy = 3;
-    gbc.insets = new Insets(0, 20, 20, 0);
-    gbc.weightx = 1.0;
-    gbc.weighty = 0.01;
-    layout.setConstraints(chat, gbc);
-
-    p1.add(blackpanel);
-    p1.add(cp);
-    p1.add(chat);
+    this.add(blackpanel);
+    this.add(cp);
+    // this.add(chat);
 
     // 以下を開放してテキストボックスを追加
 
     chatbox = new JTextField();
     chatbox.setEnabled(false);
-    gbc.gridy = 2;
-    gbc.insets = new Insets(20, 20, 20, 0);
-    gbc.weightx = 1.0;
-    gbc.weighty = 0.02;
-    layout.setConstraints(chatbox, gbc);
-    p1.add(chatbox);
+    chatbox.setBounds(20,510,220,25);
+    this.add(chatbox);
 
-    GridBagLayout layout2 = new GridBagLayout();
-    p2.setLayout(layout2);
-
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.gridwidth = 2;
-    gbc.insets = new Insets(20, 0, 0, 20);
-    gbc.weightx = 1.0;
-    gbc.weighty = 0.15;
-    layout2.setConstraints(whitepanel, gbc);
-
-    gbc.gridy = 1;
-    gbc.insets = new Insets(20, 0, 20, 20);
-    gbc.weightx = 1.0;
-    gbc.weighty = 1.0;
-    layout2.setConstraints(state, gbc);
-
-    gbc.gridy = 2;
-    gbc.gridwidth = 1;
-    gbc.insets = new Insets(0, 0, 20, 20);
-    gbc.weightx = 1.0;
-    gbc.weighty = 0.01;
-    layout2.setConstraints(reset, gbc);
-
-    gbc.gridx = 1;
-    gbc.gridy = 2;
-    gbc.insets = new Insets(0, 0, 20, 20);
-    gbc.weightx = 1.0;
-    gbc.weighty = 0.01;
-    layout2.setConstraints(finish, gbc);
-
-    p2.add(whitepanel);
-    p2.add(state);
-    p2.add(reset);
-    p2.add(finish);
-    this.setLayout(new BorderLayout());
-
-    this.add(p1, BorderLayout.WEST);
-    this.add(p2, BorderLayout.EAST);
-
-    this.add(panel, BorderLayout.CENTER);
-
-    // pack は JFrameのサイズを自動設定するメソッド．
-    // this.setSize(300,200); などの代わり
+    this.add(whitepanel);
+    this.add(state);
+    this.add(chat);
+    this.add(reset);
+    this.add(finish);
+    this.add(panel);
     this.setVisible(true);
   }
+  // public void paintComponent(Graphics g) {
+  //   g.drawImage(imgBack, 0, 0, 1080, 600, null);
+  // }
 
-  // 左側のパネルの更新(chatかhistoryか)
   public void nochatbox(String witch_Ai_or_Server) {
     if (witch_Ai_or_Server == "Ai") {
-      p1.remove(chatbox);// chat boxの削除
+      this.remove(chatbox);// chat boxの削除
       chat.setText("HISTORY");// ボタンのtextの変更
     } else if (witch_Ai_or_Server == "Server") {
-      if (p1.getComponentCount() == 3) {// chat boxがないなら
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.insets = new Insets(20, 20, 20, 0);
-        gbc.weightx = 1.0;
-        gbc.weighty = 0.02;
-        layout.setConstraints(chatbox, gbc);
-        p1.add(chatbox);// chat box
+      if (this.getComponentCount() == 8) {// chat boxがないなら
+        chatbox.setBounds(20,510,220,25);
+        this.add(chatbox);// chat box
       }
       chat.setText("chat");// ボタンのtextの変更
     }
   }
+  
   // ReversiPanel を GamePanel の内部クラスとして実装
   class ReversiPanel extends JPanel {
     public void paintComponent(Graphics g) {
