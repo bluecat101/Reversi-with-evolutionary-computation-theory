@@ -319,7 +319,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     }
     panel.repaint();
     if (reversiModel.getIsYourTurn()) {
-      state.setText("あなたの番です");
+      state.setText("<html>あなたの番<br /><center> です</center></html>");
 
     } else {
       state.setText("相手の番です");
@@ -343,7 +343,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == timer) {
       if (reversiModel.getIsYourTurn()) {
-        state.setText("あなたの番です");
+        state.setText("<html>あなたの番<br /><center> です</center></html>");
       } else {
         state.setText("相手の番です");
 
