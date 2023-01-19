@@ -22,6 +22,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
   protected int aninum=0;
   protected Clip clip;
   protected Image imgBack;
+  protected JPanel cp;
   
   public GamePanel(Model m,Clip clip) {
     this.setLayout(null);
@@ -55,7 +56,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     scrollbar = new JScrollBar(JScrollBar.VERTICAL);
 
     chatpanel = new ChatPanel(model, scrollbar);
-    JPanel cp = new JPanel();
+    cp = new JPanel();
     cp.setLayout(new BorderLayout());
     cp.add(chatpanel, BorderLayout.CENTER);
     cp.add(scrollbar, BorderLayout.EAST);
@@ -106,6 +107,8 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     if (witch_Ai_or_Server == "Ai") {
       this.remove(chatbox);// chat boxの削除
       chat.setText("HISTORY");// ボタンのtextの変更
+      cp.setBounds(20,170,220,365);
+      this.add(cp);
     } else if (witch_Ai_or_Server == "Server") {
       if (this.getComponentCount() == 8) {// chat boxがないなら
         chatbox.setBounds(20,510,220,25);
