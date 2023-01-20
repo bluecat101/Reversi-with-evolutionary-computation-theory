@@ -12,7 +12,7 @@ class TitlePanel extends JPanel {
     this.setLayout(null);
     ImageIcon icon1 = new ImageIcon("osero-illust7.png");
     ImageIcon icon2 = new ImageIcon("osero-illust8.png");
-    start = new JButton("start", icon1);
+    start = new JButton("Start", icon1);
     start.setRolloverIcon(icon2);
     start.setContentAreaFilled(false); //背景透明化
     start.setHorizontalTextPosition(JButton.CENTER);
@@ -21,7 +21,7 @@ class TitlePanel extends JPanel {
     start.setBorderPainted(false); //ボタンの枠削除
     start.setBounds(414,350+20,240,135);
     
-    setting = new JButton("setting", icon1);
+    setting = new JButton("Rule", icon1);
     setting.setRolloverIcon(icon2);
     setting.setContentAreaFilled(false); //背景透明化
     setting.setHorizontalTextPosition(JButton.CENTER);
@@ -30,7 +30,7 @@ class TitlePanel extends JPanel {
     setting.setBorderPainted(false); //ボタンの枠削除
     setting.setBounds(82,350+20,240,135);
 
-    finish = new JButton("finish", icon1);
+    finish = new JButton("Finish", icon1);
     finish.setRolloverIcon(icon2);
     finish.setContentAreaFilled(false); //背景透明化
     finish.setHorizontalTextPosition(JButton.CENTER);

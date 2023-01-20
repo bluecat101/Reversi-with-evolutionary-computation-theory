@@ -253,12 +253,12 @@ class ReversiView extends JFrame implements ActionListener{
       movepanel("mode");
     }else if(e.getSource()==multipanel.serverButton){
       server = true;
-      multiserverpanel.s="合言葉を決定";
+      multiserverpanel.s="Decide Password";
       movepanel("multiserver");
       //サーバーのボタンが押されたときの処理
     }else if(e.getSource()==multipanel.clientButton){
       server = false;
-      multiserverpanel.s="決めた合言葉を入力";
+      multiserverpanel.s="Enter Password";
       movepanel("multiserver");
       //クライアントのボタンが押されたときの処理
     }else if(e.getSource()==multiserverpanel.password){

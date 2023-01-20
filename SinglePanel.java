@@ -38,8 +38,8 @@ public class SinglePanel extends JPanel{
     cb.setBounds(250,237,240,100);
 
     DefaultComboBoxModel<Object> md1 = new DefaultComboBoxModel<>();
-    md1.addElement(new ComboLabel("先攻", new ImageIcon("./osero-black.png")));
-    md1.addElement(new ComboLabel("後攻", new ImageIcon("./osero-black.png")));
+    md1.addElement(new ComboLabel("First", new ImageIcon("./osero-black.png")));
+    md1.addElement(new ComboLabel("Second", new ImageIcon("./osero-black.png")));
 
     first = new JComboBox<>(md1);
 
@@ -119,17 +119,19 @@ public class SinglePanel extends JPanel{
   }
   
   public void paintComponent(Graphics g) {
-    Font f2 = new Font("HGP創英角ﾎﾟｯﾌﾟ体", Font.BOLD, 80);
+    Font f2 = new Font("メイリオ", Font.BOLD, 80);
 		Graphics2D g2 = (Graphics2D)g;
  
 		//文字描画のアンチエイリアシングの有効化
 		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
- 
+    FontMetrics fontMetrics = this.getFontMetrics(f2);
+
     g.drawImage(imgBack, 0, 0, 1080, 600, null);
     g.setFont(f2);
-    g.setColor(new Color(0,100,255));
-    g.drawString("Select AILevel", 275, 195);
-    g.setColor(new Color(255,0,60));
-    g.drawString("Select AILevel", 270, 190);
+    int a=fontMetrics.stringWidth("Select AILevel");
+    g.setColor(new Color(100,100,100));
+    g.drawString("Select AILevel", 540-a/2+5, 195);
+    g.setColor(new Color(30,200,30));
+    g.drawString("Select AILevel", 540-a/2, 190);
   }
 }

@@ -44,6 +44,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     panel = new ReversiPanel();
     panel.setPreferredSize(new Dimension(600, 600));
     panel.setBounds(240,0,600,600);
+    panel.setOpaque(false);
 
     CountPanel blackpanel = new CountPanel(1, "Black");
     blackpanel.setBorder(new LineBorder(Color.BLACK, 2, true));
@@ -63,12 +64,13 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     cp.setBorder(new LineBorder(Color.BLACK, 2, true));
     cp.setBounds(20,170,220,320);
     if (reversiModel.getIsYourTurn()) {
-      state = new JLabel("あなたの番です", JLabel.CENTER);
+      state = new JLabel("<html>Your<br /><center> turn</center></html>", JLabel.CENTER);
     } else {
-      state = new JLabel("相手の番です", JLabel.CENTER);
+      state = new JLabel("<html>Opponent's<br /><center> turn</center></html>", JLabel.CENTER);
     }
     state.setBorder(new LineBorder(Color.BLACK, 2, true));
-    Font font = new Font(Font.SANS_SERIF, Font.BOLD, 32);
+    Font font = new Font(Font.SANS_SERIF, Font.BOLD, 36);
+    state.setOpaque(true);
     state.setFont(font);
     state.setPreferredSize(new Dimension(210,50));
     state.setBounds(840,170,220,365);
@@ -102,9 +104,9 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     this.add(panel);
     this.setVisible(true);
   }
-  // public void paintComponent(Graphics g) {
-  //   g.drawImage(imgBack, 0, 0, 1080, 600, null);
-  // }
+  public void paintComponent(Graphics g) {
+    g.drawImage(imgBack, 0, 0, 1080, 600, null);
+  }
 
   public void nochatbox(String witch_Ai_or_Server) {
     if (witch_Ai_or_Server == "Ai") {
@@ -173,9 +175,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
               drawStone(g, i, j, 2, 255);
             }
           }
-          if (canput[i][j] == 3 
-          // && reversiModel.getIsYourTurn()
-          ) {
+          if (canput[i][j] == 3 && reversiModel.getIsYourTurn()) {
             if (reversiModel.getPlayer() == 1) {
               g.setColor(new Color(0, 0, 0, 70));
               drawStone(g, i, j, 1, 70);
@@ -333,17 +333,17 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     }
     panel.repaint();
     if (reversiModel.getIsYourTurn()) {
-      state.setText("<html>あなたの番<br /><center> です</center></html>");
+      state.setText("<html>Your<br /><center>turn</center></html>");
 
     } else {
-      state.setText("相手の番です");
+      state.setText("<html>Opponent's<br /><center> turn</center></html>");
 
     }
     if (reversiModel.getFinishFlag() == 1) {
-      if (reversiModel.countStorn(1) > reversiModel.countStorn(2)) {
-        state.setText("黒の勝利");
+      if (reversiModel.countStorn(reversiModel.getPlayer()) > reversiModel.countStorn(reversiModel.getOpponentStone(reversiModel.getPlayer()))) {
+        state.setText("<html>You<br /><center>win!!</center></html>");
       } else {
-        state.setText("白の勝利");
+        state.setText("<html>Opponent<br /><center>win!!</center></html>");
       }
     }
     if (reversiModel.getPassFlag("view") == 1) {
@@ -357,9 +357,9 @@ class GamePanel extends JPanel implements Observer, ActionListener {
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == timer) {
       if (reversiModel.getIsYourTurn()) {
-        state.setText("<html>あなたの番<br /><center> です</center></html>");
+        state.setText("<html>Your<br /><center>turn</center></html>");
       } else {
-        state.setText("相手の番です");
+        state.setText("<html>Opponent's<br /><center> turn</center></html>");
 
       }
       timer.stop();
