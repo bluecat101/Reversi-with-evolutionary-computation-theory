@@ -21,7 +21,6 @@ class Ai_1 extends Model{
   
   //呼び出される関数
   public void run(){//みんなのプログラムを追加する。
-    System.out.println("1da-");
     back_judge_array=reversiModel.getJudgeBoardArray(player);
     for(int i=0;i<board_size;i++){
       for(int j=0;j<board_size;j++){

@@ -21,7 +21,6 @@ class Ai_2 extends Model{
   //呼び出される関数
   public void run(){//みんなのプログラムを追加する。
     int x=-1,y=-1;
-    System.out.println("2da-");
     back_judge_array=reversiModel.getJudgeBoardArray(player);
     ArrayList<int[]> can_put_array_edge = new ArrayList<>();
     ArrayList<int[]> can_put_array_sub_edge = new ArrayList<>();

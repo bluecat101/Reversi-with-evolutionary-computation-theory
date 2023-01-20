@@ -130,7 +130,6 @@ class GamePanel extends JPanel implements Observer, ActionListener, ChangeListen
 
   public void nochatbox(String witch_Ai_or_Server) {
     if (witch_Ai_or_Server == "Ai") {
-      System.out.println("Ai");
       this.remove(chatbox);// chat boxの削除
       chat.setText("HISTORY");// ボタンのtextの変更
       this.remove(finish);
