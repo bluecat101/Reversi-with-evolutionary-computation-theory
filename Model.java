@@ -247,6 +247,7 @@ class Model {
       for (int i = 0; i < board_size; i++) {
         for (int j = 0; j < board_size; j++) {
           board_array[i][j] = 0;
+          animation[i][j]=0;
         }
       }
       // white
