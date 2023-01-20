@@ -82,7 +82,7 @@ class GamePanel extends JPanel implements Observer, ActionListener, ChangeListen
     reset = new JButton("Reset");
     reset.setBounds(840,555,80,25);
     //add------------------1/20
-    //使うときは個々のコメントアウトを解除して83行目のreset.setBounds()のみをコメントアウト！！
+    //使うときはここのコメントアウトを解除して83行目のreset.setBounds()のみをコメントアウト！！
     //
     // JLabel volume = new JLabel("Volume");
     // volume.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
