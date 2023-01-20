@@ -79,7 +79,7 @@ class GamePanel extends JPanel implements Observer, ActionListener, ChangeListen
 
     return_title = new JButton("Return Title");
     return_title.setBounds(940,555,110,25);
-    reset = new JButton("Reset");
+    reset = new JButton("Rule");
     reset.setBounds(840,555,80,25);
     //add------------------1/20
     //使うときはここのコメントアウトを解除して83行目のreset.setBounds()のみをコメントアウト！！

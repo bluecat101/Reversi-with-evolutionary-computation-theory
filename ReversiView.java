@@ -53,6 +53,7 @@ class ReversiView extends JFrame implements ActionListener{
     gamepanel = new GamePanel(m,clip);
     gamepanel.return_title.addActionListener(this);
     gamepanel.finish.addActionListener(this);
+    gamepanel.reset.addActionListener(this);
 
     /*パネル3 */
     settingpanel = new SettingPanel();
@@ -224,15 +225,24 @@ class ReversiView extends JFrame implements ActionListener{
 		}
 		return null;
 	}
+  protected int ruleflag=0;
   public void actionPerformed(ActionEvent e){
     if(e.getSource()==titlepanel.start){
       movepanel("mode");
     }else if(e.getSource()==titlepanel.setting){
+      ruleflag=0;
       movepanel("setting");
     }else if(e.getSource()==titlepanel.finish|| e.getSource()==getfinishButton()){
       System.exit(0);
+    }else if(e.getSource()==gamepanel.reset){
+      ruleflag=1;
+      movepanel("setting");
     }else if(e.getSource()==settingpanel.returnButton){
-      movepanel("title");
+      if(ruleflag==0){
+        movepanel("title");
+      }else{
+        movepanel("game");
+      }
     }else if(e.getSource()==getReturn_titleButton()){
       model.getReversiModel().initBoard();
       model.getChatModel().initChat();
