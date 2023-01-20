@@ -386,6 +386,11 @@ class Model {
       player = new ArrayList<>();
     }
 
+    public void initChat(){
+      message.clear();
+      player.clear();
+    }
+
     public void setChat(String message, int player) {// 打った人,messageで入っている。
       this.player.add(player);
       this.message.add(new StringBuffer());
@@ -413,6 +418,7 @@ class Model {
         playernum = 1;
       }
     }
+    
     
     public void writeHistroy(int x, int y, boolean flag) {
       int player = 2;

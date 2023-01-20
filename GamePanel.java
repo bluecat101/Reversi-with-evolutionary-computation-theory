@@ -14,7 +14,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
   protected ReversiPanel panel;
   protected ChatPanel chatpanel;
   protected JLabel state;
-  protected JButton finish, reset,chat;
+  protected JButton return_title, reset,chat,finish;
   protected JTextField chatbox;
   protected JScrollBar scrollbar;
   protected javax.swing.Timer timer;
@@ -73,12 +73,15 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     state.setPreferredSize(new Dimension(210,50));
     state.setBounds(840,170,220,365);
 
-    finish = new JButton("Return Title");
-    finish.setBounds(940,555,110,25);
+    return_title = new JButton("Return Title");
+    return_title.setBounds(940,555,110,25);
     reset = new JButton("Reset");
     reset.setBounds(840,555,80,25);
     chat = new JButton("Chat");
     chat.setBounds(20,555,220,25);
+
+    finish = new JButton("finish");
+    finish.setBounds(940, 555, 110, 25);
 
     this.add(blackpanel);
     this.add(cp);
@@ -95,7 +98,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     this.add(state);
     this.add(chat);
     this.add(reset);
-    this.add(finish);
+    this.add(return_title);
     this.add(panel);
     this.setVisible(true);
   }
@@ -105,17 +108,26 @@ class GamePanel extends JPanel implements Observer, ActionListener {
 
   public void nochatbox(String witch_Ai_or_Server) {
     if (witch_Ai_or_Server == "Ai") {
+      System.out.println("Ai");
       this.remove(chatbox);// chat boxの削除
       chat.setText("HISTORY");// ボタンのtextの変更
+      this.remove(finish);
+      return_title.setBounds(940, 555, 110, 25);
+      this.add(return_title);
       cp.setBounds(20,170,220,365);
       this.add(cp);
+
     } else if (witch_Ai_or_Server == "Server") {
       if (this.getComponentCount() == 8) {// chat boxがないなら
+        System.out.println("server");
         chatbox.setBounds(20,510,220,25);
         this.add(chatbox);// chat box
         cp.setBounds(20,170,220,320);
         this.add(cp);
       }
+      this.remove(return_title);
+      finish.setBounds(940, 555, 110, 25);
+      this.add(finish);
       chat.setText("chat");// ボタンのtextの変更
     }
   }
