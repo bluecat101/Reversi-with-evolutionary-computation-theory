@@ -29,7 +29,7 @@ class GamePanel extends JPanel implements Observer, ActionListener, ChangeListen
   public GamePanel(Model m,Clip clip) {
     this.setLayout(null);
     try {
-      imgBack = ImageIO.read(new File("haikei.jpg"));
+      imgBack = ImageIO.read(new File("haikei2.jpg"));
     } catch (Exception e) {
         System.out.println(e);
         System.exit(0);
