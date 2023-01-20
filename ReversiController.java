@@ -55,7 +55,7 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
       }
     }
     if (e.getSource() == view.getResetButton()) {
-      reversiModel.initBoard();
+      // reversiModel.initBoard();
     } else if (e.getSource() == view.getChatButton()) {
       if (num % 2 == 1) {
         view.getChatBox().setEnabled(false);
