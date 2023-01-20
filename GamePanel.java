@@ -1,14 +1,15 @@
 import javax.swing.*;
+import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.border.LineBorder;
 import java.util.*;
-import javax.sound.sampled.Clip;
+import javax.sound.sampled.*;
 import java.io.File;
 import javax.imageio.ImageIO;
 
 @SuppressWarnings("deprecation")
-class GamePanel extends JPanel implements Observer, ActionListener {
+class GamePanel extends JPanel implements Observer, ActionListener, ChangeListener {
   protected Model model;
   protected Model.ReversiModel reversiModel;
   protected ReversiPanel panel;
@@ -23,6 +24,7 @@ class GamePanel extends JPanel implements Observer, ActionListener {
   protected Clip clip;
   protected Image imgBack;
   protected JPanel cp;
+  protected JSlider sl;
   
   public GamePanel(Model m,Clip clip) {
     this.setLayout(null);
@@ -79,10 +81,28 @@ class GamePanel extends JPanel implements Observer, ActionListener {
     return_title.setBounds(940,555,110,25);
     reset = new JButton("Reset");
     reset.setBounds(840,555,80,25);
+    //add------------------1/20
+    //使うときは個々のコメントアウトを解除して83行目のreset.setBounds()のみをコメントアウト！！
+    //
+    // JLabel volume = new JLabel("Volume");
+    // volume.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
+    // sl = new JSlider(JSlider.HORIZONTAL, 0, 100, 100);
+    // sl.setPaintTicks(true);
+    // sl.setMajorTickSpacing(100);
+    // sl.setMinorTickSpacing(10);
+    // sl.addChangeListener(this);
+    // sl.setLabelTable(sl.createStandardLabels(100));// text per 50
+    // sl.setPaintLabels(true);// dlsplay text
+    // sl.setPreferredSize(new Dimension(100, 20));
+    // volume.setBounds(840, 530, 80, 25);
+    // sl.setBounds(840, 550, 90, 40);
+    // this.add(volume);
+    // this.add(sl);
+    //------------------
     chat = new JButton("Chat");
     chat.setBounds(20,555,220,25);
 
-    finish = new JButton("finish");
+    finish = new JButton("Finish");
     finish.setBounds(940, 555, 110, 25);
 
     this.add(blackpanel);
@@ -132,6 +152,19 @@ class GamePanel extends JPanel implements Observer, ActionListener {
       this.add(finish);
       chat.setText("chat");// ボタンのtextの変更
     }
+  }
+  
+  public void stateChanged(ChangeEvent e) {
+    System.out.println(sl.getValue());
+    FloatControl ctrl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+    // controlByLinearScalar(ctrl, 0.5);
+    // try {
+    // ctrl.setValue((float) Math.log10(((float) (100)/100) * 20));
+    // ctrl.setValue((float) Math.log10(((float) (30) / 100) * 20));
+    ctrl.setValue((float) Math.log10((float) (sl.getValue()) / 100) * 20);
+    // } catch (Exception a) {
+    // a.printStackTrace();
+    // }
   }
   
   // ReversiPanel を GamePanel の内部クラスとして実装
