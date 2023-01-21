@@ -372,7 +372,8 @@ class GamePanel extends JPanel implements Observer, ActionListener, ChangeListen
 
     }
     if (reversiModel.getFinishFlag() == 1) {
-      if (reversiModel.countStorn(reversiModel.getPlayer()) > reversiModel.countStorn(reversiModel.getOpponentStone(reversiModel.getPlayer()))) {
+      //最後に置いた色の方が多く、かつ、それが自分なら実行
+      if ((reversiModel.countStorn(reversiModel.getPlayer()) > reversiModel.countStorn(reversiModel.getOpponentStone(reversiModel.getPlayer())))&&reversiModel.getIsYourTurn()) {
         state.setText("<html>You<br /><center>win!!</center></html>");
       } else {
         state.setText("<html>Opponent<br /><center>win!!</center></html>");
