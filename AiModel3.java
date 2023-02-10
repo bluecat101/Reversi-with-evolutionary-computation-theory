@@ -3,10 +3,8 @@
 import java.util.ArrayList;
 
 class Ai_3 extends Model {
-  final boolean is_maxcount = false;// 置く最大数で判定するのか、相手が置く際小数で判定するのか
-  final int future_hand_num = 3;// 何手先まで読むのか
-  private int result_init_num = 0;// is_maxcountがtrue or falseで判定
-  private int recursive_end_num = 1;// 何回目の再帰で終了するか
+  // final boolean is_maxcount = false;// 相手が置く際小数で判定する
+  final int future_hand_num = 3;// 何手先まで読むのか(例：自->相手->自分　=> 3手)相手が置いた際にその手を評価して結果を出す。
   private int player;
   private int board_size;
   private Model.ReversiModel reversiModel;// 実際に動かすmodel
@@ -23,10 +21,6 @@ class Ai_3 extends Model {
     virtualModel = (new Model()).getReversiModel();
     this.player = aiPlayer;// playerの指定
     this.board_size = reversiModel.board_size;// 盤面のサイズを指定。
-    if (!is_maxcount) {// Aiの考え方によって変更する必要のある変数
-      result_init_num = 100;
-      recursive_end_num = 2;
-    }
   }
 
   // 呼び出される関数
@@ -38,7 +32,7 @@ class Ai_3 extends Model {
     // virtualの盤面を合わせる。
     virtualModel.setBoard_onlyAI(back_board_array);
     virtualModel.setPlayer(this.player);
-    int[] storn_position = recursive_run(back_board_array, 2 * (future_hand_num - 1) + 1);
+    int[] storn_position = recursive_run(back_board_array, future_hand_num  - 1);
     chatModel.writeHistroy(storn_position[0], storn_position[1], reversiModel.getIsYourTurn());// 履歴に書く。
     reversiModel.xySetStone(storn_position[0], storn_position[1]);
   }
@@ -51,35 +45,26 @@ class Ai_3 extends Model {
     ArrayList<int[]> can_put_position = getCanPutArray(back_judge_array);// 置ける位置を配列に格納する
     //
     int length = can_put_position.size();// 置ける位置の個数を数える
-    int[] result = { 0, 0, result_init_num };
-    if (n == recursive_end_num) {// 結果を出す
-      int max_or_min_over_storn = result_init_num;// 最大(最小)のひっくり返す個数の数を記憶
+    int[] result = { 0, 0, 100 };
+    if (n == 1) {// 結果を出す
+      int min_over_storn = 100;// 最小のひっくり返す個数の数を記憶
       int good_position = 0;// 良い手の座標
       for (int i = 0; i < length; i++) {
-        if (is_maxcount) {// Aiの考え方による分岐
-          int pre_max_over_storn = over_search(can_put_position.get(i)[0], can_put_position.get(i)[1], board, player);// ひっくり返す数をカウント
-          if (max_or_min_over_storn < pre_max_over_storn) {// もし現状での最善手なら、良い手として記憶する。
-            max_or_min_over_storn = pre_max_over_storn;
+          int pre_min_over_storn = over_search(can_put_position.get(i)[0], can_put_position.get(i)[1], board,virtualModel.getOpponentStone(player));
+          if (min_over_storn > pre_min_over_storn) {// 現状の最善手なら良い手として記憶する
+            min_over_storn = pre_min_over_storn;
             good_position = i;
           }
-        } else {
-          int pre_min_over_storn = over_search(can_put_position.get(i)[0], can_put_position.get(i)[1], board,
-              virtualModel.getOpponentStone(player));
-          if (max_or_min_over_storn > pre_min_over_storn) {// 現状の最善手なら良い手として記憶する
-            max_or_min_over_storn = pre_min_over_storn;
-            good_position = i;
-          }
-        }
-
       }
       // returnように記憶する
       result[0] = can_put_position.get(good_position)[0];
       result[1] = can_put_position.get(good_position)[1];
-      result[2] = max_or_min_over_storn;// 最大(最小)のひっくり返す数の記憶
+      result[2] = min_over_storn;// 最大(最小)のひっくり返す数の記憶
+      
     } else {
-      int[] pre_result = { 0, 0, result_init_num };// 仮の座標の記憶
+      int[] pre_result = { 0, 0, 100 };// 仮の座標の記憶
       for (int i = 0; i < length; i++) {
-        if (n % 2 == 1) {// 仮想空間上の盤面の置くplayerの指定
+        if (n % 2 == 0) {// 仮想空間上の盤面の置くplayerの指定
           virtualModel.setPlayer(this.player);
         } else {
           virtualModel.setPlayer(reversiModel.getOpponentStone(this.player));
@@ -104,19 +89,11 @@ class Ai_3 extends Model {
         } else {// pass,finishではない
           pre_result = recursive_run(virtualModel.getBoardArray(), n - 1);// 再帰する
         }
-        if (is_maxcount) {// Aiの考え型による分岐
-          if (result[2] < pre_result[2]) {
-            result[0] = can_put_position.get(i)[0];
-            result[1] = can_put_position.get(i)[1];
-            result[2] = pre_result[2];
-          }
-        } else {
           if (result[2] > pre_result[2]) {
             result[0] = can_put_position.get(i)[0];
             result[1] = can_put_position.get(i)[1];
             result[2] = pre_result[2];
           }
-        }
 
       }
     }
