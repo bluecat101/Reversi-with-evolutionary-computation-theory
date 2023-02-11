@@ -13,8 +13,8 @@ class Ai_vs_Ai {
   // ------------------------------
   final String Ai_1 = "Ai_3", Ai_2 = "Ai_2";// 戦うAiを指定
   final int FIRST_ATTACK = 2;// 0:Ai_1が先,1:Ai_2が先,2:交互
-  final int trials_number = 20;// 試行回数
-  final boolean is_Only_Result = true;// 結果のみかどうか
+  final int trials_number = 100;// 試行回数
+  final boolean is_Only_Result = false;// 結果のみかどうか
   final int SIZE = 14;// 途中結果を表示させるときにどれだけ横に表示させるか。
   // ------------------------------
 
@@ -55,6 +55,7 @@ class Ai_vs_Ai {
       } else {// 引き分け
         draw++;
       }
+      System.out.println((i) + "回目--------------------------------------終了\n");
       reversiModel.initBoard();
     }
     if (!is_Only_Result) {// 途中経過を表示させるときに用いる

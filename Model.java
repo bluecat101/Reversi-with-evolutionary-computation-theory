@@ -113,7 +113,7 @@ class Model {
       }
     }
 
-    private boolean pre_search(int x, int y, int player) {
+    protected boolean pre_search(int x, int y, int player) {
       int search_x = x;
       int search_y = y;
       for (int i = -1; i < 2; i++) {

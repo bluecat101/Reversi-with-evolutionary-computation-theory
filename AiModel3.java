@@ -1,10 +1,13 @@
 //斉藤
 
+import java.lang.annotation.Retention;
 import java.util.ArrayList;
 
 class Ai_3 extends Model {
   // final boolean is_maxcount = false;// 相手が置く際小数で判定する
-  final int future_hand_num = 3;// 何手先まで読むのか(例：自->相手->自分　=> 3手)相手が置いた際にその手を評価して結果を出す。
+  final int future_hand_num = 3;// 何手先まで読むのか(例：自->相手->自分　=> 3手)相手が置いた際にその手を評価して結果を出す。常に奇数で
+  final float coefficient_a = 15/10;
+  final float coefficient_b = 2;
   private int player;
   private int board_size;
   private Model.ReversiModel reversiModel;// 実際に動かすmodel
@@ -13,7 +16,6 @@ class Ai_3 extends Model {
   
   // back_judge_arrayの中身は変えないでね(変えるなら一度コピーしてからしてください。)
   private int[][] back_judge_array;
-
   // コンストラクタ
   public Ai_3(Model m,int aiPlayer) {
     reversiModel = m.getReversiModel();
@@ -32,70 +34,171 @@ class Ai_3 extends Model {
     // virtualの盤面を合わせる。
     virtualModel.setBoard_onlyAI(back_board_array);
     virtualModel.setPlayer(this.player);
-    int[] storn_position = recursive_run(back_board_array, future_hand_num  - 1);
-    chatModel.writeHistroy(storn_position[0], storn_position[1], reversiModel.getIsYourTurn());// 履歴に書く。
-    reversiModel.xySetStone(storn_position[0], storn_position[1]);
+    // System.out.println("start------------------------------");
+    float[] storn_position = recursive_run(back_board_array, future_hand_num  - 1);
+    // System.out.println("end------------------------------");
+    chatModel.writeHistroy((int)storn_position[0], (int)storn_position[1], reversiModel.getIsYourTurn());// 履歴に書く。
+    reversiModel.xySetStone((int)storn_position[0], (int)storn_position[1]);
   }
 
-  public int[] recursive_run(int[][] parent_board, int n) {// 第一返り値:x,第二返り値:y,第二返り値:ひっくり返す数,
+  public float[] recursive_run(int[][] parent_board, int n) {// 第一返り値:x,第二返り値:y,第二返り値:ひっくり返す数,
     int[][] board = new int[board_size][board_size];
     copyBoardArray(board, parent_board);// 親のboardをコピー
     // can_put_positionで必要な変数
     back_judge_array = virtualModel.getJudgeBoardArray(virtualModel.getPlayer());
     ArrayList<int[]> can_put_position = getCanPutArray(back_judge_array);// 置ける位置を配列に格納する
-    //
     int length = can_put_position.size();// 置ける位置の個数を数える
-    int[] result = { 0, 0, 100 };
+    float[] result = { 0, 0, -1 };
+    // System.out.println(n);
     if (n == 1) {// 結果を出す
-      int min_over_storn = 100;// 最小のひっくり返す個数の数を記憶
+      // int min_over_storn = 100;// 最小のひっくり返す個数の数を記憶
+      float max_evaluation = 0;// 
       int good_position = 0;// 良い手の座標
+      int storn_num = virtualModel.countStorn(opponentPlayer());
+      // System.out.println("length["+length+"]");
       for (int i = 0; i < length; i++) {
-          int pre_min_over_storn = over_search(can_put_position.get(i)[0], can_put_position.get(i)[1], board,virtualModel.getOpponentStone(player));
-          if (min_over_storn > pre_min_over_storn) {// 現状の最善手なら良い手として記憶する
-            min_over_storn = pre_min_over_storn;
-            good_position = i;
+        // System.out.println("start");
+        // print_board(board);
+        virtualModel.setPlayer(opponentPlayer());
+        // int pre_min_over_storn = over_search(can_put_position.get(i)[0], can_put_position.get(i)[1], board,virtualModel.getOpponentStone(player));
+        virtualModel.xySetStone(can_put_position.get(i)[0], can_put_position.get(i)[1]);// 仮想空間の盤面に置く
+        int pre_min_over_storn=virtualModel.countStorn(opponentPlayer())-storn_num-1;
+        float evaluation=(1/pre_min_over_storn)*coefficient_a;
+        evaluation += (1.0 / length)*coefficient_b;
+        if(can_put_position.get(i)[0]==1&& (1<can_put_position.get(i)[1]&& can_put_position.get(i)[1]<6)){
+          // System.out.println("left");
+          for(int j=-1;j<2;j++){
+            if(search(j+can_put_position.get(i)[0], can_put_position.get(i)[1]-1, this.player)){
+              evaluation++;
+            }
           }
+        }else if(can_put_position.get(i)[0]==6&& (1 < can_put_position.get(i)[1] && can_put_position.get(i)[1] < 6)){
+          // System.out.println("right");
+          for(int j=-1;j<2;j++){
+            if(search(j+can_put_position.get(i)[0], can_put_position.get(i)[1]+1, this.player)){
+              evaluation++;
+            }
+          }
+        }else if(can_put_position.get(i)[1]==1&& (1 < can_put_position.get(i)[0] && can_put_position.get(i)[0] < 6)){
+          // System.out.println("up");
+          for(int j=-1;j<2;j++){
+            if(search(can_put_position.get(i)[0]-1,j+can_put_position.get(i)[1], this.player)){
+              evaluation++;
+            }
+          }
+        }else if(can_put_position.get(i)[1]==6&& (1 < can_put_position.get(i)[0] && can_put_position.get(i)[0] < 6)){
+          // System.out.println("down");
+          for(int j=-1;j<2;j++){
+            if(search( can_put_position.get(i)[0]+1, j+can_put_position.get(i)[1], this.player)){
+              evaluation++;
+            }
+          }
+        }else if(can_put_position.get(i)[0]==1&&can_put_position.get(i)[1]==1&&search( 0, 0, this.player)) {
+        //left up
+        // System.out.println("left up");
+        evaluation+=3;
+        // print_board(board);
+        } else if (can_put_position.get(i)[0] == 1 && can_put_position.get(i)[1] == 6&&search( 0, 7, this.player)) {
+        //right up
+        // System.out.println("right up");
+        evaluation+=3;
+        } else if (can_put_position.get(i)[0] == 6 && can_put_position.get(i)[1] == 1&&search( 7, 0, this.player)) {
+        // left down
+        // System.out.println(" left down");
+        evaluation+=3;
+        } else if (can_put_position.get(i)[0] == 6 && can_put_position.get(i)[1] == 6&&search( 7, 7, this.player)) {
+        // right down
+        // System.out.println(" right down");
+        evaluation+=3;
+        }else if(can_put_position.get(i)[0] == 0 && can_put_position.get(i)[1] == 0&& !search(0, 0, opponentPlayer())){
+          evaluation += 4;
+          // System.out.println("left up");
+          // print_board(board);
+        } else if (can_put_position.get(i)[0] == 0 && can_put_position.get(i)[1] == 7&& !search(0, 7, opponentPlayer())) {
+          evaluation += 4;
+          // System.out.println("right up");
+          // print_board(board);
+        } else if (can_put_position.get(i)[0] == 7 && can_put_position.get(i)[1] == 0&& !search(7, 0, opponentPlayer())) {
+          evaluation += 4;
+          // System.out.println(" left down");
+          // print_board(board);
+        } else if (can_put_position.get(i)[0] == 7 && can_put_position.get(i)[1] == 7&& !search(7, 7, opponentPlayer())) {
+          evaluation += 4;
+          // System.out.println(" right down");
+          // print_board(board);
+        }
+        evaluation+= evaluation_for_present_board(can_put_position.get(i)[0],can_put_position.get(i)[1]);
+        // System.out.println("evaluuation"+evaluation);
+        if(evaluation<0){
+          // System.out.print("check"+evaluation+"    ");
+          evaluation=1;
+          evaluation=evaluation/100;
+        }
+        if (max_evaluation< evaluation||(max_evaluation == evaluation&&((int) (Math.random() * 2) == 1))) {// 現状の最善手なら良い手として記憶する
+          max_evaluation= evaluation;
+          good_position = i;
+        }
+        virtualModel.setBoard_onlyAI(board);// 仮想空間の盤面を現在の再帰の盤面に合わせる。(再帰内での初期化)
       }
+      // System.out.println("max" + max_evaluation);
+      //相手が置けるマスの数を計算
+      // max_evaluation+=1.0/length;
       // returnように記憶する
-      result[0] = can_put_position.get(good_position)[0];
-      result[1] = can_put_position.get(good_position)[1];
-      result[2] = min_over_storn;// 最大(最小)のひっくり返す数の記憶
-      
+      result[0] = (float)can_put_position.get(good_position)[0];
+      result[1] = (float)can_put_position.get(good_position)[1];
+      result[2] = max_evaluation;// 最小のひっくり返す数の記憶
+      System.out.println("end"+result[2]);
+
     } else {
-      int[] pre_result = { 0, 0, 100 };// 仮の座標の記憶
+      float[] pre_result = { 0, 0, -1 };// 仮の座標の記憶
       for (int i = 0; i < length; i++) {
         if (n % 2 == 0) {// 仮想空間上の盤面の置くplayerの指定
           virtualModel.setPlayer(this.player);
         } else {
-          virtualModel.setPlayer(reversiModel.getOpponentStone(this.player));
+          virtualModel.setPlayer(opponentPlayer());
         }
         virtualModel.setBoard_onlyAI(board);// 仮想空間の盤面を現在の再帰の盤面に合わせる。(再帰内での初期化)
         virtualModel.xySetStone(can_put_position.get(i)[0], can_put_position.get(i)[1]);// 仮想空間の盤面に置く
-        if ((virtualModel.getPassFlag("Ai") == 1 && n % 2 == 0)
-            || (virtualModel.getFinishFlag("Ai") == 1 && n % 2 == 0)) {// もし相手が置くときにpassまたはfinishかの判定
+        if ((virtualModel.getPassFlag("Ai") == 1 && n % 2 == 1)
+            || (virtualModel.getFinishFlag("Ai") == 1 && n % 2 == 1)) {// もし相手が置くときにpassまたはfinishかの判定
           virtualModel.getPassFlag("controller");// passflagを初期化
           virtualModel.getFinishFlag();// finishflagを初期化
           continue;// 最悪手と認定
-        } else if (virtualModel.getPassFlag("Ai") == 1 && n % 2 == 1) {// もし自分が置いてpassとなったなら
+        } else if (virtualModel.getPassFlag("Ai") == 1 && n % 2 == 0) {// もし自分が置いてpassとなったなら
           virtualModel.getPassFlag("controller");
-          result[0] = can_put_position.get(i)[0];
-          result[1] = can_put_position.get(i)[1];
-          result[2] = 65;// 最大の優先度
-        } else if (virtualModel.getFinishFlag("Ai") == 1 && n % 2 == 1) {// もし自分が置いてfinishとなったなら
+          result[0] = (float)can_put_position.get(i)[0];
+          result[1] = (float)can_put_position.get(i)[1];
+          result[2] = (float)155;// 最大の優先度
+          // System.out.println("good hand");
+        } else if (virtualModel.getFinishFlag("Ai") == 1 && n % 2 == 0) {// もし自分が置いてfinishとなったなら
           virtualModel.getFinishFlag();
-          result[0] = can_put_position.get(i)[0];
-          result[1] = can_put_position.get(i)[1];
-          result[2] = 66;// passよりも高い優先度
+          result[0] = (float)can_put_position.get(i)[0];
+          result[1] = (float)can_put_position.get(i)[1];
+          result[2] = (float)156;// passよりも高い優先度
+          // System.out.println("parfect hand");
         } else {// pass,finishではない
+          // System.out.println("start recursive"+i+","+length);
           pre_result = recursive_run(virtualModel.getBoardArray(), n - 1);// 再帰する
+          // System.out.println("end recursive");
+
         }
-          if (result[2] > pre_result[2]) {
-            result[0] = can_put_position.get(i)[0];
-            result[1] = can_put_position.get(i)[1];
-            result[2] = pre_result[2];
+          // System.out.println("result[2]" + result[2]+","+ "pre_result" + pre_result[2]+","+ "length" + length+ "," + "i" + i);
+          if (result[2] < pre_result[2]) {//評価関数が高い
+            result[0] = (float)can_put_position.get(i)[0];
+            result[1] = (float)can_put_position.get(i)[1];
+            result[2] = (float)pre_result[2];
           }
 
       }
+    }
+    // System.out.println("result[0]" + result[0] + "," + "result[1]" + result[1] + ","+ "result[2]" + result[2] + ","+n);
+    if(result[2]==-1.0|| result[2] == 0.01){
+      print_board(board);
+      // System.out.println("length" + length + ","+ "result[0],result[1]" + result[0]+","+result[1] + ",");
+       for (int i = 0; i < length; i++) {
+        System.out.println(can_put_position.get(i)[0]+","+can_put_position.get(i)[1]);
+       }
+      // System.exit(1);
     }
     return result;
   }
@@ -128,38 +231,41 @@ class Ai_3 extends Model {
     return can_put_position;
   }
 
-  // 引数に渡した配列でx,yの位置に石をおいてひっくり返して、ひっくり返した石の数を返す。
-  private int over_search(int x, int y, int[][] back_board_array, int player) {
-    int count = 0;// ひっくり返した数。
-    int search_x = x;
-    int search_y = y;
-    for (int i = -1; i <= 1; i++) {
-      for (int j = -1; j <= 1; j++) {
-        search_x = x + i;
-        search_y = y + j;
-        if (search_x == -1 || search_y == -1 || search_x == 8 || search_y == 8) {// 範囲外なら抜ける。
-          continue;
-        } else if (back_board_array[search_x][search_y] != reversiModel.getOpponentStone(player)) {// 相手の石じゃないなら抜ける
-          continue;
+  private void print_board(int[][] board){
+      for (int j = 0; j < 8; j++) {
+          for (int l = 0; l < 8; l++) {
+            System.out.print("|" + board[j][l]);
+          }
+          System.out.println("|");
         }
-        while (search_x != -1 && search_y != -1 && search_x != 8 && search_y != 8
-            && back_board_array[search_x][search_y] == reversiModel.getOpponentStone(player)) {// 範囲内かつ相手の石ならループする
-          search_x += i;
-          search_y += j;
-        }
-        if (search_x != -1 && search_y != -1 && search_x != 8 && search_y != 8
-            && back_board_array[search_x][search_y] == player) {// 範囲内であるかつ自分の石である
-          search_x -= i;
-          search_y -= j;
-          while (search_x != x || search_y != y) {
-            back_board_array[search_x][search_y] = player;// ひっくり返す。
-            count++;// ひっくり返した数を数える。
-            search_x -= i;
-            search_y -= j;
+      }
+  private boolean search(int x,int y,int player){
+    return virtualModel.getBoardArray()[x][y]==0&&virtualModel.pre_search(x, y,player);
+  }
+  private int opponentPlayer(){
+    return virtualModel.getOpponentStone(this.player);
+  }
+  private int evaluation_for_present_board(int x, int y){
+    int evaluation =0;
+      String ij;
+    for(int i=0;i<8;i++){
+      for (int j = 0; j < 8; j++) {
+        ij=i+""+j;
+        if(virtualModel.getBoardArray()[i][j] == this.player){
+            if(ij=="00"||ij=="07"||ij=="70"||ij=="77"){
+              evaluation+=7;
+            }else if(i==0||i==7||j==0||j==7){
+              evaluation += 0.7;
+            }
+        }else if(virtualModel.getBoardArray()[i][j] == opponentPlayer()){
+          if (ij == "00" || ij == "07" || ij == "70" || ij == "77") {
+            evaluation -= 2;
+          } else if (i == 0 || i == 7 || j == 0 || j == 7) {
+            evaluation -= 0.3;
           }
         }
       }
     }
-    return count;
+    return evaluation;
   }
 }
