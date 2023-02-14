@@ -6,16 +6,15 @@ import java.util.ArrayList;
 class Ai_3 extends Model {
   // final boolean is_maxcount = false;// 相手が置く際小数で判定する
   final int future_hand_num = 3;// 何手先まで読むのか(例：自->相手->自分　=> 3手)相手が置いた際にその手を評価して結果を出す。常に奇数で
-  final float coefficient_a = 15/10;
+  final float coefficient_a = 10/10;
   final float coefficient_b = 2;
   private int player;
   private int board_size;
   private Model.ReversiModel reversiModel;// 実際に動かすmodel
   private Model.ReversiModel virtualModel;// 仮想的に動かして様子を見るmodel
   private Model.ChatModel chatModel;// chatmodel
-  
-  // back_judge_arrayの中身は変えないでね(変えるなら一度コピーしてからしてください。)
   private int[][] back_judge_array;
+  
   // コンストラクタ
   public Ai_3(Model m,int aiPlayer) {
     reversiModel = m.getReversiModel();
@@ -48,7 +47,7 @@ class Ai_3 extends Model {
     back_judge_array = virtualModel.getJudgeBoardArray(virtualModel.getPlayer());
     ArrayList<int[]> can_put_position = getCanPutArray(back_judge_array);// 置ける位置を配列に格納する
     int length = can_put_position.size();// 置ける位置の個数を数える
-    float[] result = { 0, 0, -1 };
+    float[] result = { can_put_position.get(0)[0], can_put_position.get(0)[1], -1 };
     // System.out.println(n);
     if (n == 1) {// 結果を出す
       // int min_over_storn = 100;// 最小のひっくり返す個数の数を記憶
@@ -147,10 +146,10 @@ class Ai_3 extends Model {
       result[0] = (float)can_put_position.get(good_position)[0];
       result[1] = (float)can_put_position.get(good_position)[1];
       result[2] = max_evaluation;// 最小のひっくり返す数の記憶
-      System.out.println("end"+result[2]);
+      // System.out.println("end"+result[2]);
 
     } else {
-      float[] pre_result = { 0, 0, -1 };// 仮の座標の記憶
+      float[] pre_result = { can_put_position.get(0)[0], can_put_position.get(0)[1], -1 };// 仮の座標の記憶
       for (int i = 0; i < length; i++) {
         if (n % 2 == 0) {// 仮想空間上の盤面の置くplayerの指定
           virtualModel.setPlayer(this.player);
@@ -192,14 +191,6 @@ class Ai_3 extends Model {
       }
     }
     // System.out.println("result[0]" + result[0] + "," + "result[1]" + result[1] + ","+ "result[2]" + result[2] + ","+n);
-    if(result[2]==-1.0|| result[2] == 0.01){
-      print_board(board);
-      // System.out.println("length" + length + ","+ "result[0],result[1]" + result[0]+","+result[1] + ",");
-       for (int i = 0; i < length; i++) {
-        System.out.println(can_put_position.get(i)[0]+","+can_put_position.get(i)[1]);
-       }
-      // System.exit(1);
-    }
     return result;
   }
 
@@ -259,7 +250,7 @@ class Ai_3 extends Model {
             }
         }else if(virtualModel.getBoardArray()[i][j] == opponentPlayer()){
           if (ij == "00" || ij == "07" || ij == "70" || ij == "77") {
-            evaluation -= 2;
+            evaluation -= 4;
           } else if (i == 0 || i == 7 || j == 0 || j == 7) {
             evaluation -= 0.3;
           }
