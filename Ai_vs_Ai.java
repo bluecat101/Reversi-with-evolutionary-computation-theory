@@ -13,26 +13,30 @@ class Ai_vs_Ai {
   // ------------------------------
   final String Ai_1 = "Ai_3", Ai_2 = "Ai_2";// 戦うAiを指定
   final int FIRST_ATTACK = 2;// 0:Ai_1が先,1:Ai_2が先,2:交互
-  final int trials_number = 20;// 試行回数
-  final int select_mode = 2;// 0:勝率のみ,1:取った個数,2:取った個数と最後の盤面のみ,3:途中盤面の表示
+  final int trials_number = 1;// 試行回数
+  final int select_mode = 3;// 0:勝率のみ,1:取った個数,2:取った個数と最後の盤面のみ,3:途中盤面の表示
   final int SIZE = 14;// 途中結果を表示させるときにどれだけ横に表示させるか。
   // ------------------------------
 
   private Model.ReversiModel reversiModel;
+  private Model.ChatModel chatModel;
   private Model ai_1, ai_2;
   private int win = 0, lose = 0, draw = 0;// ai_1の勝ち数,負け数、引き分け数
-  private int Ai_1_color = 1;// ai_1の石の色
+  private int first_Ai_color = 1;// ai_1の石の色
   private float win_rate_1;// 勝率
   private float win_rate_2;// 勝率
-  private ArrayList<ArrayList<int[][]>> history = new ArrayList<>();// 途中経過の保存
+  private ArrayList<ArrayList<int[][]>> board_history = new ArrayList<>();// 途中経過の盤面の保存
+  private ArrayList<ArrayList<int[]>> position_history = new ArrayList<>();// 途中経過の置いた位置保存
   private ArrayList<int[]> result = new ArrayList<>();// 結果の保存
   int count =0;
+
   public Ai_vs_Ai(Model m) {
     this.reversiModel = m.getReversiModel();
+    this.chatModel = m.getChatModel();
     for (int i = 1; i <= trials_number; i++) {
       count =0;
       setAi(m, i);// 先行後攻を決める
-      history.add(new ArrayList<>());// 盤面保存領域の確保
+      board_history.add(new ArrayList<>());// 盤面保存領域の確保
       while (reversiModel.getFinishFlag() == 0) {// 終わるまでずっと繰り返す
         if (reversiModel.getPassFlag("controller") == 0) {// ai_1が実行
           ai_1.run();
@@ -45,20 +49,21 @@ class Ai_vs_Ai {
           count ++;
         }
       }
-      int[] result_int={reversiModel.countStorn(Ai_1_color),0};
+      int[] result_int={reversiModel.countStorn(1),0};//先行の数を記録
       if (FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 0)) {
         result_int[0]=reversiModel.countStorn(2);
       }
-      if (reversiModel.countStorn(Ai_1_color) > 32) {// ai_1の勝ち
-        if (FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 0)) {// ai_2が先頭な時に実行
+      if (reversiModel.countStorn(1) > 32) {// 先行の勝ち
+        // if (FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 0)) {// ai_2が先頭な時に実行
+        if (first_Ai_color==2) {// Ai_2が先頭な時に実行
           lose++;
           result_int[1]=-1;
         }else{
           win++;
           result_int[1] = 1;
         }
-      } else if (reversiModel.countStorn(Ai_1_color) < 32) {// ai_1の負け
-        if (FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 0)) {// ai_2が先頭な時に実行
+      } else if (reversiModel.countStorn(1) < 32) {// 先行の負け
+        if (first_Ai_color==2) {// Ai_2が先頭な時に実行
           result_int[1] = 1;
           win++;
         }else{
@@ -70,7 +75,11 @@ class Ai_vs_Ai {
         draw++;
       }
       result.add(result_int);
-      // System.out.println(count+"   "+(i) + "回目--------------------------------------終了\n");
+      if(select_mode==3){
+        // position_history.add(new ArrayList<>());// 盤面保存領域の確保
+        position_history.add(get_position_history());
+      }
+      chatModel.initChat();
       reversiModel.initBoard();
     }
     switch(select_mode){
@@ -80,14 +89,12 @@ class Ai_vs_Ai {
         display_only_get_storn(result);
       break;
       case 2:
-        display_result_board(history);
+        display_result_board();
         display_only_get_storn(result);
       break;
       case 3:
-        for (int i = 0; i < trials_number; i++) {
-          System.out.println((i + 1) + "回目--------------------------------------\n");
-          display(history.get(i));// 表示
-        }
+        display();// 表示
+        display_only_get_storn(result);
       break;
 
     }
@@ -103,9 +110,11 @@ class Ai_vs_Ai {
     try {
       Class<?> aiClass1 = aiClass1 = Class.forName(Ai_1);// ai_1を先頭とする
       Class<?> aiClass2 = aiClass2 = Class.forName(Ai_2);
+      first_Ai_color=1;
       if (FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && n % 2 == 0)) {// ai_2が先頭な時に実行
         aiClass1 = Class.forName(Ai_2);
         aiClass2 = Class.forName(Ai_1);
+        first_Ai_color=2;
       }
       Constructor ai_constructor_1 = aiClass1.getConstructor(Model.class, int.class);// ai_1のコンストラクタの取得
       ai_1 = (Model) ai_constructor_1.newInstance(m, 1);// ai_1のaiオブジェクト作成
@@ -131,37 +140,59 @@ class Ai_vs_Ai {
   }
 
   private void saveBoard(int n) {// iはn回目が入る,盤面を記憶する
-    history.get(n - 1).add(new int[8][8]);
+    board_history.get(n - 1).add(new int[8][8]);
     for (int k = 0; k < 8; k++) {
       for (int l = 0; l < 8; l++) {
-        history.get(n - 1).get(history.get(n - 1).size() - 1)[k][l] = reversiModel.getBoardArray()[k][l];
+        board_history.get(n - 1).get(board_history.get(n - 1).size() - 1)[k][l] = reversiModel.getBoardArray()[k][l];
       }
     }
   }
 
-  private void display(ArrayList<int[][]> history) {
-    for (int i = 0; i < history.size() / SIZE; i++) {// SIZEの数だけ横長に表示
-      for (int j = 0; j < 8; j++) {
-        for (int k = 1; k <= SIZE; k++) {
-          for (int l = 0; l < 8; l++) {
-            System.out.print("|" + history.get(i * SIZE + k - 1)[j][l]);
+  private void display() {
+    for (int i = 0; i < trials_number; i++) {
+      System.out.println((i + 1) + "回目--------------------------------------\n");
+      for (int j = 0; j < board_history.get(i).size() / SIZE; j++) {//ゲームが終わるまでの盤面
+
+        for(int jk=0;jk<SIZE;jk++){
+          // System.out.println(position_history.get(i).get(jk+j*SIZE)[0]+","+first_Ai_color);
+          if(((FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 1))&&position_history.get(i).get(jk+j*SIZE)[0]==1)|| ((FIRST_ATTACK == 0 || (FIRST_ATTACK == 2 && i % 2 == 0))&&position_history.get(i).get(jk+j*SIZE)[0]==2)){
+            System.out.print(Ai_2+"が["+position_history.get(i).get(jk+j*SIZE)[1]+","+position_history.get(i).get(jk+j*SIZE)[2]+"]       ");
+          }else{
+            System.out.print(Ai_1+"が["+position_history.get(i).get(jk+j*SIZE)[1]+","+position_history.get(i).get(jk+j*SIZE)[2]+"]       ");
           }
-          System.out.print("| ");
+        }
+        System.out.println("");
+        for (int k = 0; k < 8; k++) {//1行分          
+          for (int l = 1; l <= SIZE; l++) {//SIZEによって指定された表示における一列分の盤面
+            for (int m = 0; m < 8; m++) {//1つ分の盤面
+              System.out.print("|" + board_history.get(i).get(j * SIZE + l - 1)[k][m]);
+            }
+            System.out.print("| ");
+          }
+          System.out.println("");
         }
         System.out.println("");
       }
-      System.out.println("");
-    }
-    if (history.size() % SIZE != 0) {// 余った部分に関して表示する
-      for (int j = 0; j < 8; j++) {
-        for (int i = history.size() % SIZE; i > 0; i--) {
-          for (int l = 0; l < 8; l++) {
-            System.out.print("|" + history.get(history.size() - i)[j][l]);
+      if (board_history.get(i).size() % SIZE != 0) {// 余った部分に関して表示する
+        for(int jk=0;jk<board_history.get(i).size()%SIZE;jk++){
+          if(((FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 1))&&position_history.get(i).get(jk+(board_history.get(i).size()/SIZE)*SIZE)[0]==1)|| ((FIRST_ATTACK == 0 || (FIRST_ATTACK == 2 && i % 2 == 0))&&position_history.get(i).get(jk+(board_history.get(i).size()/SIZE)*SIZE)[0]==2)){
+            System.out.print(Ai_2+"が["+position_history.get(i).get(jk+(board_history.get(i).size()/SIZE)*SIZE)[1]+","+position_history.get(i).get(jk+(board_history.get(i).size()/SIZE)*SIZE)[2]+"]       ");
+          }else{
+            System.out.print(Ai_1+"が["+position_history.get(i).get(jk+(board_history.get(i).size()/SIZE)*SIZE)[1]+","+position_history.get(i).get(jk+(board_history.get(i).size()/SIZE)*SIZE)[2]+"]       ");
           }
-          System.out.print("| ");
-        }
+        }      
         System.out.println("");
+        for (int k = 0; k < 8; k++) {
+          for (int j = board_history.get(i).size() % SIZE; j > 0; j--) {
+            for (int m = 0; m < 8; m++) {
+              System.out.print("|" + board_history.get(i).get(board_history.get(i).size() - j)[k][m]);
+            }
+            System.out.print("| ");
+          }
+          System.out.println("");
+        }
       }
+
     }
   }
   private void display_only_get_storn(ArrayList<int[]> result){
@@ -169,7 +200,7 @@ class Ai_vs_Ai {
       if(result.get(i)[1]==1){
       System.out.print(Ai_1 +",[win]::");
       }else if(result.get(i)[1]==0){
-      System.out.print(",[draw]::");
+      System.out.print("[draw]::");
       }else if(result.get(i)[1]==-1){
       System.out.print(Ai_1 +",[lose]::");
       }
@@ -177,12 +208,12 @@ class Ai_vs_Ai {
     }
   }
 
-  private void display_result_board(ArrayList<ArrayList<int[][]>> history) {
-    for (int i = 0; i < history.size()/SIZE; i++) {// SIZEの数だけ横長に表示
+  private void display_result_board() {
+    for (int i = 0; i < board_history.size()/SIZE; i++) {// SIZEの数だけ横長に表示
       for (int j = 0; j < 8; j++) {
         for (int k = 1; k <= SIZE; k++) {
           for (int l = 0; l < 8; l++) {
-            System.out.print("|" + history.get(i*SIZE).get(history.get(i*SIZE).size()-1)[j][l]);
+            System.out.print("|" + board_history.get(i*SIZE).get(board_history.get(i*SIZE).size()-1)[j][l]);
           }
           System.out.print("| ");
         }
@@ -190,11 +221,11 @@ class Ai_vs_Ai {
       }
       System.out.println("");
     }
-    if (history.size() % SIZE != 0) {// 余った部分に関して表示する
+    if (board_history.size() % SIZE != 0) {// 余った部分に関して表示する
       for (int j = 0; j < 8; j++) {
-        for (int i =0 ; i < history.size() % SIZE; i++) {
+        for (int i =0 ; i < board_history.size() % SIZE; i++) {
           for (int l = 0; l < 8; l++) {
-            System.out.print("|" + history.get(i).get(history.get(i).size() - 1)[j][l]);
+            System.out.print("|" + board_history.get(i).get(board_history.get(i).size() - 1)[j][l]);
           }
           System.out.print("| ");
         }
@@ -202,9 +233,26 @@ class Ai_vs_Ai {
       }
     }
   }
+  private ArrayList<int[]> get_position_history(){
+    ArrayList<StringBuffer> message=chatModel.getChatMessage();
+    ArrayList<Integer> player=chatModel.getChatPlayer();
+    ArrayList<int[]> position_history= new ArrayList<>();
+    String[] xy_chat;
+    for(int i =0;i<message.size();i++){
+      int[] pre_history={0,0,0};
+      // position_history.add(new ArrayList<>());// 盤面保存領域の確保
+      xy_chat = message.get(i).toString().split("　　");// 文字列を解析
+      pre_history[0]=player.get(i);
+      pre_history[1]=Integer.parseInt(xy_chat[1])-1;//x座標(横)
+      pre_history[2]=Integer.parseInt(xy_chat[3])-1;//y座標(縦)
+      position_history.add(pre_history);    
+    } 
+    return position_history;
+  }
   public static void main(String argv[]) {
     // モデルの生成．
     Model model = new Model();
     new Ai_vs_Ai(model);
   }
+
 }

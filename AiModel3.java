@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 class Ai_3 extends Model {
   // final boolean is_maxcount = false;// 相手が置く際小数で判定する
-  final int future_hand_num = 3;// 何手先まで読むのか(例：自->相手->自分　=> 3手)相手が置いた際にその手を評価して結果を出す。常に奇数で
+  final int future_hand_num = 5;// 何手先まで読むのか(例：自->相手->自分　=> 3手)相手が置いた際にその手を評価して結果を出す。常に奇数で
   final float coefficient_a = 10/10;
   final float coefficient_b = 2;
   private int player;

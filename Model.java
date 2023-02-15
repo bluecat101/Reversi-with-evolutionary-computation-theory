@@ -242,6 +242,7 @@ class Model {
       pass_flag = 0;
       finish_flag = 0;
       player = 1;
+      isYourturn=true;
       pikapika_x = 2;
       pikapika_y = 3;
       for (int i = 0; i < board_size; i++) {
