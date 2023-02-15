@@ -13,7 +13,7 @@ class Ai_vs_Ai {
   // ------------------------------
   final String Ai_1 = "Ai_3", Ai_2 = "Ai_2";// 戦うAiを指定
   final int FIRST_ATTACK = 2;// 0:Ai_1が先,1:Ai_2が先,2:交互
-  final int trials_number = 1;// 試行回数
+  final int trials_number = 3;// 試行回数
   final int select_mode = 3;// 0:勝率のみ,1:取った個数,2:取った個数と最後の盤面のみ,3:途中盤面の表示
   final int SIZE = 14;// 途中結果を表示させるときにどれだけ横に表示させるか。
   // ------------------------------
@@ -76,7 +76,6 @@ class Ai_vs_Ai {
       }
       result.add(result_int);
       if(select_mode==3){
-        // position_history.add(new ArrayList<>());// 盤面保存領域の確保
         position_history.add(get_position_history());
       }
       chatModel.initChat();
@@ -150,11 +149,14 @@ class Ai_vs_Ai {
 
   private void display() {
     for (int i = 0; i < trials_number; i++) {
-      System.out.println((i + 1) + "回目--------------------------------------\n");
+      if(FIRST_ATTACK == 0 || (FIRST_ATTACK == 2 && i % 2 == 0)){
+        System.out.println((i + 1) + "回目--------------------------------------"+Ai_1+"が1,"+Ai_2+"が2です");
+      }else{
+        System.out.println((i + 1) + "回目--------------------------------------"+Ai_2+"が1,"+Ai_1+"が2です");
+      }
       for (int j = 0; j < board_history.get(i).size() / SIZE; j++) {//ゲームが終わるまでの盤面
 
         for(int jk=0;jk<SIZE;jk++){
-          // System.out.println(position_history.get(i).get(jk+j*SIZE)[0]+","+first_Ai_color);
           if(((FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 1))&&position_history.get(i).get(jk+j*SIZE)[0]==1)|| ((FIRST_ATTACK == 0 || (FIRST_ATTACK == 2 && i % 2 == 0))&&position_history.get(i).get(jk+j*SIZE)[0]==2)){
             System.out.print(Ai_2+"が["+position_history.get(i).get(jk+j*SIZE)[1]+","+position_history.get(i).get(jk+j*SIZE)[2]+"]       ");
           }else{
