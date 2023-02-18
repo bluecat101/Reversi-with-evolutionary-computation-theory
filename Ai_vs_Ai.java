@@ -11,10 +11,10 @@ import java.lang.reflect.*;
 class Ai_vs_Ai {
   // 設定
   // ------------------------------
-  final String Ai_1 = "Ai_3", Ai_2 = "Ai_2";// 戦うAiを指定
+  final String Ai_1 = "Ai_3", Ai_2 = "Ai_1";// 戦うAiを指定
   final int FIRST_ATTACK = 2;// 0:Ai_1が先,1:Ai_2が先,2:交互
-  final int trials_number = 3;// 試行回数
-  final int select_mode = 3;// 0:勝率のみ,1:取った個数,2:取った個数と最後の盤面のみ,3:途中盤面の表示
+  final int trials_number = 10;// 試行回数
+  final int select_mode = 1;// 0:勝率のみ,1:取った個数,2:取った個数と最後の盤面のみ,3:途中盤面の表示
   final int SIZE = 14;// 途中結果を表示させるときにどれだけ横に表示させるか。
   // ------------------------------
 
@@ -155,12 +155,11 @@ class Ai_vs_Ai {
         System.out.println((i + 1) + "回目--------------------------------------"+Ai_2+"が1,"+Ai_1+"が2です");
       }
       for (int j = 0; j < board_history.get(i).size() / SIZE; j++) {//ゲームが終わるまでの盤面
-
-        for(int jk=0;jk<SIZE;jk++){
-          if(((FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 1))&&position_history.get(i).get(jk+j*SIZE)[0]==1)|| ((FIRST_ATTACK == 0 || (FIRST_ATTACK == 2 && i % 2 == 0))&&position_history.get(i).get(jk+j*SIZE)[0]==2)){
-            System.out.print(Ai_2+"が["+position_history.get(i).get(jk+j*SIZE)[1]+","+position_history.get(i).get(jk+j*SIZE)[2]+"]       ");
+        for(int k=0;k<SIZE;k++){
+          if(((FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 1))&&position_history.get(i).get(k+j*SIZE)[0]==1)|| ((FIRST_ATTACK == 0 || (FIRST_ATTACK == 2 && i % 2 == 0))&&position_history.get(i).get(k+j*SIZE)[0]==2)){
+            System.out.print(Ai_2+"が["+position_history.get(i).get(k+j*SIZE)[1]+","+position_history.get(i).get(k+j*SIZE)[2]+"]       ");
           }else{
-            System.out.print(Ai_1+"が["+position_history.get(i).get(jk+j*SIZE)[1]+","+position_history.get(i).get(jk+j*SIZE)[2]+"]       ");
+            System.out.print(Ai_1+"が["+position_history.get(i).get(k+j*SIZE)[1]+","+position_history.get(i).get(k+j*SIZE)[2]+"]       ");
           }
         }
         System.out.println("");
@@ -176,18 +175,18 @@ class Ai_vs_Ai {
         System.out.println("");
       }
       if (board_history.get(i).size() % SIZE != 0) {// 余った部分に関して表示する
-        for(int jk=0;jk<board_history.get(i).size()%SIZE;jk++){
-          if(((FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 1))&&position_history.get(i).get(jk+(board_history.get(i).size()/SIZE)*SIZE)[0]==1)|| ((FIRST_ATTACK == 0 || (FIRST_ATTACK == 2 && i % 2 == 0))&&position_history.get(i).get(jk+(board_history.get(i).size()/SIZE)*SIZE)[0]==2)){
-            System.out.print(Ai_2+"が["+position_history.get(i).get(jk+(board_history.get(i).size()/SIZE)*SIZE)[1]+","+position_history.get(i).get(jk+(board_history.get(i).size()/SIZE)*SIZE)[2]+"]       ");
+        for(int k=0;k<board_history.get(i).size()%SIZE;k++){
+          if(((FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 1))&&position_history.get(i).get(k+(board_history.get(i).size()/SIZE)*SIZE)[0]==1)|| ((FIRST_ATTACK == 0 || (FIRST_ATTACK == 2 && i % 2 == 0))&&position_history.get(i).get(k+(board_history.get(i).size()/SIZE)*SIZE)[0]==2)){
+            System.out.print(Ai_2+"が["+position_history.get(i).get(k+(board_history.get(i).size()/SIZE)*SIZE)[1]+","+position_history.get(i).get(k+(board_history.get(i).size()/SIZE)*SIZE)[2]+"]       ");
           }else{
-            System.out.print(Ai_1+"が["+position_history.get(i).get(jk+(board_history.get(i).size()/SIZE)*SIZE)[1]+","+position_history.get(i).get(jk+(board_history.get(i).size()/SIZE)*SIZE)[2]+"]       ");
+            System.out.print(Ai_1+"が["+position_history.get(i).get(k+(board_history.get(i).size()/SIZE)*SIZE)[1]+","+position_history.get(i).get(k+(board_history.get(i).size()/SIZE)*SIZE)[2]+"]       ");
           }
         }      
         System.out.println("");
-        for (int k = 0; k < 8; k++) {
-          for (int j = board_history.get(i).size() % SIZE; j > 0; j--) {
-            for (int m = 0; m < 8; m++) {
-              System.out.print("|" + board_history.get(i).get(board_history.get(i).size() - j)[k][m]);
+        for (int j = 0; j < 8; j++) {
+          for (int k = board_history.get(i).size() % SIZE; k > 0; k--) {
+            for (int l = 0; l < 8; l++) {
+              System.out.print("|" + board_history.get(i).get(board_history.get(i).size() - k)[j][l]);
             }
             System.out.print("| ");
           }
