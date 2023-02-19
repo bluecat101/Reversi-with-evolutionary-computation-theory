@@ -186,21 +186,19 @@ class Ai_3 extends Model {
           evaluation.set(i,evaluation.get(i)-evaluation_for_next_position(can_put_position.get(i)[0], can_put_position.get(i)[1],virtualModel.getPlayer()));
         }
         virtualModel.xySetStone(can_put_position.get(i)[0], can_put_position.get(i)[1]);// 仮想空間の盤面に置く
-        if ((virtualModel.getPassFlag("Ai") == 1 && n % 2 == 1)
-            || (virtualModel.getFinishFlag("Ai") == 1 && n % 2 == 1)) {// もし相手が置くときにpassまたはfinishかの判定
-          virtualModel.getPassFlag("controller");// passflagを初期化
-          virtualModel.getFinishFlag();// finishflagを初期化
+        if ((virtualModel.getPassFlag() == 1 && n % 2 == 1)
+            || (virtualModel.getFinishFlag() == 1 && n % 2 == 1)) {// もし相手が置くときにpassまたはfinishかの判定
           continue;// 最悪手と認定
-        } else if (virtualModel.getPassFlag("Ai") == 1 && n % 2 == 0) {// もし自分が置いてpassとなったなら
-          virtualModel.getPassFlag("controller");
+        } else if (virtualModel.getPassFlag() == 1 && n % 2 == 0) {// もし自分が置いてpassとなったなら
           evaluation.set(i,(float)155);
-        } else if (virtualModel.getFinishFlag("Ai") == 1 && n % 2 == 0) {// もし自分が置いてfinishとなったなら
-          virtualModel.getFinishFlag();
+        } else if (virtualModel.getFinishFlag() == 1 && n % 2 == 0) {// もし自分が置いてfinishとなったなら          
           evaluation.set(i,(float)156);
         } else {// pass,finishではない
           pre_result = recursive_run(virtualModel.getBoardArray(), n - 1);// 再帰する
           evaluation.set(i,evaluation.get(i)+pre_result[2]);
         }
+          virtualModel.resetPassFlag();
+        virtualModel.resetFinishFlag();
       }
       if(n+1==future_hand_num){
           // System.out.println(n);

@@ -1,9 +1,7 @@
 import java.util.*;
-
 @SuppressWarnings("deprecation")
 
 class Model {
-
   private ReversiModel reversiModel = new ReversiModel();
   private ChatModel chatModel = new ChatModel();
 
@@ -17,7 +15,6 @@ class Model {
 
   public void run() {
   }
-
   class ReversiModel extends Observable {
     protected final int board_size = 8;
     final int sizeOfOne = 70;
@@ -34,8 +31,7 @@ class Model {
       initBoard();
     }
 
-    // add 1/16--------------------------------------------------
-    // animationの追加
+    // animation
     public int[][] getAniArray() {
       return animation;
     }
@@ -47,9 +43,7 @@ class Model {
         }
       }
     }
-    // --------------------------------------------------
 
-    // コントローラーから呼び出される。playerは1,2で渡してほしい。
     public void setStone(int mouse_x, int mouse_y) {
       int x = transformMousePoint(mouse_x);// mouseの座標の変換
       int y = transformMousePoint(mouse_y);// mouseの座標の変換
@@ -60,7 +54,7 @@ class Model {
       // searchする座標を探す
       judge_array = getJudgeBoardArray(player);
       if (judge_array[x][y] == 3) {// 自分のところに置ける
-        search(x, y);
+        reverse(x, y);
         board_array[x][y] = player;// 自分の位置に置く
         animation[x][y] = 3;
         judge_array = getJudgeBoardArray(getOpponentStone(player));// 相手プレイヤーが置けるかどうか
@@ -75,13 +69,12 @@ class Model {
             finish_flag = 1;
           }
         }
-
         setChanged();
         notifyObservers(1);
       }
     }
 
-    private void search(int x, int y) {
+    private void reverse(int x, int y) {
       int search_x = x;
       int search_y = y;
       for (int i = -1; i <= 1; i++) {
@@ -120,7 +113,6 @@ class Model {
         for (int j = -1; j < 2; j++) {
           search_x = x + i;
           search_y = y + j;
-
           if (search_x == -1 || search_y == -1 || search_x == 8 || search_y == 8) {// 範囲外なら抜ける。
             continue;
           } else if (board_array[search_x][search_y] != getOpponentStone(player)) {// 相手の石じゃないなら抜ける
@@ -164,7 +156,6 @@ class Model {
       return index;
     }
 
-    // modelが呼び出す。---------
     public int[][] getBoardArray() {
       return board_array;
     }
@@ -192,16 +183,16 @@ class Model {
     public int getPlayer() {
       return player;
     }
-
-    public int getPassFlag(String callername) {
+    
+    public int getPassFlag() {
       if (pass_flag == 0) {// passでない。
         return pass_flag;
       } else {
-        if (callername == "controller") {
-          pass_flag = 0;// 初期化
-        }
         return 1;// 元の値
       }
+    }
+    public void resetPassFlag(){
+      pass_flag=0;
     }
 
     public int getFinishFlag() {
@@ -211,17 +202,8 @@ class Model {
         return 1;// 元の値
       }
     }
-
-    public int getFinishFlag(String callername) {
-      if (finish_flag == 0) {// finishでない。
-        return finish_flag;
-      } else {
-        if (callername == "Ai") {
-          pass_flag = 0;// 初期化
-        }
-        return 1;// 元の値
-      }
-
+    public void resetFinishFlag(){
+        finish_flag = 0;// 初期化
     }
 
     // 置けるかどうかを判定する関数
@@ -337,7 +319,7 @@ class Model {
     }
 
     public void xySetStone(int x, int y) {// 配列値でsetStoneを呼び出す。
-      setStone(20 + 70 * x, 20 + 70 * y);
+      setStone(20 + sizeOfOne * x, 20 + sizeOfOne * y);
     }
 
     public void next_position_mouse(int x, int y) {

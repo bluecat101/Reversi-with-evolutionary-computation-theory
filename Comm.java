@@ -19,10 +19,10 @@ class CommServer {
     this.chatModel = model.getChatModel();
   }
 
-  CommServer(CommServer cs) {
-    serverS = cs.getServerSocket();
-    open(cs.getPortNo());
-  }
+  // CommServer(CommServer cs) {
+  //   serverS = cs.getServerSocket();
+  //   open(cs.getPortNo());
+  // }
 
   ServerSocket getServerSocket() {
     return serverS;
@@ -176,11 +176,11 @@ class CommClient {
     return true;
   }
 
-  boolean sendChat(String sentence, int chatPlayerNUM) {// clientが石を置いたときに動く
+  boolean sendChat(String sentence, int chatPlayerNum) {// clientが石を置いたときに動く
     if (out == null) {
       return false;
     }
-    sentence = "chat" + " " + sentence + " " + chatPlayerNUM;
+    sentence = "chat" + " " + sentence + " " + chatPlayerNum;
     out.println(sentence);// 文字としてサーバーに送信
     return true;
   }

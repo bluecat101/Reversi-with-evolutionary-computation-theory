@@ -42,7 +42,7 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
     if (e.getSource() == timer) {
       if (mode.contains("Ai")) {
         ai.run();
-        if (reversiModel.getPassFlag("controller") == 0) {// 現状がpassじゃない<=>自分のターンに移る
+        if (reversiModel.getPassFlag() == 0) {// 現状がpassじゃない<=>自分のターンに移る
           timer.stop();
         }
       } else if (mode == "server&client") {
@@ -53,6 +53,7 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
       } else if (mode == "client") {
         cl.recv();
       }
+      reversiModel.resetPassFlag();
     }
     if (e.getSource() == view.getResetButton()) {
       // reversiModel.initBoard();

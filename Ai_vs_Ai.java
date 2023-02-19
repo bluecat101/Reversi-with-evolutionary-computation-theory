@@ -38,16 +38,18 @@ class Ai_vs_Ai {
       setAi(m, i);// 先行後攻を決める
       board_history.add(new ArrayList<>());// 盤面保存領域の確保
       while (reversiModel.getFinishFlag() == 0) {// 終わるまでずっと繰り返す
-        if (reversiModel.getPassFlag("controller") == 0) {// ai_1が実行
+        if (reversiModel.getPassFlag() == 0) {// ai_1が実行
           ai_1.run();
           saveBoard(i);// 盤面の保存
           count ++;
         }
-        if (reversiModel.getFinishFlag() == 0 && reversiModel.getPassFlag("controller") == 0) {// ai_2が実行
+        reversiModel.resetPassFlag();
+        if (reversiModel.getFinishFlag() == 0 && reversiModel.getPassFlag() == 0) {// ai_2が実行
           ai_2.run();
           saveBoard(i);// 盤面の保存
           count ++;
         }
+        reversiModel.resetPassFlag();
       }
       int[] result_int={reversiModel.countStorn(1),0};//先行の数を記録
       if (FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 0)) {
