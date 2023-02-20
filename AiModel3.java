@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 class Ai_3 extends Model {
   // final boolean is_maxcount = false;// 相手が置く際小数で判定する
-  final int future_hand_num = 3;// 何手先まで読むのか(例：自->相手->自分　=> 3手)相手が置いた際にその手を評価して結果を出す。常に奇数で
+  final int future_hand_num = 5;// 何手先まで読むのか(例：自->相手->自分　=> 3手)相手が置いた際にその手を評価して結果を出す。常に奇数で
   final float coefficient_a = 20/1;
   final float coefficient_b = 2;
   private int player;
@@ -33,7 +33,7 @@ class Ai_3 extends Model {
     // virtualの盤面を合わせる。
     virtualModel.setBoard_onlyAI(back_board_array);
     virtualModel.setPlayer(this.player);
-    System.out.println("start------------------------------");
+    // System.out.println("start------------------------------");
     float[] storn_position = recursive_run(back_board_array, future_hand_num  - 1);
     // System.out.println("end------------------------------");
     chatModel.writeHistroy((int)storn_position[0], (int)storn_position[1], reversiModel.getIsYourTurn());// 履歴に書く。
@@ -61,7 +61,7 @@ class Ai_3 extends Model {
       float max_evaluation = 0;// 
       int good_position = 0;// 良い手の座標
       int storn_num = virtualModel.countStorn(opponentPlayer());
-      System.out.println("length["+length+"]");
+      // System.out.println("length["+length+"]");
       for (int i = 0; i < length; i++) {
         // System.out.println("start");
         // print_board(board);
@@ -76,13 +76,14 @@ class Ai_3 extends Model {
         // evaluation.get(i)=((1/pre_min_over_storn)*coefficient_a);
         evaluation.set(i,evaluation.get(i)+(float)((1.0 / length)*coefficient_b));
         evaluation.set(i,evaluation.get(i)+evaluation_for_present_board(can_put_position.get(i)[0],can_put_position.get(i)[1]));
-        ArrayList<int[]> can_put_position_last = getCanPutArray(back_judge_array);// 自分が置ける位置を配列に格納する
-        for(int j=0;j<can_put_position.size();j++){
+        ArrayList<int[]> can_put_position_last =getCanPutArray(virtualModel.getJudgeBoardArray(this.player));// 自分が置ける位置を配列に格納する
+        for(int j=0;j<can_put_position_last.size();j++){
+          // System.out.println(can_put_position_last.get(j)[0]+""+can_put_position_last.get(j)[1]);
           evaluation.set(i,evaluation.get(i)+evaluation_for_next_position( can_put_position_last.get(j)[0],can_put_position_last.get(j)[1] , this.player));
         }
         // print_board(virtualModel.getBoardArray());
-        print_board(virtualModel.getJudgeBoardArray(virtualModel.getPlayer()));
-        System.out.println(evaluation);
+        // print_board(virtualModel.getJudgeBoardArray(virtualModel.getPlayer()));
+        // System.out.println(evaluation);
         // evaluation.get(i)+= (1.0 / length)*coefficient_b;
         // evaluation += (1.0 / length)*coefficient_b;
         // if(can_put_position.get(i)[0]==1&& (1<can_put_position.get(i)[1]&& can_put_position.get(i)[1]<6)){
@@ -177,10 +178,10 @@ class Ai_3 extends Model {
       
       //   System.out.println("");
       // System.out.println(evaluation.get(max_evaluation_index)+",,"+evaluation.get(min_evaluation_index));
-      if(evaluation.get(min_evaluation_index)<0){
-        result[2] = evaluation.get(max_evaluation_index);// 最小のひっくり返す数の記憶
+      if(evaluation.get(max_evaluation_index)-evaluation.get(min_evaluation_index)>15||evaluation.get(min_evaluation_index)<0){
+        result[2] = evaluation.get(max_evaluation_index)-Math.abs((float)(evaluation.get(min_evaluation_index)*1.1));// 最小のひっくり返す数の記憶
       }else{
-        result[2] = evaluation.get(max_evaluation_index)+(float)(evaluation.get(min_evaluation_index)*1.1);// 最小のひっくり返す数の記憶
+        result[2] = evaluation.get(max_evaluation_index);// 最小のひっくり返す数の記憶
       }
       // System.out.println("result"+result[2]);
     } else {
@@ -209,7 +210,7 @@ class Ai_3 extends Model {
         } else if (virtualModel.getFinishFlag() == 1 && n % 2 == 0) {// もし自分が置いてfinishとなったなら          
           evaluation.set(i,(float)156);
         } else {// pass,finishではない
-        System.out.println(i+","+evaluation.get(i));
+        // System.out.println(i+","+evaluation.get(i));
           pre_result = recursive_run(virtualModel.getBoardArray(), n - 1);// 再帰する
           evaluation.set(i,evaluation.get(i)+pre_result[2]);
         }
@@ -219,14 +220,14 @@ class Ai_3 extends Model {
       if(n+1==future_hand_num){
           // System.out.println(n);
          int max_evaluation_index=0;
-          for(int j =1;j<evaluation.size()-1;j++){
+          for(int j =1;j<evaluation.size();j++){
             // System.out.print("["+evaluation.get(j)+"],");
             if(evaluation.get(max_evaluation_index)<evaluation.get(j)){
               max_evaluation_index=j;
             }
           }
           // System.out.println("");
-          System.out.println(evaluation+","+max_evaluation_index);
+          // System.out.println(evaluation+","+max_evaluation_index);
           result[0]=can_put_position.get(max_evaluation_index)[0];
           result[1]=can_put_position.get(max_evaluation_index)[1];
           result[2]=evaluation.get(max_evaluation_index);
@@ -243,11 +244,11 @@ class Ai_3 extends Model {
             }
             // System.out.println(evaluation.get(j));
           }
-          if(evaluation.get(min_evaluation_index)<0){
-            result[2] = evaluation.get(max_evaluation_index);// 最小のひっくり返す数の記憶
-          }else{
-            result[2] = evaluation.get(max_evaluation_index)+(float)(evaluation.get(min_evaluation_index)*1.1);// 最小のひっくり返す数の記憶
-          }
+          if(evaluation.get(max_evaluation_index)-evaluation.get(min_evaluation_index)>15||evaluation.get(min_evaluation_index)<0){
+        result[2] = evaluation.get(max_evaluation_index)-Math.abs((float)(evaluation.get(min_evaluation_index)*1.1));// 最小のひっくり返す数の記憶
+      }else{
+        result[2] = evaluation.get(max_evaluation_index);// 最小のひっくり返す数の記憶
+      }
         }
 
     }
@@ -314,7 +315,7 @@ class Ai_3 extends Model {
         }else if(virtualModel.getBoardArray()[i][j] == opponentPlayer()){
           if (ij.equals("00")  || ij.equals("07")  || ij.equals("70")  || ij.equals("77") ) {
             // System.out.println("11111111111111111111111111111111111111111111111111111111"); 
-            evaluation -= 7;
+            evaluation -= 50;
           } else if (i == 0 || i == 7 || j == 0 || j == 7) {
             evaluation -= 0.3;
           }
@@ -329,8 +330,13 @@ class Ai_3 extends Model {
     String xy=x+""+y;
     if(xy.equals("00")||xy.equals("07")||xy.equals("70")||xy.equals("77")){
       evaluation+=30;
+      // System.out.println(xy+"kado");
     }else if(x==0||x==7||y==0||y==7){
       evaluation += 3;
+      // System.out.println(xy+"oh");
+
+      // System.out.println("oh");
+
     }
     if(xy.equals("01")){
       evaluation+=evalu_edge(x,y,"down");

@@ -13,8 +13,8 @@ class Ai_vs_Ai {
   // ------------------------------
   final String Ai_1 = "Ai_2", Ai_2 = "Ai_3";// 戦うAiを指定
   final int FIRST_ATTACK = 2;// 0:Ai_1が先,1:Ai_2が先,2:交互
-  final int trials_number = 1;// 試行回数
-  final int select_mode = 3;// 0:勝率のみ,1:取った個数,2:取った個数と最後の盤面のみ,3:途中盤面の表示
+  final int trials_number = 20;// 試行回数
+  final int select_mode = 0;// 0:勝率のみ,1:取った個数,2:取った個数と最後の盤面のみ,3:途中盤面の表示
   final int SIZE = 14;// 途中結果を表示させるときにどれだけ横に表示させるか。
   // ------------------------------
 
