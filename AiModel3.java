@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 class Ai_3 extends Model {
   // final boolean is_maxcount = false;// 相手が置く際小数で判定する
-  final int future_hand_num = 5;// 何手先まで読むのか(例：自->相手->自分　=> 3手)相手が置いた際にその手を評価して結果を出す。常に奇数で
+  final int future_hand_num = 3;// 何手先まで読むのか(例：自->相手->自分　=> 3手)相手が置いた際にその手を評価して結果を出す。常に奇数で
   final float coefficient_a = 20/1;
   final float coefficient_b = 2;
   private int player;
@@ -29,7 +29,7 @@ class Ai_3 extends Model {
     // 再帰のことも考え、今の盤面を入れる配列を関数内で作成する。
     int[][] back_board_array = new int[board_size][board_size];
     // 今の盤面をコピーする
-    getBackBoardArray(back_board_array);
+    copyBoardArray(back_board_array, reversiModel.getBoardArray());
     // virtualの盤面を合わせる。
     virtualModel.setBoard_onlyAI(back_board_array);
     virtualModel.setPlayer(this.player);
@@ -75,93 +75,12 @@ class Ai_3 extends Model {
         evaluation.set(i,((1/pre_min_over_storn)*coefficient_a));
         // evaluation.get(i)=((1/pre_min_over_storn)*coefficient_a);
         evaluation.set(i,evaluation.get(i)+(float)((1.0 / length)*coefficient_b));
-        evaluation.set(i,evaluation.get(i)+evaluation_for_present_board(can_put_position.get(i)[0],can_put_position.get(i)[1]));
+        evaluation.set(i,evaluation.get(i)+evaluation_for_present_board());
         ArrayList<int[]> can_put_position_last =getCanPutArray(virtualModel.getJudgeBoardArray(this.player));// 自分が置ける位置を配列に格納する
         for(int j=0;j<can_put_position_last.size();j++){
           // System.out.println(can_put_position_last.get(j)[0]+""+can_put_position_last.get(j)[1]);
           evaluation.set(i,evaluation.get(i)+evaluation_for_next_position( can_put_position_last.get(j)[0],can_put_position_last.get(j)[1] , this.player));
         }
-        // print_board(virtualModel.getBoardArray());
-        // print_board(virtualModel.getJudgeBoardArray(virtualModel.getPlayer()));
-        // System.out.println(evaluation);
-        // evaluation.get(i)+= (1.0 / length)*coefficient_b;
-        // evaluation += (1.0 / length)*coefficient_b;
-        // if(can_put_position.get(i)[0]==1&& (1<can_put_position.get(i)[1]&& can_put_position.get(i)[1]<6)){
-        //   // System.out.println("up");
-        //   for(int j=-1;j<2;j++){
-        //     if(search(0, j+can_put_position.get(i)[1], this.player)){
-        //       // evaluation.get(i)++;
-        //       evaluation.set(i,evaluation.get(i)+evaluation.get(i));
-        //     }
-        //   }
-        // }else if(can_put_position.get(i)[0]==6&& (1 < can_put_position.get(i)[1] && can_put_position.get(i)[1] < 6)){
-        //   // System.out.println("down");
-        //   for(int j=-1;j<2;j++){
-        //     if(search(7, j+can_put_position.get(i)[1], this.player)){
-        //       // evaluation.get(i)++;
-        //       evaluation.set(i,evaluation.get(i)+evaluation.get(i));
-        //     }
-        //   }
-        // }else if(can_put_position.get(i)[1]==1&& (1 < can_put_position.get(i)[0] && can_put_position.get(i)[0] < 6)){
-        //   // System.out.println("left");
-        //   for(int j=-1;j<2;j++){
-        //     if(search(j+can_put_position.get(i)[0],0, this.player)){
-        //       // evaluation.get(i)++;
-        //       evaluation.set(i,evaluation.get(i)+evaluation.get(i));
-        //     }
-        //   }
-        // }else if(can_put_position.get(i)[1]==6&& (1 < can_put_position.get(i)[0] && can_put_position.get(i)[0] < 6)){
-        //   // System.out.println("right");
-        //   for(int j=-1;j<2;j++){
-        //     if(search( j+can_put_position.get(i)[0],7, this.player)){
-        //       // evaluation.get(i)++;
-        //       evaluation.set(i,evaluation.get(i)+evaluation.get(i));
-        //     }
-        //   }
-        // }else if(can_put_position.get(i)[0]==1&&can_put_position.get(i)[1]==1&&search( 0, 0, this.player)) {
-        // //left up
-        // // System.out.println("left up");
-        // // evaluation.get(i)+=3;
-        // evaluation.set(i,evaluation.get(i)+3);
-        // // print_board(board);
-        // } else if (can_put_position.get(i)[0] == 1 && can_put_position.get(i)[1] == 6&&search( 0, 7, this.player)) {
-        // //right up
-        // // System.out.println("right up");
-        // // evaluation.get(i)+=3;
-        // evaluation.set(i,evaluation.get(i)+3);
-        // } else if (can_put_position.get(i)[0] == 6 && can_put_position.get(i)[1] == 1&&search( 7, 0, this.player)) {
-        // // left down
-        // // System.out.println(" left down");
-        // // evaluation.get(i)+=3;
-        // evaluation.set(i,evaluation.get(i)+3);
-        // } else if (can_put_position.get(i)[0] == 6 && can_put_position.get(i)[1] == 6&&search( 7, 7, this.player)) {
-        // // right down
-        // // System.out.println(" right down");
-        // // evaluation.get(i)+=3;
-        // evaluation.set(i,evaluation.get(i)+3);
-        // }else if(can_put_position.get(i)[0] == 0 && can_put_position.get(i)[1] == 0&& !search(0, 0, opponentPlayer())){
-        //   // evaluation.get(i) += 4;
-        //   evaluation.set(i,evaluation.get(i)+4);
-        //   // System.out.println("left up");
-        //   // print_board(board);
-        // } else if (can_put_position.get(i)[0] == 0 && can_put_position.get(i)[1] == 7&& !search(0, 7, opponentPlayer())) {
-        //   // evaluation.get(i) += 4;
-        //   evaluation.set(i,evaluation.get(i)+4);
-        //   // System.out.println("right up");
-        //   // print_board(board);
-        // } else if (can_put_position.get(i)[0] == 7 && can_put_position.get(i)[1] == 0&& !search(7, 0, opponentPlayer())) {
-        //   // evaluation.get(i) += 4;
-        //   evaluation.set(i,evaluation.get(i)+4);
-        //   // System.out.println(" left down");
-        //   // print_board(board);
-        // } else if (can_put_position.get(i)[0] == 7 && can_put_position.get(i)[1] == 7&& !search(7, 7, opponentPlayer())) {
-        //   // evaluation.get(i) += 4;
-        //   evaluation.set(i,evaluation.get(i)+4);
-        //   // System.out.println(" right down");
-        //   // print_board(board);
-        // }
-        // evaluation.get(i)+= evaluation_for_present_board(can_put_position.get(i)[0],can_put_position.get(i)[1]);
-        
         virtualModel.setBoard_onlyAI(board);// 仮想空間の盤面を現在の再帰の盤面に合わせる。(再帰内での初期化)
       }
       int max_evaluation_index=0;
@@ -256,11 +175,6 @@ class Ai_3 extends Model {
     return result;
   }
 
-  // 現在の盤面のコピー
-  public void getBackBoardArray(int[][] back_board_array) {
-    copyBoardArray(back_board_array, reversiModel.getBoardArray());
-  }
-
   // 8*8配列をコピーする(第一引数:コピー先,第二引数:コピー元)
   public void copyBoardArray(int[][] target_copy, int[][] source_copy) {
     for (int i = 0; i < board_size; i++) {
@@ -292,13 +206,11 @@ class Ai_3 extends Model {
           System.out.println("|");
         }
       }
-  private boolean search(int x,int y,int player){
-    return virtualModel.getBoardArray()[x][y]==0&&virtualModel.pre_search(x, y,player);
-  }
+  
   private int opponentPlayer(){
     return virtualModel.getOpponentStone(this.player);
   }
-  private int evaluation_for_present_board(int x, int y){
+  private float evaluation_for_present_board(){
     int evaluation =0;
       String ij;
     for(int i=0;i<8;i++){
