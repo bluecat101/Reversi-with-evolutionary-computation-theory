@@ -19,11 +19,6 @@ class CommServer {
     this.chatModel = model.getChatModel();
   }
 
-  // CommServer(CommServer cs) {
-  //   serverS = cs.getServerSocket();
-  //   open(cs.getPortNo());
-  // }
-
   ServerSocket getServerSocket() {
     return serverS;
   }
@@ -52,6 +47,8 @@ class CommServer {
     }
     return true;
   }
+
+  //追加、変更した関数---------------------------------------------
 
   // clientのsend->serverのrecv後に実行
   // clientのrecvを発火させるためにout.println(msg)をする
@@ -106,6 +103,7 @@ class CommServer {
     }
     return msg;
   }
+  //---------------------------------------------
 
   int setTimeout(int to) {
     try {
@@ -166,7 +164,8 @@ class CommClient {
     }
     return true;
   }
-
+  
+  //追加、変更した関数---------------------------------------------
   boolean send(int x, int y) {// clientが石を置いたときに動く
     if (out == null) {
       return false;
@@ -206,7 +205,8 @@ class CommClient {
     }
     return true;
   }
-
+  //-------------------------------------------------
+  
   int setTimeout(int to) {
     try {
       clientS.setSoTimeout(to);

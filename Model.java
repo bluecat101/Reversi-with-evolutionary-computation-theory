@@ -185,22 +185,24 @@ class Model {
     }
     
     public int getPassFlag() {
-      if (pass_flag == 0) {// passでない。
-        return pass_flag;
-      } else {
-        return 1;// 元の値
-      }
+      return pass_flag;
+      // if (pass_flag == 0) {// passでない。
+      //   return pass_flag;
+      // } else {
+      //   return 1;// 元の値
+      // }
     }
     public void resetPassFlag(){
-      pass_flag=0;
+      pass_flag=0;// 初期化
     }
 
     public int getFinishFlag() {
-      if (finish_flag == 0) {// finishでない。
-        return finish_flag;
-      } else {
-        return 1;// 元の値
-      }
+      return finish_flag;
+      // if (finish_flag == 0) {// finishでない。
+      //   return finish_flag;
+      // } else {
+      //   return 1;// 元の値
+      // }
     }
     public void resetFinishFlag(){
         finish_flag = 0;// 初期化
