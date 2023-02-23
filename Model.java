@@ -15,6 +15,7 @@ class Model {
 
   public void run() {
   }
+  
   class ReversiModel extends Observable {
     protected final int board_size = 8;
     final int sizeOfOne = 70;
@@ -352,14 +353,7 @@ class Model {
     public void changeIsYourTurn() {
       isYourturn = !isYourturn;
     }
-
-    public void setBoard_onlyAI(int[][] resultBoard) {
-      for (int i = 0; i < board_size; i++) {
-        for (int j = 0; j < board_size; j++) {
-          board_array[i][j] = resultBoard[i][j];
-        }
-      }
-    }
+    
   }
 
   class ChatModel extends Observable {
@@ -405,7 +399,7 @@ class Model {
       }
     }
     
-    
+    //Aiと対戦するときに履歴を書く
     public void writeHistroy(int x, int y, boolean flag) {
       int player = 2;
       if (flag) {
