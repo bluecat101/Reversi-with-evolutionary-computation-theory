@@ -66,7 +66,7 @@ class CommServer {
       return false;
     }
     String msg = x + " " + y;// 置いた場所を文字化
-    out.println("reversi" + " " + msg);
+    out.println("reversi" + " " + msg);//reversiModelからの通信であることを目印を付けて文字化
     reversiModel.xySetStone(x, y);// サーバー側で石を置く
     return true;
   }
@@ -76,7 +76,7 @@ class CommServer {
       return false;
     }
     chatModel.setChat(sentence, chatPlayerNum);
-    sentence = "chat" + " " + sentence + " " + chatPlayerNum;
+    sentence = "chat" + " " + sentence + " " + chatPlayerNum;// cahtModelからの通信であることを目印を付けて文字化
     out.println(sentence);// 文字としてサーバーに送信
     return true;
   }
@@ -88,10 +88,10 @@ class CommServer {
     }
     try {
       msg = in.readLine();
-      String[] xy_chat = msg.split(" ");// 文字列を数字化
-      if (xy_chat[0].compareTo("reversi") == 0) {
+      String[] xy_chat = msg.split(" ");// 文字列を分解
+      if (xy_chat[0].compareTo("reversi") == 0) {//reversiModelからの通信
         reversiModel.xySetStone(Integer.parseInt(xy_chat[1]), Integer.parseInt(xy_chat[2]));// クライアント側でも石を置く。
-      } else if (xy_chat[0].compareTo("chat") == 0) {
+      } else if (xy_chat[0].compareTo("chat") == 0) {//chatModelからの通信
         chatModel.setChat(xy_chat[1], Integer.parseInt(xy_chat[2]));
       }
     } catch (SocketTimeoutException e) {
@@ -170,7 +170,7 @@ class CommClient {
     if (out == null) {
       return false;
     }
-    String msg = "reversi" + " " + x + " " + y;// 置いた場所を文字化
+    String msg = "reversi" + " " + x + " " + y;// reversiModelからの通信であることを目印を付けて文字化
     out.println(msg);// 文字としてサーバーに送信
     return true;
   }
@@ -179,7 +179,7 @@ class CommClient {
     if (out == null) {
       return false;
     }
-    sentence = "chat" + " " + sentence + " " + chatPlayerNum;
+    sentence = "chat" + " " + sentence + " " + chatPlayerNum;// chatModelからの通信であることを目印を付けて文字化
     out.println(sentence);// 文字としてサーバーに送信
     return true;
   }

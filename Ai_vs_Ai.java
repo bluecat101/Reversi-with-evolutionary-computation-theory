@@ -13,9 +13,9 @@ class Ai_vs_Ai {
   // ------------------------------
   final String Ai_1 = "Ai_2", Ai_2 = "Ai_3";// 戦うAiを指定
   final int FIRST_ATTACK = 2;// 0:Ai_1が先,1:Ai_2が先,2:交互
-  final int trials_number = 100;// 試行回数
-  final int select_mode = 0;// 0:勝率のみ,1:取った個数,2:取った個数と最後の盤面のみ,3:途中盤面の表示
-  final int SIZE = 14;// 途中結果を表示させるときにどれだけ横に表示させるか。
+  final int trials_number = 2;// 試行回数
+  final int select_mode =3;// 0:勝率のみ,1:取った個数,2:取った個数と最後の盤面のみ,3:途中盤面の表示
+  final int SIZE = 13;// 途中結果を表示させるときにどれだけ横に表示させるか。
   // ------------------------------
 
   private Model.ReversiModel reversiModel;
@@ -202,14 +202,14 @@ class Ai_vs_Ai {
   }
   private void display_only_get_storn(ArrayList<int[]> result){
     for (int i = 0; i < result.size(); i++) {
-      if(result.get(i)[1]==1){
+      if(result.get(i)[1]==1){//勝敗の表示
         System.out.print(Ai_1 +",[win]::");
       }else if(result.get(i)[1]==0){
         System.out.print("[draw]::");
       }else if(result.get(i)[1]==-1){
         System.out.print(Ai_1 +",[lose]::");
       }
-        System.out.println(Ai_1+"の取得個数:"+result.get(i)[0]);
+        System.out.println(Ai_1+"の取得個数:"+result.get(i)[0]);//取得した個数を表示
     }
   }
 
