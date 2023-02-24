@@ -28,22 +28,18 @@ class Ai_vs_Ai {
   private ArrayList<ArrayList<int[][]>> board_history = new ArrayList<>();// 途中経過の盤面の保存
   private ArrayList<ArrayList<int[]>> position_history = new ArrayList<>();// 途中経過の置いた位置保存
   private ArrayList<int[]> result = new ArrayList<>();// 結果の保存
-  int count =0;
 
   public Ai_vs_Ai(Model m) {
     this.reversiModel = m.getReversiModel();
     this.chatModel = m.getChatModel();
     for (int i = 1; i <= trials_number; i++) {
-      count =0;
       setAi(m, i);// 先行後攻を決める
       board_history.add(new ArrayList<>());// 盤面保存領域の確保
       int witch_pass_flag=0;
       while (reversiModel.getFinishFlag() == 0) {// 終わるまでずっと繰り返す
         if (reversiModel.getPassFlag() == 0&&witch_pass_flag!=2) {// ai_1が実行
-          // reversiModel.resetPassFlag();
           ai_1.run();
           saveBoard(i);// 盤面の保存
-          count ++;
         }
         if (reversiModel.getFinishFlag() == 0 && reversiModel.getPassFlag() == 0) {// ai_2が実行
           witch_pass_flag=0;
@@ -52,16 +48,14 @@ class Ai_vs_Ai {
             witch_pass_flag=2;
           }
           saveBoard(i);// 盤面の保存
-          count ++;
         }
         reversiModel.resetPassFlag();
       }
       int[] result_int={reversiModel.countStorn(1),0};//先行の数を記録
-      if (FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 0)) {
+      if (FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 0)) {//Ai_1とAi_2のどちらが先行かを考える
         result_int[0]=reversiModel.countStorn(2);
       }
       if (reversiModel.countStorn(1) > 32) {// 先行の勝ち
-        // if (FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 0)) {// ai_2が先頭な時に実行
         if (first_Ai_color==2) {// Ai_2が先頭な時に実行
           lose++;
           result_int[1]=-1;
@@ -82,19 +76,19 @@ class Ai_vs_Ai {
         draw++;
       }
       result.add(result_int);
-      if(select_mode==3){
+      if(select_mode==3){//打った位置を頬損する
         position_history.add(get_position_history());
       }
       chatModel.initChat();
       reversiModel.initBoard();
     }
     switch(select_mode){
-      case 0:
+      case 0://何もしない
       break;
-      case 1:
+      case 1://取得した数だけ表示
         display_only_get_storn(result);
       break;
-      case 2:
+      case 2://
         display_result_board();
         display_only_get_storn(result);
       break;
@@ -107,17 +101,19 @@ class Ai_vs_Ai {
     
     win_rate_1 = (float) win / trials_number;// 勝率の計算
     win_rate_2 = (float) lose / trials_number;// 勝率の計算
-    
+    //勝率の表示
     System.out.printf(Ai_1 + ": 勝ち[" + win + "]," + "負け[" + lose + "]," + "引き分け[" + draw + "]," + "勝率[%.3f]\n",win_rate_1);
     System.out.printf(Ai_2 + ": 勝ち[" + lose + "]," + "負け[" + win + "]," + "引き分け[" + draw + "]," + "勝率[%.3f]\n",win_rate_2);
   }
 
   private void setAi(Model m, int n) {// aiの設定(先行後攻、なんのAiを使うのか選定)
     try {
-      Class<?> aiClass1 = aiClass1 = Class.forName(Ai_1);// ai_1を先頭とする
+      // ai_1を先頭とする----
+      Class<?> aiClass1 = aiClass1 = Class.forName(Ai_1);
       Class<?> aiClass2 = aiClass2 = Class.forName(Ai_2);
       first_Ai_color=1;
-      if (FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && n % 2 == 0)) {// ai_2が先頭な時に実行
+      // ai_2が先頭な時に実行、ai_2を先頭にする----
+      if (FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && n % 2 == 0)) {
         aiClass1 = Class.forName(Ai_2);
         aiClass2 = Class.forName(Ai_1);
         first_Ai_color=2;
@@ -125,7 +121,7 @@ class Ai_vs_Ai {
       Constructor ai_constructor_1 = aiClass1.getConstructor(Model.class, int.class);// ai_1のコンストラクタの取得
       ai_1 = (Model) ai_constructor_1.newInstance(m, 1);// ai_1のaiオブジェクト作成
       Constructor ai_constructor_2 = aiClass2.getConstructor(Model.class,int.class);// ai_2のコンストラクタの取得
-      ai_2 = (Model) ai_constructor_2.newInstance(m,2);
+      ai_2 = (Model) ai_constructor_2.newInstance(m,2);// ai_2のaiオブジェクト作成
 
     } catch (ClassNotFoundException e) {// エラー用
       e.printStackTrace();
@@ -154,15 +150,15 @@ class Ai_vs_Ai {
     }
   }
 
-  private void display() {
+  private void display() {//盤面を表示する
     for (int i = 0; i < trials_number; i++) {
-      if(FIRST_ATTACK == 0 || (FIRST_ATTACK == 2 && i % 2 == 0)){
+      if(FIRST_ATTACK == 0 || (FIRST_ATTACK == 2 && i % 2 == 0)){//Ai_1,Ai_2が1,2のどちらかを置いたかを表示
         System.out.println((i + 1) + "回目--------------------------------------"+Ai_1+"が1,"+Ai_2+"が2です");
       }else{
         System.out.println((i + 1) + "回目--------------------------------------"+Ai_2+"が1,"+Ai_1+"が2です");
       }
-      for (int j = 0; j < board_history.get(i).size() / SIZE; j++) {//ゲームが終わるまでの盤面
-        for(int k=0;k<SIZE;k++){
+      for (int j = 0; j < board_history.get(i).size() / SIZE; j++) {//1ゲームが終わるまでの盤面
+        for(int k=0;k<SIZE;k++){//置いた位置を表示する
           if(((FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 1))&&position_history.get(i).get(k+j*SIZE)[0]==1)|| ((FIRST_ATTACK == 0 || (FIRST_ATTACK == 2 && i % 2 == 0))&&position_history.get(i).get(k+j*SIZE)[0]==2)){
             System.out.print(Ai_2+"が["+position_history.get(i).get(k+j*SIZE)[1]+","+position_history.get(i).get(k+j*SIZE)[2]+"]       ");
           }else{
@@ -170,7 +166,7 @@ class Ai_vs_Ai {
           }
         }
         System.out.println("");
-        for (int k = 0; k < 8; k++) {//1行分          
+        for (int k = 0; k < 8; k++) {//行数分のループ
           for (int l = 1; l <= SIZE; l++) {//SIZEによって指定された表示における一列分の盤面
             for (int m = 0; m < 8; m++) {//1つ分の盤面
               System.out.print("|" + board_history.get(i).get(j * SIZE + l - 1)[k][m]);
@@ -181,7 +177,8 @@ class Ai_vs_Ai {
         }
         System.out.println("");
       }
-      if (board_history.get(i).size() % SIZE != 0) {// 余った部分に関して表示する
+
+      if (board_history.get(i).size() % SIZE != 0) {// 余った部分(SIZEの数だけを表示)に関して表示する
         for(int k=0;k<board_history.get(i).size()%SIZE;k++){
           if(((FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 1))&&position_history.get(i).get(k+(board_history.get(i).size()/SIZE)*SIZE)[0]==1)|| ((FIRST_ATTACK == 0 || (FIRST_ATTACK == 2 && i % 2 == 0))&&position_history.get(i).get(k+(board_history.get(i).size()/SIZE)*SIZE)[0]==2)){
             System.out.print(Ai_2+"が["+position_history.get(i).get(k+(board_history.get(i).size()/SIZE)*SIZE)[1]+","+position_history.get(i).get(k+(board_history.get(i).size()/SIZE)*SIZE)[2]+"]       ");
@@ -206,21 +203,21 @@ class Ai_vs_Ai {
   private void display_only_get_storn(ArrayList<int[]> result){
     for (int i = 0; i < result.size(); i++) {
       if(result.get(i)[1]==1){
-      System.out.print(Ai_1 +",[win]::");
+        System.out.print(Ai_1 +",[win]::");
       }else if(result.get(i)[1]==0){
-      System.out.print("[draw]::");
+        System.out.print("[draw]::");
       }else if(result.get(i)[1]==-1){
-      System.out.print(Ai_1 +",[lose]::");
+        System.out.print(Ai_1 +",[lose]::");
       }
-      System.out.println(Ai_1+"の取得個数:"+result.get(i)[0]);
+        System.out.println(Ai_1+"の取得個数:"+result.get(i)[0]);
     }
   }
 
-  private void display_result_board() {
-    for (int i = 0; i < board_history.size()/SIZE; i++) {// SIZEの数だけ横長に表示
-      for (int j = 0; j < 8; j++) {
-        for (int k = 1; k <= SIZE; k++) {
-          for (int l = 0; l < 8; l++) {
+  private void display_result_board() {//最後の盤面のみを表示する
+    for (int i = 0; i < board_history.size()/SIZE; i++) {//切りのいい盤面数だけ表示させるループ
+      for (int j = 0; j < 8; j++) {//行数分のループ
+        for (int k = 1; k <= SIZE; k++) {// 一列分のループ
+          for (int l = 0; l < 8; l++) {//一盤面分のループ
             System.out.print("|" + board_history.get(i*SIZE).get(board_history.get(i*SIZE).size()-1)[j][l]);
           }
           System.out.print("| ");
