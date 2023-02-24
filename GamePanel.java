@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.border.LineBorder;
@@ -8,252 +7,224 @@ import javax.sound.sampled.*;
 import java.io.File;
 import javax.imageio.ImageIO;
 
+// このクラスはゲーム画面を作成するクラスである。
+// 具体的にはオセロの盤面、チャット画面、石を数えているパネルなどを含むパネルである。
 @SuppressWarnings("deprecation")
-class GamePanel extends JPanel implements Observer, ActionListener, ChangeListener {
-  protected Model model;
-  protected Model.ReversiModel reversiModel;
-  protected ReversiPanel panel;
-  protected ChatPanel chatpanel;
-  protected JLabel state;
-  protected JButton return_title, reset,chat,finish;
-  protected JTextField chatbox;
-  protected JScrollBar scrollbar;
-  protected javax.swing.Timer timer;
-  protected javax.swing.Timer animation;
-  protected int aninum=0;
-  protected Clip clip;
-  protected Image imgBack;
-  protected JPanel cp;
-  protected JSlider sl;
+class GamePanel extends JPanel implements Observer, ActionListener {
+  protected Model.ReversiModel reversiModel;        // モデルの内部クラス、リバーシモデルを保持
+  protected ReversiPanel panel;                     // オセロの盤面のパネル
+  protected ChatPanel chatpanel;                    // チャットのパネル
+  protected JLabel state;                           // 現在の状態を表示するラベル
+  protected JButton return_title, reset,chat,finish;// タイトルに戻るボタン、操作方法を見るボタン、チャットを有効にするボタン、フィニッシュボタン
+  protected JTextField chatbox;                     // チャットに送る文字を打つテキストボックス
+  protected JScrollBar scrollbar;                   // チャット内のスクロールバー
+  protected javax.swing.Timer timer;                // パスの表示をするためのタイマー
+  protected javax.swing.Timer animation;            // 石が回転するアニメーションで用いるタイマー
+  protected int Aniswitch=0;                        // 石の回転アニメーションの前半部分を1とし、後半部分を2としている。
+  protected int aninum=0;                           // アニメーションにおいての石の描画の微調整する値
+  protected int aninum2=0;                          // アニメーションにおいての石の描画の微調整する値
+  protected Clip clip;                              // 石が置かれたときの効果音
+  protected Image imgBack;                          // 背景画像を保持
+  protected JPanel cp;                              // スクロールバーも含めたチャット画面
   
+  // モデルと効果音を引数としている
   public GamePanel(Model m,Clip clip) {
     this.setLayout(null);
     try {
-      imgBack = ImageIO.read(new File("haikei2.jpg"));
+      imgBack = ImageIO.read(new File("haikei2.jpg"));// 背景画像を読み込み
     } catch (Exception e) {
         System.out.println(e);
         System.exit(0);
     }
-    this.clip=clip;
-    timer = new javax.swing.Timer(1000, this);
-    animation = new javax.swing.Timer(1,this);
-    animation2 = new  javax.swing.Timer(1,this);
-    model = m;
-    reversiModel = model.getReversiModel();
-    reversiModel.addObserver(this);
+    this.clip=clip;                           // 効果音を保持
+    timer = new javax.swing.Timer(1000, this);//タイマーを1000フレームで設定
+    animation = new javax.swing.Timer(1,this);//タイマーをできるだけ速いフレームで設定
+    reversiModel = m.getReversiModel();   // リバーシクラスモデルを保持
+    reversiModel.addObserver(this);           // このクラスをObserberとして登録
 
     // Frame内の要素
-    panel = new ReversiPanel();
-    panel.setPreferredSize(new Dimension(600, 600));
-    panel.setBounds(240,0,600,600);
-    panel.setOpaque(false);
+    /* オセロの盤面 */
+    panel = new ReversiPanel();                     // オセロの盤面を生成
+    panel.setPreferredSize(new Dimension(600, 600));// このパネルの縦横サイズを設定
+    panel.setBounds(240,0,600,600);                 // GamePanel内の盤面の位置を設定
+    panel.setOpaque(false);                         // このパネルを透明化して描画位置以外で背景が映るようにする
 
-    CountPanel blackpanel = new CountPanel(1, "Black");
-    blackpanel.setBorder(new LineBorder(Color.BLACK, 2, true));
-    blackpanel.setBounds(20,20,220,130);
+    /* 黒い石をカウントするパネル */
+    CountPanel blackpanel = new CountPanel(1, "Black");        // CountPanelクラスより黒い石をカウントするパネルを生成
+    blackpanel.setBorder(new LineBorder(Color.BLACK, 2, true));// パネルに黒い枠を付ける
+    blackpanel.setBounds(20,20,220,130);                       // このパネルのGamePanel内の位置を設定
 
-    CountPanel whitepanel = new CountPanel(2, "White");
-    whitepanel.setBorder(new LineBorder(Color.BLACK, 2, true));
-    whitepanel.setBounds(840,20,220,130);
+    /* 白い石をカウントするパネル */
+    CountPanel whitepanel = new CountPanel(2, "White");        // CountPanelクラスより白い石をカウントするパネルを生成
+    whitepanel.setBorder(new LineBorder(Color.BLACK, 2, true));// パネルに黒い枠を付ける
+    whitepanel.setBounds(840,20,220,130);                      // このパネルのGamePanel内の位置を設定
 
-    scrollbar = new JScrollBar(JScrollBar.VERTICAL);
+    /* チャットパネル */
+    scrollbar = new JScrollBar(JScrollBar.VERTICAL);   // 垂直方向のスクロールバーを生成
+    chatpanel = new ChatPanel(m, scrollbar);       // チャット画面を生成
+    cp = new JPanel();                                 // 新しく一つパネルを生成
+    cp.setLayout(new BorderLayout());                  // パネルのレイアウトを設定
+    cp.add(chatpanel, BorderLayout.CENTER);            // チャット画面をこのパネルの真ん中に
+    cp.add(scrollbar, BorderLayout.EAST);              // スクロールバーをこのパネルの右側に配置
+    cp.setBorder(new LineBorder(Color.BLACK, 2, true));// このパネルの周りに黒い枠をつける
+    cp.setBounds(20,170,220,320);                      // このパネルのGamePanel内の位置を設定
 
-    chatpanel = new ChatPanel(model, scrollbar);
-    cp = new JPanel();
-    cp.setLayout(new BorderLayout());
-    cp.add(chatpanel, BorderLayout.CENTER);
-    cp.add(scrollbar, BorderLayout.EAST);
-    cp.setBorder(new LineBorder(Color.BLACK, 2, true));
-    cp.setBounds(20,170,220,320);
+    /* 状況を表示するパネル */
     if (reversiModel.getIsYourTurn()) {
-      state = new JLabel("<html>Your<br /><center> turn</center></html>", JLabel.CENTER);
+      state = new JLabel("<html>Your<br /><center> turn</center></html>", JLabel.CENTER);      // ゲームが始まるときに自分のターンだった時のラベルの表示文字を指定
     } else {
-      state = new JLabel("<html>Opponent's<br /><center> turn</center></html>", JLabel.CENTER);
+      state = new JLabel("<html>Opponent's<br /><center> turn</center></html>", JLabel.CENTER);// 相手の時だった時のパネルの表示文字を指定
     }
-    state.setBorder(new LineBorder(Color.BLACK, 2, true));
-    Font font = new Font(Font.SANS_SERIF, Font.BOLD, 36);
-    state.setOpaque(true);
-    state.setFont(font);
-    state.setPreferredSize(new Dimension(210,50));
-    state.setBounds(840,170,220,365);
+    state.setBorder(new LineBorder(Color.BLACK, 2, true));                                     // 黒い枠を付ける
+    Font font = new Font(Font.SANS_SERIF, Font.BOLD, 36);                                      // フォントを作成
+    state.setOpaque(true);                                                                     // パネルを透明化しないようにする
+    state.setFont(font);                                                                       // フォントを設定
+    state.setPreferredSize(new Dimension(210,50));                                             // このラベルのサイズを設定
+    state.setBounds(840,170,220,365);                                                          // このラベルのGamePanel内の位置を設定
 
-    return_title = new JButton("Return Title");
-    return_title.setBounds(940,555,110,25);
-    reset = new JButton("Rule");
-    reset.setBounds(840,555,80,25);
-    //add------------------1/20
-    //使うときはここのコメントアウトを解除して83行目のreset.setBounds()のみをコメントアウト！！
-    //
-    // JLabel volume = new JLabel("Volume");
-    // volume.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
-    // sl = new JSlider(JSlider.HORIZONTAL, 0, 100, 100);
-    // sl.setPaintTicks(true);
-    // sl.setMajorTickSpacing(100);
-    // sl.setMinorTickSpacing(10);
-    // sl.addChangeListener(this);
-    // sl.setLabelTable(sl.createStandardLabels(100));// text per 50
-    // sl.setPaintLabels(true);// dlsplay text
-    // sl.setPreferredSize(new Dimension(100, 20));
-    // volume.setBounds(840, 530, 80, 25);
-    // sl.setBounds(840, 550, 90, 40);
-    // this.add(volume);
-    // this.add(sl);
-    //------------------
-    chat = new JButton("Chat");
-    chat.setBounds(20,555,220,25);
+    /* それぞれのボタン作成 */
+    return_title = new JButton("Return Title");// ボタン生成
+    return_title.setBounds(940,555,110,25);    // このボタンのGamePanel内の位置を設定
+    reset = new JButton("Rule");               // ボタン生成
+    reset.setBounds(840,555,80,25);            // このボタンのGamePanel内の位置を設定
+    chat = new JButton("Chat");                // ボタン生成
+    chat.setBounds(20,555,220,25);             // このボタンのGamePanel内の位置を設定
+    finish = new JButton("Finish");            // ボタン生成
+    finish.setBounds(940, 555, 110, 25);       // このボタンのGamePanel内の位置を設定
 
-    finish = new JButton("Finish");
-    finish.setBounds(940, 555, 110, 25);
+    /* チャットのテキストボックス */
+    chatbox = new JTextField();      // テキストボックスを生成
+    chatbox.setEnabled(false);       // 初期状態ではテキストボックスは無効状態にする
+    chatbox.setBounds(20,510,220,25);// テキストボックスの位置を設定
 
-    this.add(blackpanel);
-    this.add(cp);
-    // this.add(chat);
-
-    // 以下を開放してテキストボックスを追加
-
-    chatbox = new JTextField();
-    chatbox.setEnabled(false);
-    chatbox.setBounds(20,510,220,25);
-    this.add(chatbox);
-
-    this.add(whitepanel);
-    this.add(state);
-    this.add(chat);
-    this.add(reset);
-    this.add(return_title);
-    this.add(panel);
+    // それぞれのオブジェクトをGamePanelに貼り付け
+    this.add(blackpanel);  // 黒い石を数えるパネル
+    this.add(cp);          // チャット画面
+    this.add(chatbox);     // テキストボックス
+    this.add(whitepanel);  // 白い石を数えるパネル
+    this.add(state);       // 状況を表示するラベル
+    this.add(chat);        // チャットを有効にするボタン
+    this.add(reset);       // 操作方法を表示するボタン
+    this.add(return_title);// タイトルに戻るボタン
+    this.add(panel);       // オセロの盤面のパネル
     this.setVisible(true);
   }
+
+  /* 背景画像を貼り付け */
   public void paintComponent(Graphics g) {
     g.drawImage(imgBack, 0, 0, 1080, 600, null);
   }
 
+  // 一人用か二人用かでゲームパネルの内容が少し異なるのでこの関数で変更を行う
+  // 引数はAiかServerかを文字で指定
   public void nochatbox(String witch_Ai_or_Server) {
-    if (witch_Ai_or_Server == "Ai") {
+    if (witch_Ai_or_Server == "Ai") {// もし、一人用ならチャットの画面に石を置いた場所の履歴が表示されるようにしたいので
       this.remove(chatbox);// chat boxの削除
       chat.setText("HISTORY");// ボタンのtextの変更
-      this.remove(finish);
-      return_title.setBounds(940, 555, 110, 25);
-      this.add(return_title);
-      cp.setBounds(20,170,220,365);
-      this.add(cp);
-
-    } else if (witch_Ai_or_Server == "Server") {
+      cp.setBounds(20,170,220,365);// チャット画面を少し大きくする
+    } 
+    else if (witch_Ai_or_Server == "Server") {// もし二人用ならチャット画面とテキストボックスが必要なので
       if (this.getComponentCount() == 8) {// chat boxがないなら
         System.out.println("server");
-        chatbox.setBounds(20,510,220,25);
-        this.add(chatbox);// chat box
-        cp.setBounds(20,170,220,320);
-        this.add(cp);
+        this.add(chatbox);// chat boxを追加
+        cp.setBounds(20,170,220,320);// チャット画面を少し小さくする
       }
-      this.remove(return_title);
-      finish.setBounds(940, 555, 110, 25);
-      this.add(finish);
+      this.remove(return_title);// タイトルに戻るボタンを除去
+      this.add(finish);// 代わりに終了ボタンを追加
       chat.setText("chat");// ボタンのtextの変更
     }
   }
   
-  public void stateChanged(ChangeEvent e) {
-    System.out.println(sl.getValue());
-    FloatControl ctrl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-    // controlByLinearScalar(ctrl, 0.5);
-    // try {
-    // ctrl.setValue((float) Math.log10(((float) (100)/100) * 20));
-    // ctrl.setValue((float) Math.log10(((float) (30) / 100) * 20));
-    ctrl.setValue((float) Math.log10((float) (sl.getValue()) / 100) * 20);
-    // } catch (Exception a) {
-    // a.printStackTrace();
-    // }
-  }
-  
   // ReversiPanel を GamePanel の内部クラスとして実装
+  // このクラスはオセロの盤面を生成するクラスである
   class ReversiPanel extends JPanel {
+    // オセロの盤面を描画
     public void paintComponent(Graphics g) {
       super.paintComponent(g);
-      Graphics2D g2 = (Graphics2D) g;
+      Graphics2D g2 = (Graphics2D) g;// Graphics2Dクラスへのキャスト
 
       // 図形や線のアンチエイリアシングの有効化
       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-      int[][] board_array = reversiModel.getBoardArray();
-      int[][] canput = reversiModel.getJudgeBoardArray(reversiModel.getPlayer());// modelのおけるか配列
-      int[][] aniarray = reversiModel.getAniArray();
-      g.setColor(new Color(0, 180, 0));
-      g.fillRect(20, 20, 560, 560);
-      g.setColor(Color.BLACK);
+      int[][] board_array = reversiModel.getBoardArray();                        // 現在の盤面を二次元配列で、黒が1、白が2で受け取る
+      int[][] canput = reversiModel.getJudgeBoardArray(reversiModel.getPlayer());// 石をおける位置が3となっている二次元配列を受け取る
+      int[][] aniarray = reversiModel.getAniArray();                             // 直前に置かれた石の場所には3、アニメーションで石を動かす場所を4としている二次元配列を受け取る
+      
+      g.setColor(new Color(0, 180, 0));// 盤面の色を選択
+      g.fillRect(20, 20, 560, 560);    // 盤面を描画
+      g.setColor(Color.BLACK);         // 色を黒に設定
+
       for (int i = 0; i < 9; i++) {
-        g.fillRect(19 + 70 * i, 19, 2, 562);
+        g.fillRect(19 + 70 * i, 19, 2, 562);// 盤面上の黒い縦線を描画
       }
+
       for (int i = 0; i < 9; i++) {
-        g.fillRect(19, 19 + 70 * i, 562, 2);
+        g.fillRect(19, 19 + 70 * i, 562, 2);// 盤面上の黒い横線を描画
       }
+
+      // 64の盤面すべての状態を確認して結果に応じて描画
       for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
-          if (board_array[i][j] == 1) {
-            // fillblack(g, i, j);
-            g.setColor(Color.BLACK);
-            if(aniarray[i][j]==4){
-              drawAniStone(g, i, j,1);//白から黒へアニメーション
+          if (board_array[i][j] == 1) {                           // 黒い石が置かれている場所には
+            if(aniarray[i][j]==4){                                // アニメーションをする必要がある場合
+              drawAniStone(g, i, j,1);                            // 白から黒へアニメーション
             }else{
-              drawStone(g, i, j, 1, 255);
+              drawStone(g, i, j, 1, 255);                         // アニメーションなしで石を描画
             }
           }
-          if (board_array[i][j] == 2) {
-            // fillwhite(g, i, j);
-            g.setColor(Color.WHITE);
-            if(aniarray[i][j]==4){
-              drawAniStone(g, i, j,2);//黒から白へアニメーション
+          if (board_array[i][j] == 2) {                           // 白い石が置かれている場所には
+            if(aniarray[i][j]==4){                                // アニメーションをする必要がある場合
+              drawAniStone(g, i, j,2);                            // 黒から白へアニメーション
             }else{
-              drawStone(g, i, j, 2, 255);
+              drawStone(g, i, j, 2, 255);                         // アニメーションなしで石を描画
             }
           }
-          if (canput[i][j] == 3 && reversiModel.getIsYourTurn()) {
-            if (reversiModel.getPlayer() == 1) {
-              g.setColor(new Color(0, 0, 0, 70));
-              drawStone(g, i, j, 1, 70);
-            } else {
-              g.setColor(new Color(255, 255, 255, 150));
-              drawStone(g, i, j, 2,70);
+          if (canput[i][j] == 3 && reversiModel.getIsYourTurn()) {// 石が置けてかつ自分の番であれば
+            if (reversiModel.getPlayer() == 1) {                  // プレイヤーの石の色が黒の場合
+              drawStone(g, i, j, 1, 70);                          // 少し透明にして黒色の石を描画
+            } else {                                              // プレイヤーの石が白の場合
+              drawStone(g, i, j, 2,70);                           // 少し透明にして白色の石を描画
             }
           }
-          if(aniarray[i][j]==3){
-            g.setColor(new Color(255, 255, 0, 100));
-            // 下の一行は実際に動かすときに使う関数
-            g.fillRect(20 + 70 * i, 20 + 70 * j, 70, 70);
+          if(aniarray[i][j]==3){                                  // 直前に石が置かれた場所なら
+            g.setColor(new Color(255, 255, 0, 100));              // 色を設定
+            g.fillRect(20 + 70 * i, 20 + 70 * j, 70, 70);         // 四角に少し透明に塗りつぶす
           }
         }
       }
+      // 下のif文はマウスやカーソルで選択されている場所を四角で囲む描画をする物である
       if (reversiModel.getIsYourTurn()) {
         g.setColor(Color.WHITE);
-        // 下の一行は実際に動かすときに使う関数
         g.fillRect(22 + 70 * reversiModel.getPikaPika_x(), 22 + 70 * reversiModel.getPikaPika_y(), 2, 66);
         g.fillRect(22 + 70 * reversiModel.getPikaPika_x(), 22 + 70 * reversiModel.getPikaPika_y(), 66, 2);
         g.fillRect(86 + 70 * reversiModel.getPikaPika_x(), 22 + 70 * reversiModel.getPikaPika_y(), 2, 66);
         g.fillRect(22 + 70 * reversiModel.getPikaPika_x(), 86 + 70 * reversiModel.getPikaPika_y(), 66, 2);
       }
-      // 下の一行は確認のために一マス特定の場所を光らせたもの。
-      // g.fillRect(20+66*3,20+70*2,70,70);
     }
-    protected int delay=10;
+
+    // 石を描画する関数
+    // color変数が1なら黒、2なら白を指定、aは透明度、i,jは盤面の場所
     public void drawStone(Graphics g,int i,int j,int color,int a){
-      if(color==1){
-        g.setColor(new Color(175,175,175,a));
-        g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4, 54, 62, 54, 54);
-        g.setColor(new Color(80,80,80,a));
-        g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4, 54, 58, 54, 54);
-        g.setColor(new Color(0,0,0,a));
-      }else{
-        g.setColor(new Color(80,80,80,a));
-        g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4, 54, 62, 54, 54);
-        g.setColor(new Color(175,175,175,a));
-        g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4, 54, 58, 54, 54);
-        g.setColor(new Color(255,255,255,a));
-      }
-      g.fillOval(20 + 70 * i + 8, 20 + 70 * j + 4, 54, 54);
+      if(color==1){                                                       // 黒色の石を立体に見えるように描画
+        g.setColor(new Color(175,175,175,a));                             // 色を指定
+        g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4, 54, 62, 54, 54);// 楕円のような図形を作成
+        g.setColor(new Color(80,80,80,a));                                // 色を指定
+        g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4, 54, 58, 54, 54);// 楕円のような図形を作成
+        g.setColor(new Color(0,0,0,a));                                   // 色を指定
+      }else{                                                              // 白色の石を立体に見えるように描画
+        g.setColor(new Color(80,80,80,a));                                // 色を指定
+        g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4, 54, 62, 54, 54);// 楕円のような図形を作成
+        g.setColor(new Color(175,175,175,a));                             // 色を指定
+        g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4, 54, 58, 54, 54);// 楕円のような図形を作成
+        g.setColor(new Color(255,255,255,a));                             // 色を指定
+      }                                                                   // 
+      g.fillOval(20 + 70 * i + 8, 20 + 70 * j + 4, 54, 54);               // 最後に石の色にあった円形を描画
     }
-    //1白→黒2黒→白
+
+    // color変数が1なら白→黒、2なら黒→白にアニメーションを行う関数である。i,jは盤面の場所
     public void drawAniStone(Graphics g,int i,int j,int color){
-      if(a==0 && flag==0){
+      // アニメーションはaninumとaninum2の数を変更していくことによって描画する図形を徐々に変更している
+      if(Aniswitch==0 && flag==0){// ここでは回転のアニメーションの前半半分を行う
         if(color==1){
           g.setColor(new Color(80,80,80));
           g.fillRoundRect(20 + 70 * i + 8, 20 + 70 * j + 4+aninum/2, 54, 62-aninum, 54, 54);
@@ -268,7 +239,8 @@ class GamePanel extends JPanel implements Observer, ActionListener, ChangeListen
           g.setColor(new Color(0,0,0));
         }
         g.fillOval(20 + 70 * i + 8, 20 + 70 * j + 4+aninum/2, 54, 54-aninum);
-      }else{
+      }
+      else{// こっちでは回転のアニメーションの後半半分を行う
         flag=1;
         if(color==1){
           g.setColor(new Color(175,175,175));
@@ -287,95 +259,83 @@ class GamePanel extends JPanel implements Observer, ActionListener, ChangeListen
       }
     }
   }
-
-  class CountPanel extends JPanel implements Observer {
-    private int player;
-    JLabel count;
-    JPanel stone;
-
-    CountPanel(int n, String s) {
-      player = n;
-      this.setLayout(new GridLayout(1, 2));
-      Font font = new Font(Font.SANS_SERIF, Font.BOLD, 64);
-      if (n == 1) {
-        stone = new BlackStone();
-      } else {
-        stone = new WhiteStone();
-      }
-      count = new JLabel("2", JLabel.CENTER);
-      stone.setPreferredSize(new Dimension(100, 40));// ラベルのサイズを設定
-      count.setFont(font);
-      reversiModel.addObserver(this);
-      this.add(stone);
-      this.add(count);
-    }
-
-    public void update(Observable o, Object arg) {
-      String s = Integer.toString(reversiModel.countStorn(player));
-      count.setText(s);
-    }
-  }
-
+  
+  // このクラスは黒い石が描画されたパネルを生成するクラスである。
   class BlackStone extends JPanel {
     public void paintComponent(Graphics g) {
-      Graphics2D g2 = (Graphics2D) g;
+      Graphics2D g2 = (Graphics2D) g;// Graphics2Dクラスへのキャスト
 
       // 図形や線のアンチエイリアシングの有効化
       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-      // fillblack(g, 0, 0);
-      g.setColor(Color.BLACK);
-      g.fillOval(20 + 15, 20 + 15, 60, 60);
+      g.setColor(Color.BLACK);             // 色を黒に設定
+      g.fillOval(20 + 15, 20 + 15, 60, 60);// 円を描画
     }
   }
 
+  // このクラスは白い石が描画されたパネルを生成するクラスである
   class WhiteStone extends JPanel {
     public void paintComponent(Graphics g) {
-      Graphics2D g2 = (Graphics2D) g;
+      Graphics2D g2 = (Graphics2D) g;// Graphics2Dクラスへのキャスト
 
       // 図形や線のアンチエイリアシングの有効化
       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-      // fillwhite(g, 0, 0);
-      g.setColor(Color.WHITE);
-      g.fillOval(20 + 15, 20 + 15, 60, 60);
+      g.setColor(Color.WHITE);             // 色を白に設定
+      g.fillOval(20 + 15, 20 + 15, 60, 60);// 円を描画
     }
   }
 
-  public void fillwhite(Graphics g, int i, int j) {
-    for (int k = 0; k <= 20; k++) {
-      g.setColor(new Color(k * 3 + 195, k * 3 + 195, k * 3 + 195)); // グラデーション
-      g.fillOval(20 + 70 * i + 5 + (int) (k * 1.5), 20 + 70 * j + 5 + (int) (k * 1.5), 60 - k * 3, 60 - k * 3);
-    }
-  }
+  // このクラスは石の数を数えるパネルを生成するクラスである
+  class CountPanel extends JPanel implements Observer {
+    private int player;// プレイヤーが白か黒かを格納
+    JLabel count;      // 石の数が表示されるラベル
+    JPanel stone;      // 石の絵が描画されたパネル
 
-  public void fillblack(Graphics g, int i, int j) {
-    for (int k = 0; k <= 20; k++) {
-      g.setColor(new Color(k * 3, k * 3, k * 3)); // グラデーション
-      g.fillOval(20 + 70 * i + 5 + (int) (k * 1.5), 20 + 70 * j + 5 + (int) (k * 1.5), 60 - k * 3, 60 - k * 3);
+    CountPanel(int n, String s) {
+      player = n;                                          // プレイヤーの石の色を保持
+      this.setLayout(new GridLayout(1, 2));                // レイアウトを設定
+      Font font = new Font(Font.SANS_SERIF, Font.BOLD, 64);// フォントを作成
+      if (n == 1) {                                        // 黒色のパネルの場合
+        stone = new BlackStone();                          // 黒色の石の絵のパネルを生成
+      } else {
+        stone = new WhiteStone();                          // 白色の石の絵のパネルを生成
+      }
+      count = new JLabel("2", JLabel.CENTER);              // ラベルの文字を2として初期化
+      stone.setPreferredSize(new Dimension(100, 40));      // ラベルのサイズを設定
+      count.setFont(font);                                 // フォントを設定
+      reversiModel.addObserver(this);                      // reversiModelクラスにこのパネルをObserverとして登録
+      this.add(stone);                                     // パネルを貼り付け
+      this.add(count);                                     // ラベルを貼り付け
+    }
+
+    // この関数は石の数が変更されると呼び出される
+    public void update(Observable o, Object arg) {                 // reversiModelクラスから呼び出されると
+      String s = Integer.toString(reversiModel.countStorn(player));// playerに対応する石の数をString型としてセット
+      count.setText(s);                                            // countラベルの文字を今取ってきた数字に変更
     }
   }
   private int flag;
-  public void update(Observable o, Object arg) {
-    if(arg==(Object)1){
-      flag=0;
-      aninum2=0;
-      animation.start();
-      clip.flush();
-      clip.setFramePosition(4500);
-      clip.start();
+  // この関数は画面の描画を変更したいときに呼び出される
+  public void update(Observable o, Object arg) {// 描画の変更をreversiModelから要求されたら
+    if(arg==(Object)1){ 
+      flag=0;                        // 新たに石が置かれたときに描画を変更する場合は以下を行う
+      Aniswitch=0;                              // Aniswitchを0に初期化
+      aninum2=0;                                // aninum2を0に初期化
+      animation.start();                        // 石をひっくる返すアニメーションを開始
+      clip.flush();                             // 音声再生の内部バッファを削除
+      clip.setFramePosition(4500);              // 再生位置を音がなる直前に戻す
+      clip.start();                             // 石を置く効果音を出す
     }
-    panel.repaint();
-    if (reversiModel.getIsYourTurn()) {
+    panel.repaint();                                        // 再描画
+    if (reversiModel.getIsYourTurn()) {                     // 自分のターンかどうかでラベルの文字を変更
       state.setText("<html>Your<br /><center>turn</center></html>");
-
     } else {
       state.setText("<html>Opponent's<br /><center> turn</center></html>");
-
     }
-    if (reversiModel.getFinishFlag() == 1) {
-      //「最後に置いた色の方が多く、かつ、それが自分」もしくは、「最後に置いた色の方が少なく、かつ、それが相手」=>win
+    if (reversiModel.getFinishFlag() == 1) {                // もしこのときゲームが終了しているのなら
       if((reversiModel.countStorn(reversiModel.getPlayer()))==(reversiModel.countStorn(reversiModel.getOpponentStone(reversiModel.getPlayer())))){
-        state.setText("<html><center>draw</center></html>");
+        state.setText("<html><center>draw</center></html>");// 引き分けの時に表示する文字
       }
+      // 「最後に置いた色の方が多く、かつ、それが自分」もしくは、「最後に置いた色の方が少なく、かつ、それが相手」=>win
       else if ((reversiModel.countStorn(reversiModel.getPlayer()) > reversiModel.countStorn(reversiModel.getOpponentStone(reversiModel.getPlayer())))&&reversiModel.getIsYourTurn()
       || (reversiModel.countStorn(reversiModel.getPlayer()) < reversiModel.countStorn(reversiModel.getOpponentStone(reversiModel.getPlayer()))) && !reversiModel.getIsYourTurn()
       ) {
@@ -384,41 +344,31 @@ class GamePanel extends JPanel implements Observer, ActionListener, ChangeListen
         state.setText("<html>Opponent<br /><center>win!!</center></html>");
       }
     }
-    if (reversiModel.getPassFlag() == 1) {
-      state.setText("パス");
-      timer.start();
+    if (reversiModel.getPassFlag() == 1) {// もしこの時パスであれば
+      state.setText("パス");                // パスをラベルに表示
+      timer.start();                      // パス表示を一瞬だけ表示してどちらの番かを表示したいのでタイマーをスタートする
     }
   }
-  protected int a=0;
-  protected int aninum2=0;
-  protected javax.swing.Timer animation2;
+
   public void actionPerformed(ActionEvent e) {
-    if (e.getSource() == timer) {
-      if (reversiModel.getIsYourTurn()) {
+    if (e.getSource() == timer) {        // タイマーがスタートされたら少しだけ時間がたった後に
+      if (reversiModel.getIsYourTurn()) {// どちらかの番が表示される
         state.setText("<html>Your<br /><center>turn</center></html>");
       } else {
         state.setText("<html>Opponent's<br /><center> turn</center></html>");
-
       }
-      timer.stop();
+      timer.stop();                      // タイマーをストップする
     }
-    if (e.getSource() == animation2) {
-      aninum2+=1;
-      panel.repaint();
-      if(aninum2==4){animation2.stop();}
-    }
-    if(e.getSource() == animation){
-      if(a==0){
-        aninum+=2;
-        if(aninum==54){a=1;}
+    if(e.getSource() == animation){      // animationのタイマーがスタートされたら
+      if(Aniswitch==0){                  // まず初めに前半部分の描画の時
+        aninum+=2;                       // aninumの値を2ずつ増やしていく
+        if(aninum==54){Aniswitch=1;}     // aninumが54になったらアニメーションの後半部分をスタートさせる
       }else{
-        aninum-=2;
-        aninum2=4-(int)(aninum/14);
+        aninum-=2;                       // aninumの値を2ずつ減らしていく
+        aninum2=4-(int)(aninum/14);      // 他の石と同じ座標になるように微調整
       }
-      // System.out.println(aninum);
-      panel.repaint();
-      if(aninum==0){a=0;animation.stop();
-        // animation2.start();
+      panel.repaint();                   // 再描画
+      if(aninum==0){animation.stop();    // 再度aninumが0になったらアニメーションを停止させる。
       }      
     }
   }
