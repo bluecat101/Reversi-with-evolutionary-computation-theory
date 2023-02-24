@@ -11,10 +11,10 @@ import java.lang.reflect.*;
 class Ai_vs_Ai {
   // 設定
   // ------------------------------
-  final String Ai_1 = "Ai_3", Ai_2 = "Ai_1";// 戦うAiを指定
+  final String Ai_1 = "Ai_2", Ai_2 = "Ai_3";// 戦うAiを指定
   final int FIRST_ATTACK = 2;// 0:Ai_1が先,1:Ai_2が先,2:交互
-  final int trials_number = 10;// 試行回数
-  final int select_mode = 1;// 0:勝率のみ,1:取った個数,2:取った個数と最後の盤面のみ,3:途中盤面の表示
+  final int trials_number = 100;// 試行回数
+  final int select_mode = 0;// 0:勝率のみ,1:取った個数,2:取った個数と最後の盤面のみ,3:途中盤面の表示
   final int SIZE = 14;// 途中結果を表示させるときにどれだけ横に表示させるか。
   // ------------------------------
 
@@ -37,15 +37,20 @@ class Ai_vs_Ai {
       count =0;
       setAi(m, i);// 先行後攻を決める
       board_history.add(new ArrayList<>());// 盤面保存領域の確保
+      int witch_pass_flag=0;
       while (reversiModel.getFinishFlag() == 0) {// 終わるまでずっと繰り返す
-        if (reversiModel.getPassFlag() == 0) {// ai_1が実行
+        if (reversiModel.getPassFlag() == 0&&witch_pass_flag!=2) {// ai_1が実行
+          // reversiModel.resetPassFlag();
           ai_1.run();
           saveBoard(i);// 盤面の保存
           count ++;
         }
-        reversiModel.resetPassFlag();
         if (reversiModel.getFinishFlag() == 0 && reversiModel.getPassFlag() == 0) {// ai_2が実行
+          witch_pass_flag=0;
           ai_2.run();
+          if(reversiModel.getPassFlag()==1){
+            witch_pass_flag=2;
+          }
           saveBoard(i);// 盤面の保存
           count ++;
         }
