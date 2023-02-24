@@ -186,42 +186,35 @@ class Ai_3 extends Model {
     return evaluation;
   }
 
-  private float evaluation_for_next_position(int x,int y,int player){
+  private float evaluation_for_next_position(int x,int y,int player){//x,yにはplayerが置くことのできる位置が入る
     float evaluation=0;
     String xy=x+""+y;
-    if(xy.equals("00")||xy.equals("07")||xy.equals("70")||xy.equals("77")){
+    if(xy.equals("00")||xy.equals("07")||xy.equals("70")||xy.equals("77")){//隅なら評価
       evaluation+=30;
-    }else if(x==0||x==7||y==0||y==7){
+    }else if(x==0||x==7||y==0||y==7){//端なら評価
       evaluation += 3;
     }
-    if(xy.equals("01")){
+    if(xy.equals("01")){//隅の一つと隣ならevalu_edgeを実行
       evaluation+=evalu_edge(x,y,"down");
     }else if(xy.equals("10")){
-      //right
       evaluation+=evalu_edge(x,y,"right");
     }else if(xy.equals("06")){  
-      //up
       evaluation+=evalu_edge(x,y,"up");
     }else if(xy.equals("17")){
-      //right
       evaluation+=evalu_edge(x,y,"right");
     }else if(xy.equals("60")){  
-      //left
       evaluation+=evalu_edge(x,y,"left");
     }else if(xy.equals("71")){
-      //down
       evaluation+=evalu_edge(x,y,"down");
     }else if(xy.equals("67")){  
-      //left
       evaluation+=evalu_edge(x,y,"left");
     }else if(xy.equals("76")){
-      //up
       evaluation+=evalu_edge(x,y,"up");
     }
     return evaluation;
   }
   
-  private int evalu_edge( int x,int y,String direction){
+  private int evalu_edge( int x,int y,String direction){//隅の色、隅から2つ隣の色によって置くべきかく必要がないかを判定する
     int evaluation=0;
     if((getPosition_for_evalu_edge(x, y,direction,0)==player&&getPosition_for_evalu_edge(x, y,direction,2)!=0)||(getPosition_for_evalu_edge(x, y,direction,0)==opponentPlayer()&&getPosition_for_evalu_edge(x, y,direction,2)==player)){
       for(int i=3;i<8;i++){
@@ -247,7 +240,7 @@ class Ai_3 extends Model {
               i++;
             }
           }
-          for(;i<8;i++){//下へ
+          for(;i<8;i++){//隅から置く場所の座標と同じ列の方向へ進み、何が入っているかを確認する
             if(getPosition_for_evalu_edge(x, y,direction,i)==0){
               evaluation-=7;
               break;
@@ -262,10 +255,10 @@ class Ai_3 extends Model {
         
       }
     }
-    return evaluation;
+    return evaluation;//評価値を返す
   }
   
-  private int getPosition_for_evalu_edge(int x,int y,String direction,int position){
+  private int getPosition_for_evalu_edge(int x,int y,String direction,int position){//引数をもとにした座標に入っている値を取得を返す。(evalu_edge専用関数)
     int direct_num=0;
     if(direction.equals("up")||direction.equals("right")){
       direct_num=7;
@@ -273,9 +266,9 @@ class Ai_3 extends Model {
       direct_num=0;
     }
     if(direction.equals("up")||direction.equals("down")){
-      return virtualModel.getBoardArray()[x][Math.abs(direct_num-position)];
+      return virtualModel.getBoardArray()[x][Math.abs(direct_num-position)];//座標の値を返す。
     }else{
-      return virtualModel.getBoardArray()[Math.abs(direct_num-position)][y];
+      return virtualModel.getBoardArray()[Math.abs(direct_num-position)][y];//座標の値を返す。
     }
   }
 }

@@ -195,7 +195,6 @@ class ReversiController implements KeyListener, MouseListener, MouseMotionListen
           if(reversiModel.getFinishFlag()==0&&reversiModel.getPassFlag()==0){
             timer.start();
           }
-          reversiModel.resetPassFlag();
         } else if (mode == "server&client") {
           sv.send(reversiModel.getPikaPika_x(), reversiModel.getPikaPika_y());// サーバーに直接送る
         } else if (mode == "client") {

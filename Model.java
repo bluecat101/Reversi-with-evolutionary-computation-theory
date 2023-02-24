@@ -87,13 +87,11 @@ class Model {
           } else if (board_array[search_x][search_y] != getOpponentStone(player)) {// 相手の石じゃないなら抜ける
             continue;
           }
-          while (search_x != -1 && search_y != -1 && search_x != 8 && search_y != 8
-              && board_array[search_x][search_y] == getOpponentStone(player)) {// 範囲内かつ相手の石ならループする
+          while (search_x != -1 && search_y != -1 && search_x != 8 && search_y != 8 && board_array[search_x][search_y] == getOpponentStone(player)) {// 範囲内かつ相手の石ならループする
             search_x += i;
             search_y += j;
           }
-          if (search_x != -1 && search_y != -1 && search_x != 8 && search_y != 8
-              && board_array[search_x][search_y] == player) {// 範囲内であるかつ自分の石である
+          if (search_x != -1 && search_y != -1 && search_x != 8 && search_y != 8 && board_array[search_x][search_y] == player) {// 範囲内であるかつ自分の石である
             search_x -= i;
             search_y -= j;
             while (search_x != x || search_y != y) {
@@ -119,14 +117,12 @@ class Model {
           } else if (board_array[search_x][search_y] != getOpponentStone(player)) {// 相手の石じゃないなら抜ける
             continue;
           }
-          while (search_x != -1 && search_y != -1 && search_x != 8 && search_y != 8
-              && board_array[search_x][search_y] == getOpponentStone(player)) {// 範囲内かつ相手の石ならループする
+          while (search_x != -1 && search_y != -1 && search_x != 8 && search_y != 8 && board_array[search_x][search_y] == getOpponentStone(player)) {// 範囲内かつ相手の石ならループする
             search_x += i;
             search_y += j;
           }
           // 置いた石の真上が自分の石の時にも実行されるが、while文には入らない。
-          if (search_x != -1 && search_y != -1 && search_x != 8 && search_y != 8
-              && board_array[search_x][search_y] == player) {// 範囲内である
+          if (search_x != -1 && search_y != -1 && search_x != 8 && search_y != 8 && board_array[search_x][search_y] == player) {// 範囲内である
             return true;// 置けること返す。
           }
         }
@@ -187,11 +183,6 @@ class Model {
     
     public int getPassFlag() {
       return pass_flag;
-      // if (pass_flag == 0) {// passでない。
-      //   return pass_flag;
-      // } else {
-      //   return 1;// 元の値
-      // }
     }
     public void resetPassFlag(){
       pass_flag=0;// 初期化
@@ -199,11 +190,6 @@ class Model {
 
     public int getFinishFlag() {
       return finish_flag;
-      // if (finish_flag == 0) {// finishでない。
-      //   return finish_flag;
-      // } else {
-      //   return 1;// 元の値
-      // }
     }
     public void resetFinishFlag(){
         finish_flag = 0;// 初期化
