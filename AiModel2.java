@@ -1,4 +1,4 @@
-//阪上用
+// sakagami
 
 import java.util.ArrayList;
 import java.util.Random;
