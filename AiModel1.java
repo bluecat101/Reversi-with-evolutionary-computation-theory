@@ -1,4 +1,4 @@
-//鈴村用
+// suzumura
 
 class Ai_1 extends Model{
   private int player;//Aiの番号
