@@ -1,4 +1,4 @@
-//斉藤
+//saito
 import java.util.ArrayList;
 
 class Ai_3 extends Model {
