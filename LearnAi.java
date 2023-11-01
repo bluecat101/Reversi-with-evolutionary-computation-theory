@@ -5,16 +5,25 @@
 //trials_number:試行回数
 //select_mode:勝率のみか、最後の盤面がほしいのか、途中の盤面もほしいのか。
 //SIZE:途中経過を表示させるときに横に何個表示させるかの設定
+
 import java.util.*;
 import java.lang.reflect.*;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Collections;
 
-class Ai_vs_Ai {
+
+class LearnAi {
   // 設定
   // ------------------------------
   final String Ai_1 = "Ai_4", Ai_2 = "Ai_3";// 戦うAiを指定
   final int FIRST_ATTACK = 2;// 0:Ai_1が先,1:Ai_2が先,2:交互
   final int trials_number = 1;// 試行回数
-  final int select_mode =3;// 0:勝率のみ,1:取った個数,2:取った個数と最後の盤面のみ,3:途中盤面の表示
+  final int select_mode =0;// 0:勝率のみ,1:取った個数,2:取った個数と最後の盤面のみ,3:途中盤面の表示
   final int SIZE = 8;// 途中結果を表示させるときにどれだけ横に表示させるか。
   // ------------------------------
 
@@ -28,14 +37,17 @@ class Ai_vs_Ai {
   private ArrayList<ArrayList<int[][]>> board_history = new ArrayList<>();// 途中経過の盤面の保存
   private ArrayList<ArrayList<int[]>> position_history = new ArrayList<>();// 途中経過の置いた位置保存
   private ArrayList<int[]> result = new ArrayList<>();// 結果の保存
+  private int[][] weight_board = new int[8][8];
 
-  public Ai_vs_Ai(Model m) {
+  public LearnAi(Model m) {
     this.reversiModel = m.getReversiModel();
     this.chatModel = m.getChatModel();
-    for (int i = 1; i <= trials_number; i++) {
+    weight_board = read_weigth();
+    for (int i = 1; i <= trials_number; i++) { // 1ゲームをn回繰り返す。
       setAi(m, i);// 先行後攻を決める
       board_history.add(new ArrayList<>());// 盤面保存領域の確保
       int witch_pass_flag=0;
+      // １ゲーム
       while (reversiModel.getFinishFlag() == 0) {// 終わるまでずっと繰り返す
         if (reversiModel.getPassFlag() == 0&&witch_pass_flag!=2) {// ai_1が実行
           ai_1.run();
@@ -51,9 +63,10 @@ class Ai_vs_Ai {
         }
         reversiModel.resetPassFlag();
       }
-      int[] result_int={reversiModel.countStorn(1),0};//先行の数を記録
+      int[] result_int={reversiModel.countStorn(1),0,1};//取得数と勝敗と自分の色
       if (FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && i % 2 == 0)) {//Ai_1とAi_2のどちらが先行かを考える
         result_int[0]=reversiModel.countStorn(2);
+        result_int[2] = 2;
       }
       if (reversiModel.countStorn(1) > 32) {// 先行の勝ち
         if (first_Ai_color==2) {// Ai_2が先頭な時に実行
@@ -76,12 +89,63 @@ class Ai_vs_Ai {
         draw++;
       }
       result.add(result_int);
-      if(select_mode==3){//打った位置を頬損する
+      if(select_mode==3){//打った位置を保存する
         position_history.add(get_position_history());
       }
       chatModel.initChat();
       reversiModel.initBoard();
     }
+
+
+
+    int[] score = {0,0}; // first_score_indexとsecond_score_indexとなる。
+    if(result.size() > 2){
+      if(result.get(0)[0] >result.get(1)[0]){
+        score[0] = 0;
+        score[1] = 1;
+      }else{
+        score[0] = 1;
+        score[1] = 0;
+      }
+      // 1番目と2番目のインデックスを取得
+      for(int i = 2; i < result.size(); i++){
+        if(result.get(score[0])[0] < result.get(i)[0]){
+          score[1] = score[0];
+          score[0] = i;
+        }else if(result.get(score[1])[0] < result.get(i)[0]){
+          score[1] = i;
+        }
+      }
+    }
+    System.out.println("board_history.size()"+board_history.get(0).size());
+    
+    
+    int[][][] calculate_board_weight = new int[2][8][8];
+    // int[][] second_board_weight = new int[8][8];
+    for(int i = 0; i <2;i++){
+      copyBoardArray(calculate_board_weight[i],weight_board);
+    }
+    for(int i = 0; i <2;i++){
+          for(int j = 0; j <2;j++){
+                for(int k = 0; k <2;k++){
+                  if(board_history.get(score[i]).get(board_history.get(score[i]).size()-1) == result.get(score[i])[2])
+                }
+                }
+
+
+
+
+    }
+    // copyBoardArray(second_board_weight,weight_board);
+
+
+    System.out.println(result.get(first_score)[1]);
+    System.out.println(result.get(second_score)[1]);
+    for(int[] a: result){
+      System.out.println(a[2]);
+    }
+
+
     switch(select_mode){
       case 0://何もしない
       break;
@@ -89,6 +153,7 @@ class Ai_vs_Ai {
         display_only_get_storn(result);
       break;
       case 2://
+        // System.out.print()
         display_result_board();
         display_only_get_storn(result);
       break;
@@ -118,11 +183,21 @@ class Ai_vs_Ai {
         aiClass2 = Class.forName(Ai_1);
         first_Ai_color=2;
       }
-      Constructor ai_constructor_1 = aiClass1.getConstructor(Model.class, int.class);// ai_1のコンストラクタの取得
-      ai_1 = (Model) ai_constructor_1.newInstance(m, 1);// ai_1のaiオブジェクト作成
-      Constructor ai_constructor_2 = aiClass2.getConstructor(Model.class,int.class);// ai_2のコンストラクタの取得
-      ai_2 = (Model) ai_constructor_2.newInstance(m,2);// ai_2のaiオブジェクト作成
+      if(aiClass1 != Class.forName("Ai_4")){// コンストラクタの引数が異なる。
+        Constructor ai_constructor_1 = aiClass1.getConstructor(Model.class, int.class);// ai_1のコンストラクタの取得
+        ai_1 = (Model) ai_constructor_1.newInstance(m, 1);// ai_1のaiオブジェクト作成
+      }else{
+        Constructor ai_constructor_1 = aiClass1.getConstructor(Model.class, int.class,int[][].class);// ai_1のコンストラクタの取得
+        ai_1 = (Model) ai_constructor_1.newInstance(m, 1,weight_board);// ai_1のaiオブジェクト作成
+      }
 
+      if(aiClass2 != Class.forName("Ai_4")){// コンストラクタの引数が異なる。
+        Constructor ai_constructor_2 = aiClass2.getConstructor(Model.class,int.class);// ai_2のコンストラクタの取得
+        ai_2 = (Model) ai_constructor_2.newInstance(m,2);// ai_2のaiオブジェクト作成
+      }else{
+        Constructor ai_constructor_2 = aiClass2.getConstructor(Model.class,int.class,int[][].class);// ai_2のコンストラクタの取得
+        ai_2 = (Model) ai_constructor_2.newInstance(m,2,weight_board);// ai_2のaiオブジェクト作成
+      }
     } catch (ClassNotFoundException e) {// エラー用
       e.printStackTrace();
       System.exit(1);
@@ -140,7 +215,24 @@ class Ai_vs_Ai {
       System.exit(1);
     }
   }
-
+  private int[][] read_weigth(){
+    Path path = Paths.get("./AiDataBase/weight.csv");
+    int[][] weight_board = new int[8][8];
+    try {
+      // CSVファイルの読み込み
+      List<String> lines = Files.readAllLines(path, Charset.forName("Shift-JIS"));
+      for(int i = 0;i< 8 ;i++){
+        String[] data = lines.get(i).split(",");
+        for(int j=0; j < 8 ;j++){
+          weight_board[i][j]= Integer.parseInt(data[j]);
+        }
+      }
+    } catch (IOException e) {
+      System.out.println("ファイル読み込みに失敗");
+      System.exit(1);
+    }
+    return weight_board;
+  }
   private void saveBoard(int n) {// iはn回目が入る,盤面を記憶する
     board_history.get(n - 1).add(new int[8][8]);
     for (int k = 0; k < 8; k++) {
@@ -257,7 +349,27 @@ class Ai_vs_Ai {
   public static void main(String argv[]) {
     // モデルの生成．
     Model model = new Model();
-    new Ai_vs_Ai(model);
+    new LearnAi(model);
   }
-
+  
+  // 8*8配列をコピーする(第一引数:コピー先,第二引数:コピー元)
+  public void copyBoardArray(int[][] target_copy, int[][] source_copy) {
+    for (int i = 0; i < 8; i++) {
+      for (int j = 0; j < 8; j++) {
+        target_copy[i][j] = source_copy[i][j];
+      }
+    }
+  }
 }
+
+
+// Comparator<int[]> comparator = new Comparator<int[]>() {
+    //   @Override
+    //   public int compare(int[] O1, int[] O2) {
+    //     Integer o1 = O1[0];
+    //     Integer o2 = O2[0];
+    //     Integer judgement = -Integer.valueOf(o1).compareTo(Integer.valueOf(o2));
+    //     return judgement;
+    //   }
+    // };
+    // Collections.sort(result, comparator);
