@@ -15,15 +15,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Collections;
-
+import java.io.FileWriter;
+import java.io.IOException;
 
 class LearnAi {
   // 設定
   // ------------------------------
   final String Ai_1 = "Ai_4", Ai_2 = "Ai_3";// 戦うAiを指定
   final int FIRST_ATTACK = 2;// 0:Ai_1が先,1:Ai_2が先,2:交互
-  final int trials_number = 1;// 試行回数
-  final int select_mode =0;// 0:勝率のみ,1:取った個数,2:取った個数と最後の盤面のみ,3:途中盤面の表示
+  final int trials_number = 10;// 試行回数
+  final int general_number = 10;// 世代数
+  final int select_mode =2;// 0:勝率のみ,1:取った個数,2:取った個数と最後の盤面のみ,3:途中盤面の表示
   final int SIZE = 8;// 途中結果を表示させるときにどれだけ横に表示させるか。
   // ------------------------------
 
@@ -37,12 +39,13 @@ class LearnAi {
   private ArrayList<ArrayList<int[][]>> board_history = new ArrayList<>();// 途中経過の盤面の保存
   private ArrayList<ArrayList<int[]>> position_history = new ArrayList<>();// 途中経過の置いた位置保存
   private ArrayList<int[]> result = new ArrayList<>();// 結果の保存
-  private int[][] weight_board = new int[8][8];
+  private double[][] weight_board = new double[8][8];
 
   public LearnAi(Model m) {
     this.reversiModel = m.getReversiModel();
     this.chatModel = m.getChatModel();
     weight_board = read_weigth();
+    for(int general = 0;general< general_number general++){
     for (int i = 1; i <= trials_number; i++) { // 1ゲームをn回繰り返す。
       setAi(m, i);// 先行後攻を決める
       board_history.add(new ArrayList<>());// 盤面保存領域の確保
@@ -97,9 +100,9 @@ class LearnAi {
     }
 
 
-
+    //------------- 重さを計算
     int[] score = {0,0}; // first_score_indexとsecond_score_indexとなる。
-    if(result.size() > 2){
+    if(result.size() > 1){
       if(result.get(0)[0] >result.get(1)[0]){
         score[0] = 0;
         score[1] = 1;
@@ -117,34 +120,68 @@ class LearnAi {
         }
       }
     }
-    System.out.println("board_history.size()"+board_history.get(0).size());
+    // System.out.println("board_history.size()"+board_history.get(0).size());
     
     
-    int[][][] calculate_board_weight = new int[2][8][8];
+    double[][][] calculate_board_weight = new double[2][8][8];
     // int[][] second_board_weight = new int[8][8];
     for(int i = 0; i <2;i++){
       copyBoardArray(calculate_board_weight[i],weight_board);
     }
+    //淘汰しないパターンも面白いかも
     for(int i = 0; i <2;i++){
-          for(int j = 0; j <2;j++){
-                for(int k = 0; k <2;k++){
-                  if(board_history.get(score[i]).get(board_history.get(score[i]).size()-1) == result.get(score[i])[2])
-                }
-                }
+      int[][] get_board = board_history.get(score[i]).get(board_history.get(score[i]).size()-1);
+      int your_storn_color = result.get(score[i])[2];
+      int judge_num = result.get(score[i])[2]; // get_board[i][j]と比較し一致なら掛け算、不一致なら割り算をして重さを計算するための判定材料、0ならそもそも加算しない。
+      double weight = (double)result.get(score[i])[0]/((board_history.get(score[i]).size()+4)/2);
+      weight = Math.floor(weight*1000)/1000;
+      if(judge_num == 0){
+        continue;
+      }
+      System.out.println("weight"+weight);
+      for(int j = 0; j <8;j++){
+        for(int k = 0; k <8;k++){
+          if(get_board[j][k] == judge_num){ 
+            calculate_board_weight[i][j][k] += (Math.floor(weight_board[j][k] * weight*1000)/1000);
+          
 
+          }else{
+            calculate_board_weight[i][j][k] += (Math.floor((weight_board[j][k] / weight)*1000)/1000);
+          }
+            // System.out.println(calculate_board_weight[i][j][k]);
 
-
-
+        }
+      }
     }
-    // copyBoardArray(second_board_weight,weight_board);
-
-
-    System.out.println(result.get(first_score)[1]);
-    System.out.println(result.get(second_score)[1]);
-    for(int[] a: result){
-      System.out.println(a[2]);
+    double[][] new_board_weight = new double[8][8];
+    copyBoardArray(new_board_weight,calculate_board_weight[0]);
+    for(int i = 1; i <2;i++){
+      for(int j = 0; j <8;j++){
+        for(int k = 0; k <8;k++){
+          new_board_weight[j][k] += calculate_board_weight[i][j][k];
+        }
+      }
+    }
+    for(int i = 0; i <8;i++){
+      for(int j = 0; j <8;j++){
+        new_board_weight[i][j] /= 2;
+      }
     }
 
+    for(int i = 0; i <8;i++){
+      for(int j = 0; j <8;j++){
+        System.out.println(new_board_weight[i][j]+" ["+i+"]"+" ["+j+"]"+"<"+board_history.get(0).get(board_history.get(score[0]).size()-1)[i][j]+">");
+      }
+    }
+    convertToCSV(new_board_weight, "weight.csv");
+    }
+    //--------------------
+    // weight_board = read_weigth();
+    // for(int i = 0; i <8;i++){
+    //   for(int j = 0; j <8;j++){
+    //     System.out.println(new_board_weight[i][j]+" ["+i+"]"+" ["+j+"]"+"<"+board_history.get(0).get(board_history.get(score[0]).size()-1)[i][j]+">");
+    //   }
+    // }
 
     switch(select_mode){
       case 0://何もしない
@@ -172,11 +209,13 @@ class LearnAi {
   }
 
   private void setAi(Model m, int n) {// aiの設定(先行後攻、なんのAiを使うのか選定)
+  
     try {
       // ai_1を先頭とする----
       Class<?> aiClass1 = aiClass1 = Class.forName(Ai_1);
       Class<?> aiClass2 = aiClass2 = Class.forName(Ai_2);
       first_Ai_color=1;
+
       // ai_2が先頭な時に実行、ai_2を先頭にする----
       if (FIRST_ATTACK == 1 || (FIRST_ATTACK == 2 && n % 2 == 0)) {
         aiClass1 = Class.forName(Ai_2);
@@ -187,15 +226,16 @@ class LearnAi {
         Constructor ai_constructor_1 = aiClass1.getConstructor(Model.class, int.class);// ai_1のコンストラクタの取得
         ai_1 = (Model) ai_constructor_1.newInstance(m, 1);// ai_1のaiオブジェクト作成
       }else{
-        Constructor ai_constructor_1 = aiClass1.getConstructor(Model.class, int.class,int[][].class);// ai_1のコンストラクタの取得
+        Constructor ai_constructor_1 = aiClass1.getConstructor(Model.class, int.class,double[][].class);// ai_1のコンストラクタの取得
         ai_1 = (Model) ai_constructor_1.newInstance(m, 1,weight_board);// ai_1のaiオブジェクト作成
       }
+      // System.exit(0);
 
       if(aiClass2 != Class.forName("Ai_4")){// コンストラクタの引数が異なる。
         Constructor ai_constructor_2 = aiClass2.getConstructor(Model.class,int.class);// ai_2のコンストラクタの取得
         ai_2 = (Model) ai_constructor_2.newInstance(m,2);// ai_2のaiオブジェクト作成
       }else{
-        Constructor ai_constructor_2 = aiClass2.getConstructor(Model.class,int.class,int[][].class);// ai_2のコンストラクタの取得
+        Constructor ai_constructor_2 = aiClass2.getConstructor(Model.class,int.class,double[][].class);// ai_2のコンストラクタの取得
         ai_2 = (Model) ai_constructor_2.newInstance(m,2,weight_board);// ai_2のaiオブジェクト作成
       }
     } catch (ClassNotFoundException e) {// エラー用
@@ -215,16 +255,16 @@ class LearnAi {
       System.exit(1);
     }
   }
-  private int[][] read_weigth(){
+  private double[][] read_weigth(){
     Path path = Paths.get("./AiDataBase/weight.csv");
-    int[][] weight_board = new int[8][8];
+    double[][] weight_board = new double[8][8];
     try {
       // CSVファイルの読み込み
       List<String> lines = Files.readAllLines(path, Charset.forName("Shift-JIS"));
       for(int i = 0;i< 8 ;i++){
         String[] data = lines.get(i).split(",");
         for(int j=0; j < 8 ;j++){
-          weight_board[i][j]= Integer.parseInt(data[j]);
+          weight_board[i][j]= Double.parseDouble(data[j]);
         }
       }
     } catch (IOException e) {
@@ -360,6 +400,46 @@ class LearnAi {
       }
     }
   }
+
+  public void copyBoardArray(double[][] target_copy, int[][] source_copy) {
+    for (int i = 0; i < 8; i++) {
+      for (int j = 0; j < 8; j++) {
+        target_copy[i][j] = (double)source_copy[i][j];
+      }
+    }
+  }
+
+  public void copyBoardArray(double[][] target_copy, double[][] source_copy) {
+    for (int i = 0; i < 8; i++) {
+      for (int j = 0; j < 8; j++) {
+        target_copy[i][j] = source_copy[i][j];
+      }
+    }
+  }
+  public void convertToCSV(double[][] array, String filename) {
+        try {
+            //FileWriterインスタンスの生成
+            FileWriter csvWriter = new FileWriter("AiDataBase/"+filename);
+            //各行をループ
+            for(int i=0; i<8; i++) {
+              for(int j=0; j<8; j++) {
+                  //バッファに追加（行の各項目をカンマ区切りで連結）
+                  csvWriter.append(array[i][j]+",");
+                  System.out.println(array[i][j]+",");
+              }
+               //バッファに追加（改行）
+                csvWriter.append("\n");
+            }
+            //ファイルへの書き込み
+            csvWriter.flush();
+            //ストリームを閉じる
+            csvWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+ 
+    }
+
 }
 
 
