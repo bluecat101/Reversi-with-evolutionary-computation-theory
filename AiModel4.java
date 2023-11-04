@@ -43,7 +43,7 @@ class Ai_4 extends Model {
     back_judge_array = reversiModel.getJudgeBoardArray(player);
     ArrayList<double[]> can_put_array = new ArrayList<double[]>();
     ArrayList<double[]> max_wieght_array = new ArrayList<double[]>();
-    double max_wieght = 0;
+    double max_wieght = -1000;
     for(int i = 0; i<board_size ;i++){
       for(int j = 0; j<board_size ;j++){
         if(back_judge_array[i][j] == 3){
